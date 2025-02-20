@@ -98,18 +98,17 @@ class TicketType(models.Model):
 
 
 class Ticket(models.Model):
-    PAYMENT_STATUSES = [
-        ("pending", "Не оплачен"),
-        ("paid", "Оплачен"),
-        ("canceled", "Отменён"),
-    ]
+    class PaymentStatus(models.TextChoices):
+        PENDING = "pending", "Не оплачен"
+        PAID = "paid", "Оплачен"
+        CANCELED = "canceled", "Отменен"
     
     ticket_type = models.ForeignKey("TicketType", on_delete=models.CASCADE, related_name="tickets", verbose_name="Тип билета")
     owner = models.ForeignKey("UserProfile", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="Владелец")
     payment_status = models.CharField(
         max_length=10,
-        choices=PAYMENT_STATUSES,
-        default="pending",
+        choices=PaymentStatus,
+        default=PaymentStatus.PENDING,
         verbose_name="Статус оплаты"
     )
     is_valid = models.BooleanField(default=True, verbose_name="Действительный")
