@@ -36,14 +36,14 @@ class EventAdmin(admin.ModelAdmin):
         "cover_image",  
         "description", 
         "address", 
-        "pub_date", 
+        "created_at",
         "is_published",
         'get_categories',
     ]
     list_filter = ["categories", "address"]
     filter_horizontal = ["categories"]
     search_fields = ["title"]
-    date_hierarchy = 'pub_date'
+    date_hierarchy = 'created_at'
     inlines = [ReviewInline, GalleryInline, TicketTypeInline]
     
     def get_categories(self, obj):
@@ -59,25 +59,23 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-    list_display = [
-        "name", 
-        "description", 
-        "address"
-    ]
+    list_display = ["name", "description", "address", "created_at", "is_published"]
     search_fields = ["name", "address"]
+    date_hierarchy = "created_at"
 
 
 @admin.register(Gallery)
 class GalleryAdmin(admin.ModelAdmin):
-    list_display = ["id", "image", "event"]
+    list_display = ["id", "image", "event", "is_visible"]
     list_filter = ["event"]
     raw_id_fields = ["event"]
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ["event", "description", "author", "pub_date"]
+    list_display = ["event", "description", "rating", "author", "created_at", "pub_date", "status"]
     list_display_links = ["description"]
+    date_hierarchy = "created_at"
     search_fields = ["description"]
     list_filter = ["author", "event"]
     raw_id_fields = ["author", "event"]
@@ -105,11 +103,9 @@ class TicketAdmin(admin.ModelAdmin):
         "ticket_type", 
         "owner", 
         "payment_status", 
-        "is_valid"
     ]
     raw_id_fields = ["ticket_type", "owner"]
     list_filter = ["owner", "ticket_type"]
-    readonly_fields = ["is_valid"]
 
 
 @admin.register(Banner)
@@ -121,9 +117,12 @@ class BannerAdmin(admin.ModelAdmin):
         "pub_date", 
         "end_date", 
         "company",
+        "created_at",
+        "event"
     ]
     search_fields = ["title"]
     raw_id_fields = ["company"]
+    date_hierarchy = ("created_at")
 
 
 @admin.register(Company)
