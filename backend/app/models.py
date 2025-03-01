@@ -2,11 +2,28 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
+from photologue.models import Photo, Gallery
+from django.utils.text import slugify
+
+
+class EventPublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_published=True)
+    
+    def by_category(self, category_slug):
+        return self.get_queryset().filter(categories__slug=category_slug)
+
+class ReviewOrderByPubDate(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()\
+            .order_by('pub_date')\
+            .exclude(status=["on moderation", "rejected"])
 
 
 class Event(models.Model):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
-    cover_image = models.ImageField(upload_to="images/", null=True, blank=True, verbose_name="Обложка")
+    cover_image = models.ForeignKey(Photo, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Обложка")
+    gallery = models.ForeignKey(Gallery, on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Галерея")
     categories = models.ManyToManyField("Category", related_name="events", verbose_name="Категории")
     description = models.TextField(max_length=1000, verbose_name="Описание")
     address = models.CharField(max_length=500, verbose_name="Адрес")
@@ -16,32 +33,28 @@ class Event(models.Model):
     def __str__(self):
         return self.title
     
+    objects = models.Manager()
+    published = EventPublishedManager()
+    
     class Meta:
         db_table = "events"
         verbose_name = "Событие"
         verbose_name_plural = "События"
         ordering = ['-created_at']
         indexes = [
-            models.Index(fields=['-created_at']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['is_published']),
         ]
-
-
-class Gallery(models.Model):
-    image = models.ImageField(upload_to="images/", verbose_name="Изображение")
-    event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="gallery", verbose_name="Событие")
-    is_visible = models.BooleanField(default=False, verbose_name="Видимость")
-
-    def __str__(self):
-        return f"image for {self.event.title}"
-    
-    class Meta:
-        db_table = "galleries"
-        verbose_name = "Галерея"
-        verbose_name_plural = "Галереи"
 
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название категории")
+    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name="URL")
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
     
     def __str__(self):
         return self.name
@@ -56,24 +69,33 @@ class Review(models.Model):
     class Status(models.TextChoices):
         REJECTED = "rejected", "Отклонен"
         ACCEPTED = "accepted", "Принят"
-        ON_MODERATION = "on moderation", "На модерации"
+        ON_MODERATION = "on_moderation", "На модерации"
     
     author = models.ForeignKey("UserProfile", on_delete=models.CASCADE, related_name="reviews", verbose_name="Автор")
     description = models.TextField(max_length=1000, verbose_name="Описание")
     rating = models.PositiveIntegerField(validators=[MaxValueValidator(5)], verbose_name="Рейтинг")
-    pub_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата публикации")
+    pub_date = models.DateTimeField(null = True, blank=True, verbose_name="Дата публикации")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="reviews", verbose_name="Событие")
     status = models.CharField(default=Status.ON_MODERATION, choices=Status, verbose_name="Статус")
     
     def __str__(self):
-        return f"comment by {self.author.user.username} for {self.event.title}"
+        return f"review by {self.author.user.username} for {self.event.title}"
+    
+    objects = models.Manager()
+    order_by_pub_date = ReviewOrderByPubDate()
 
     class Meta:
         db_table = "reviews"
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
-        ordering = ['-pub_date']
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['author']),
+            models.Index(fields=['event']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['status']),
+        ]
 
 
 class Place(models.Model):
@@ -90,6 +112,10 @@ class Place(models.Model):
         db_table = "places"
         verbose_name = "Место"
         verbose_name_plural = "Места"
+        indexes = [
+            models.Index(fields=['created_at']),
+            models.Index(fields=['is_published']),
+        ]
 
 
 class TicketType(models.Model):
@@ -107,6 +133,9 @@ class TicketType(models.Model):
         db_table = "ticket_types"
         verbose_name = "Тип Билета"
         verbose_name_plural = "Типы Билетов"
+        indexes = [
+            models.Index(fields=['event_date']),
+        ]
 
 
 class Ticket(models.Model):
@@ -126,6 +155,9 @@ class Ticket(models.Model):
         db_table = "tickets"
         verbose_name = "Билет"
         verbose_name_plural = "Билеты"
+        indexes = [
+            models.Index(fields=['owner']),
+        ]
 
 
 class Banner(models.Model):
@@ -146,6 +178,11 @@ class Banner(models.Model):
         db_table = "banners"
         verbose_name = "Баннер"
         verbose_name_plural = "Баннеры"
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['created_at']),
+            models.Index(fields=['event']),
+        ]
 
 
 class Company(models.Model):

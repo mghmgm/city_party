@@ -1,22 +1,25 @@
 from django.contrib import admin
-from .models import Event, Category, Place, Gallery, Review, TicketType, Ticket, UserProfile, Banner, Company
+from .models import Event, Category, Place, Review, TicketType, Ticket, UserProfile, Banner, Company
 from django.utils.safestring import mark_safe
+from django.forms import Textarea, TextInput
+from django.db import models
 
 
 class ReviewInline(admin.TabularInline):
     model = Review
     extra = 1
     raw_id_fields = ["event", "author"]
-
-class GalleryInline(admin.TabularInline):
-    model = Gallery
-    extra = 1
-    raw_id_fields = ["event"]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 40})}
+    }
 
 class TicketTypeInline(admin.TabularInline):
     model = TicketType
     extra = 1
     raw_id_fields = ["event"]
+    formfield_overrides = {
+        models.TextField: {'widget': Textarea(attrs={'rows': 2, 'cols': 40})}
+    }
 
 class TicketInline(admin.TabularInline):
     model = Ticket
@@ -26,15 +29,20 @@ class TicketInline(admin.TabularInline):
 class BannerInline(admin.TabularInline):
     model = Banner
     extra = 1
-    raw_id_fields = ["company"]
+    raw_id_fields = ["company", "event"]
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'size': '10'})},
+        models.TextField: {'widget': Textarea(attrs={'rows': 6, 'cols': 18})},
+    }
 
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = [
         "title", 
-        "cover_image",  
-        "description", 
+        "cover_image", 
+        "gallery", 
+        "short_description", 
         "address", 
         "created_at",
         "is_published",
@@ -44,41 +52,59 @@ class EventAdmin(admin.ModelAdmin):
     filter_horizontal = ["categories"]
     search_fields = ["title"]
     date_hierarchy = 'created_at'
-    inlines = [ReviewInline, GalleryInline, TicketTypeInline]
+    inlines = [ReviewInline, TicketTypeInline]
+    raw_id_fields = ["gallery", "cover_image"]
     
     def get_categories(self, obj):
         return ", ".join([category.name for category in obj.categories.all()])
     get_categories.short_description = "Категории"
+    
+    @admin.display(description="Описание")
+    def short_description(self, obj):
+        return (
+            obj.description[:180] + "..."
+            if len(obj.description) > 80
+            else obj.description
+        )
 
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name"]
+    list_display = ["name", "slug"]
     search_fields = ["name"]
 
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-    list_display = ["name", "description", "address", "created_at", "is_published"]
+    list_display = ["name", "short_description", "address", "created_at", "is_published"]
     search_fields = ["name", "address"]
     date_hierarchy = "created_at"
-
-
-@admin.register(Gallery)
-class GalleryAdmin(admin.ModelAdmin):
-    list_display = ["id", "image", "event", "is_visible"]
-    list_filter = ["event"]
-    raw_id_fields = ["event"]
+    
+    @admin.display(description="Описание")
+    def short_description(self, obj):
+        return (
+            obj.description[:180] + "..."
+            if len(obj.description) > 80
+            else obj.description
+        )
 
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-    list_display = ["event", "description", "rating", "author", "created_at", "pub_date", "status"]
-    list_display_links = ["description"]
+    list_display = ["event", "short_description", "rating", "author", "created_at", "pub_date", "status"]
+    list_display_links = ["short_description"]
     date_hierarchy = "created_at"
-    search_fields = ["description"]
+    search_fields = ["short_description"]
     list_filter = ["author", "event"]
     raw_id_fields = ["author", "event"]
+    
+    @admin.display(description="Описание")
+    def short_description(self, obj):
+        return (
+            obj.description[:50] + "..."
+            if len(obj.description) > 80
+            else obj.description
+        )
 
 
 @admin.register(TicketType)
@@ -121,7 +147,7 @@ class BannerAdmin(admin.ModelAdmin):
         "event"
     ]
     search_fields = ["title"]
-    raw_id_fields = ["company"]
+    raw_id_fields = ["company", "event"]
     date_hierarchy = ("created_at")
 
 
