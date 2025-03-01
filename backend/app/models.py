@@ -1,14 +1,19 @@
+from django.urls import reverse
 from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from photologue.models import Photo, Gallery
 from django.utils.text import slugify
+from datetime import timedelta
 
 
 class EventPublishedManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_published=True)
+        return super().get_queryset().filter(
+            is_published=True,
+            created_at__gte=timezone.now() - timedelta(days=2 * 365)
+        )
     
     def by_category(self, category_slug):
         return self.get_queryset().filter(categories__slug=category_slug)
@@ -49,12 +54,7 @@ class Event(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название категории")
-    slug = models.SlugField(max_length=255, unique=True, blank=True, null=True, verbose_name="URL")
-    
-    def save(self, *args, **kwargs):
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL")
     
     def __str__(self):
         return self.name
@@ -63,6 +63,9 @@ class Category(models.Model):
         db_table = "categories"
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
+        
+    def get_absolute_url(self):
+        return reverse('category', kwargs={'category_slug': self.slug})
 
 
 class Review(models.Model):
