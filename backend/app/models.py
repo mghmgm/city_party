@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from photologue.models import Photo, Gallery
 from datetime import timedelta
-from django.db.models import Count
+from django.db.models import Count, Avg
 
 class EventPublishedManager(models.Manager):
     def get_queryset(self):
@@ -13,7 +13,8 @@ class EventPublishedManager(models.Manager):
             is_published=True,
             created_at__gte=timezone.now() - timedelta(days=2 * 365)
         )\
-        .annotate(review_count=Count('reviews'))
+        .annotate(review_count = Count('reviews'))\
+        .annotate(rating_avg = Avg('reviews__rating'))
     
     def get_total(self):
         return self.get_queryset().aggregate(Count('id'))

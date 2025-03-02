@@ -3,6 +3,7 @@ from .models import Event, Review
 
 class EventSerializer(serializers.ModelSerializer):
     review_count = serializers.IntegerField(read_only=True)
+    rating_avg = serializers.FloatField(read_only=True)
     
     class Meta:
         model = Event
