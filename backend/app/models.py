@@ -14,6 +14,9 @@ class EventPublishedManager(models.Manager):
             created_at__gte=timezone.now() - timedelta(days=2 * 365)
         )\
         .annotate(review_count=Count('reviews'))
+    
+    def get_total(self):
+        return self.get_queryset().aggregate(Count('id'))
 
 class Event(models.Model):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
