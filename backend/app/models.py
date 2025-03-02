@@ -5,15 +5,15 @@ from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from photologue.models import Photo, Gallery
 from datetime import timedelta
-
+from django.db.models import Count
 
 class EventPublishedManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(
             is_published=True,
             created_at__gte=timezone.now() - timedelta(days=2 * 365)
-        )
-
+        )\
+        .annotate(review_count=Count('reviews'))
 
 class Event(models.Model):
     title = models.CharField(max_length=255, verbose_name="Заголовок")
