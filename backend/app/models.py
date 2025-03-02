@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from photologue.models import Photo, Gallery
-from django.utils.text import slugify
 from datetime import timedelta
 
 
@@ -14,15 +13,6 @@ class EventPublishedManager(models.Manager):
             is_published=True,
             created_at__gte=timezone.now() - timedelta(days=2 * 365)
         )
-    
-    def by_category(self, category_slug):
-        return self.get_queryset().filter(categories__slug=category_slug)
-
-class ReviewOrderByPubDate(models.Manager):
-    def get_queryset(self):
-        return super().get_queryset()\
-            .order_by('pub_date')\
-            .exclude(status=["on moderation", "rejected"])
 
 
 class Event(models.Model):
@@ -84,9 +74,6 @@ class Review(models.Model):
     
     def __str__(self):
         return f"review by {self.author.user.username} for {self.event.title}"
-    
-    objects = models.Manager()
-    order_by_pub_date = ReviewOrderByPubDate()
 
     class Meta:
         db_table = "reviews"

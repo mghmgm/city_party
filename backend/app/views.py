@@ -1,4 +1,4 @@
-from .models import Event, Review
+from .models import Event
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -12,13 +12,15 @@ class EventAPIView(ModelViewSet):
     @action(methods=["GET"], detail=False, url_path="(?P<category_slug>[\w-]+)")
     def by_category(self, request, category_slug):
         try:
-            events = Event.published.by_category(category_slug)
+            events = Event.published.filter(categories__slug = category_slug)
             serializer = EventSerializer(events, many = True)
             return Response(serializer.data)
         except:
             return Response()
-
-
-class ReviewAPIView(ModelViewSet):
-    serializer_class = ReviewSerializer
-    queryset = Review.order_by_pub_date.all()
+    
+    @action(methods=["GET"], detail=True, url_path="reviews")
+    def reviews(self, request, pk=None):
+        event = self.get_object()
+        reviews = event.reviews.filter(status="accepted").order_by("pub_date")
+        serializer = ReviewSerializer(reviews, many = True)
+        return Response(serializer.data)
