@@ -24,7 +24,7 @@ class TicketTypeInline(admin.TabularInline):
 class TicketInline(admin.TabularInline):
     model = Ticket
     extra = 1
-    raw_id_fields = ["ticket_type"]
+    raw_id_fields = ["ticket_type", "owner"]
 
 class BannerInline(admin.TabularInline):
     model = Banner
@@ -62,7 +62,7 @@ class EventAdmin(admin.ModelAdmin):
     @admin.display(description="Описание")
     def short_description(self, obj):
         return (
-            obj.description[:180] + "..."
+            obj.description[:30] + "..."
             if len(obj.description) > 80
             else obj.description
         )
@@ -76,7 +76,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
-    list_display = ["name", "short_description", "address", "created_at", "is_published"]
+    list_display = ["name", "photo", "short_description", "address", "created_at", "is_published"]
     search_fields = ["name", "address"]
     date_hierarchy = "created_at"
     

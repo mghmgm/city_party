@@ -24,7 +24,7 @@ class Event(models.Model):
     cover_image = models.ForeignKey(Photo, null=True, blank=True, on_delete=models.SET_NULL, verbose_name="Обложка")
     gallery = models.ForeignKey(Gallery, on_delete = models.SET_NULL, null=True, blank=True, verbose_name="Галерея")
     categories = models.ManyToManyField("Category", related_name="events", verbose_name="Категории")
-    description = models.TextField(max_length=1000, verbose_name="Описание")
+    description = models.TextField(max_length=4000, verbose_name="Описание")
     address = models.CharField(max_length=500, verbose_name="Адрес")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
@@ -59,7 +59,7 @@ class Category(models.Model):
         verbose_name_plural = "Категории"
         
     def get_absolute_url(self):
-        return reverse('category', kwargs={'category_slug': self.slug})
+        return reverse('events', kwargs={'category_slug': self.slug})
 
 
 class Review(models.Model):
@@ -94,7 +94,8 @@ class Review(models.Model):
 
 class Place(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название места")
-    description = models.TextField(max_length=1000, verbose_name="Описание")
+    photo = models.ImageField(upload_to="images/", verbose_name="Изображение")
+    description = models.TextField(max_length=4000, verbose_name="Описание")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     is_published = models.BooleanField(default=False, verbose_name="Опубликовано")
     address = models.CharField(max_length=500, verbose_name="Адрес")
@@ -195,7 +196,7 @@ class Company(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")
-    description = models.CharField(max_length=500, verbose_name="Описание")
+    description = models.CharField(max_length=500, verbose_name="Описание", null=True, blank=True)
     avatar = models.ImageField(upload_to="images/", verbose_name="Аватар")
     
     def __str__(self):
