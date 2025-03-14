@@ -13,5 +13,9 @@ class EventSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
-        # указать позже конкретные поля (для клиента которые)
-        fields = "__all__"
+        fields = ['description', 'rating', 'author', 'event', 'status']
+        extra_kwargs = {
+            'author': {'read_only': True},
+            'event': {'read_only': True},
+            'status': {'read_only': True}
+        }

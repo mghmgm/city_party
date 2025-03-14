@@ -1,6 +1,5 @@
 from django.contrib import admin
 from .models import Event, Category, Place, Review, TicketType, Ticket, UserProfile, Banner, Company
-from django.utils.safestring import mark_safe
 from django.forms import Textarea, TextInput
 from django.db import models
 
