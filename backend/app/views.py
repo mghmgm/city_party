@@ -17,7 +17,7 @@ class EventAPIView(ModelViewSet):
     )
     def by_category(self, request, category_slug):
         try:
-            events = Event.published.filter(categories__slug=category_slug)
+            events = Event.published.filter(categories__slug=category_slug).prefetch_related('categories')
             serializer = EventSerializer(events, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
@@ -28,29 +28,36 @@ class EventAPIView(ModelViewSet):
         event = self.get_object()
         
         if request.method=="GET":
-            reviews = event.reviews.filter(status="accepted").order_by("pub_date")
+            reviews = event.reviews.filter(status="accepted").order_by("pub_date").select_related("author")
             serializer = ReviewSerializer(reviews, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         if request.method=="POST":
-            # if not request.user.authentication:
-            #     return Response(status=status.HTTP_401_UNAUTHORIZED)
+            if not request.user.is_authenticated:
+                return Response(status=status.HTTP_401_UNAUTHORIZED)
             serializer = ReviewSerializer(data=request.data)
-            admin = UserProfile.objects.get(id=1)
             if serializer.is_valid():
-                serializer.save(author=admin, event=event, status="on_moderation")
+                serializer.save(author=request.user.userprofile, event=event, status="on_moderation")
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-    @action(methods=["DELETE"], detail=True, url_path="reviews/(?P<review_id>\\d+)")
+    @action(methods=["DELETE", "PATCH"], detail=True, url_path="reviews/(?P<review_id>\\d+)") 
     def review(self, request, pk=None, review_id=None):
         event = self.get_object()
-        review = event.reviews.filter(id=review_id, status="accepted")
-        # if review.author != request.user:
-        #     return Response(status=status.HTTP_403_FORBIDDEN)
-        review.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-class UserAPIView(ModelViewSet):
-    pass
+        review = event.reviews.filter(id=review_id, status="accepted").first()
+        
+        if request.method=="PATCH":
+            if review.author != request.user.userprofile:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            serializer = ReviewSerializer(review, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+            
+        if request.method=="DELETE":
+            if review.author != request.user.userprofile:
+                return Response(status=status.HTTP_403_FORBIDDEN)
+            review.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
