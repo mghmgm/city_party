@@ -3,7 +3,7 @@ import { routes } from './router/routes';
 
 function App() {
   return (
-    <>
+    <div className='wrapper'>
       <BrowserRouter>
         <Routes>
           {routes.map(route=>(
@@ -11,7 +11,7 @@ function App() {
           ))}
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 

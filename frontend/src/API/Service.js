@@ -3,8 +3,12 @@ import axios from 'axios';
 const hostname = 'http://localhost:8000/';
 
 export default class EventService {
-  static async getAll() {
-    const response = await axios.get(`${hostname}/api/events`);
+  static async getAll(limit) {
+    const response = await axios.get(`${hostname}/api/events`, {
+      params: {
+        _limit: 3,
+      }
+    });
     return response;
   }
 

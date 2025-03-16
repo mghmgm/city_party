@@ -1,6 +1,6 @@
 @import '../../../scss/variables';
 
-.button {
+.button-main {
   background-color: $main-color;
   padding-inline: 25px;
   border-radius: 10px;
@@ -8,4 +8,14 @@
   color: #F2F6FF;
   font-weight: 700;
   cursor: pointer;
+}
+
+.button-sub {
+  background-color: transparent;
+  border: 1px solid $main-color;
+  color: $main-color;
+  padding: 12px;
+  border-radius: 10px;
+  max-width: 415px;
+  width: 100%;
 }
