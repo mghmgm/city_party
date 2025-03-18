@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { FC } from 'react'
 import classes from './Input.module.scss'
 
-const Input = ({type="text", ...props}) => {
+interface InputProps {
+  type: string,
+}
+
+const Input: FC<InputProps> = ({type="text", ...props}) => {
   const inputClass = type === 'search' ? classes.search : classes.input;
 
   return (

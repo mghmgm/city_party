@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 import classes from './Header.module.scss';
 import logo from '../../../assets/logo.svg';
 import Input from '../Input/Input';
 import Select from '../Select/Select';
 import Button from '../Button/Button';
 
-const Header = () => {
+const Header: FC = () => {
   return (
     <div className={classes.header}>
       <img src={logo} alt="logo" />

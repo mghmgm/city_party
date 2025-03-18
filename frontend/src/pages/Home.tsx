@@ -3,6 +3,7 @@ import Header from '../components/UI/Header/Header';
 import { useFetch } from '../hooks/useFetch';
 import EventService from '../API/Service';
 import EventsSection from '../components/EventsSection';
+import {IEvent} from '../API/types'
 
 const Home = () => {
   const [events, setEvents] = useState([]);

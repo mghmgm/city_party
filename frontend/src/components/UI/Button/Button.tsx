@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { FC, ReactNode } from 'react';
 import classes from './Button.module.scss';
 
-const Button = ({ href, children, type = 'main', className=''}) => {
+interface ButtonProps {
+  href?: string,
+  type?: 'main' | 'sub', 
+  className?: string,
+  children?: ReactNode,
+}
+
+const Button: FC<ButtonProps> = ({ href, children, type = 'main', className=''}) => {
   const buttonClass = type === 'main' ? 'button-main' : 'button-sub';
   const finalClassName = `${className} ${classes[buttonClass]}`;
 

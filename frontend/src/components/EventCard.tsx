@@ -1,6 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
+import { IEvent } from '../API/types';
 
-const EventCard = ({ event }) => {
+interface EventCardProps {
+  event: IEvent,
+}
+
+const EventCard: FC<EventCardProps> = ({ event }) => {
   return (
     <div className="events__event-card" key={event.id}>
       <img src="" alt="" />
