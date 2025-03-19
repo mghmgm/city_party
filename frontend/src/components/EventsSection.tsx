@@ -1,4 +1,3 @@
-import React from 'react';
 import Button from './UI/Button/Button';
 import EventCard from './EventCard';
 
@@ -8,7 +7,7 @@ const EventsSection = ({ events }) => {
       <h2>События в ближайшие дни</h2>
       <div className="events__wrap">
         {events.map((event) => (
-          <EventCard event={event} />
+          <EventCard event={event} key={event.id}/>
         ))}
       </div>
       <Button type="sub" className="events__btn">

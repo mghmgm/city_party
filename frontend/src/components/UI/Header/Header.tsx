@@ -10,7 +10,7 @@ const Header: FC = () => {
     <div className={classes.header}>
       <img src={logo} alt="logo" />
       <Input type="search" placeholder="Введите название..."/>
-      <div>
+      <div className={classes.buttons}>
         <Select />
         <Button href="">Войти</Button>
       </div>

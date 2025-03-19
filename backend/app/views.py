@@ -1,8 +1,8 @@
-from .models import Event, UserProfile
+from .models import Event, Banner
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .serializers import EventSerializer, ReviewSerializer
+from .serializers import EventSerializer, ReviewSerializer, BannerSerializer
 from rest_framework import status
 
 
@@ -61,3 +61,7 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_403_FORBIDDEN)
             review.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+class BannerAPIView(ModelViewSet):
+  serializer_class = BannerSerializer
+  queryset = Banner.objects.filter(is_visible = True)
