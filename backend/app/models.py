@@ -48,7 +48,7 @@ class Event(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название категории")
-    slug = models.SlugField(max_length=255, unique=True, verbose_name="URL")
+    slug = models.SlugField(max_length=255, unique=True, verbose_name="Слаг")
     
     def __str__(self):
         return self.name
@@ -199,6 +199,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Пользователь")
     description = models.CharField(max_length=500, verbose_name="Описание", null=True, blank=True)
     avatar = models.ImageField(upload_to="images/", verbose_name="Аватар")
+    vk_profile = models.URLField(verbose_name="ВК профиль", null=True, blank=True)
     
     def __str__(self):
         return self.user.username

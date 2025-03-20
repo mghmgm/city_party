@@ -175,6 +175,7 @@ class UserProfileAdmin(admin.ModelAdmin):
         "username", 
         "avatar",
         "email", 
+        "vk_profile",
         "first_name", 
         "last_name", 
         "is_superuser",
