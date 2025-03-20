@@ -7,6 +7,11 @@ body {
   font-size: 16px
 }
 
+h1 {
+  font-size: 2.6rem;
+  font-weight: bold;
+}
+
 h2 {
   font-size: 2rem;
   font-weight: bold;
@@ -22,11 +27,14 @@ h3 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  max-width: 100%;
+  width: 100%;
 }
 
 .content {
   max-width: 1320px;
-  width: 100%
+  width: 100%;
+  align-items: center;
 }
 
 .events {
@@ -87,5 +95,34 @@ h3 {
     top: 180px;
     left: 20px;
     padding: 15px;
+  }
+}
+
+.auth{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  &__btn {
+    width: 100%;
+  }
+
+  &__content {
+    text-align: left;
+
+    > * {
+      margin-top: 15px;
+      
+      &:first-child {
+        margin-top: 0px;
+      }
+    }
+  }
+
+  &__to-login{
+    color: $main-color;
+    font-weight: 500;
+    display: inline-block;
   }
 }

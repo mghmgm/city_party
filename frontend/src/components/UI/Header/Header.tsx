@@ -12,7 +12,7 @@ const Header: FC = () => {
       <Input type="search" placeholder="Введите название..."/>
       <div className={classes.buttons}>
         <Select />
-        <Button href="">Войти</Button>
+        <Button href="/login">Войти</Button>
       </div>
     </div>
   );

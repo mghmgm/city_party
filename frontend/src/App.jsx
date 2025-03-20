@@ -3,10 +3,10 @@ import { routes } from './router/routes';
 
 function App() {
   return (
-    <div className='wrapper'>
+    <div className="wrapper">
       <BrowserRouter>
         <Routes>
-          {routes.map(route=>(
+          {routes.map((route) => (
             <Route path={route.path} element={route.element} />
           ))}
         </Routes>

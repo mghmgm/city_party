@@ -1,7 +1,28 @@
 @import '../../../scss/variables';
 
+.inputContainer {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
 .input {
-  
+  border: 1px solid $main-color;
+  border-radius: 8px;
+  width: 100%;
+  background-color: rgba($color: $main-color, $alpha: 0.1);
+  padding: 15px;
+
+  &::placeholder {
+    color: rgba($color: $main-color, $alpha: 0.8);
+  }
+}
+
+.label {
+  color: $main-color;
+  font-weight: bold;
+  font-size: 1.4rem;
 }
 
 .search {
@@ -10,3 +31,45 @@
   width: 560px;
   padding: 13px;
 }
+
+.checkboxText {
+  color: $main-color;
+  margin-left: 10px;
+  font-size: 1.2rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkboxLabel input[type='checkbox'] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.customCheckbox {
+  width: 25px;
+  height: 25px;
+  border: 1px solid $main-color;
+  border-radius: 4px;
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: rgba($color: $main-color, $alpha: 0.1);
+  
+}
+
+
+.customCheckbox::after {
+  content: "✔";
+  position: absolute;
+  left: 4px;
+  top: 9px;
+  color: $main-color;
+  font-size: 20px;
+}
+

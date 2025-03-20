@@ -12,7 +12,8 @@ const Home = () => {
   const [banners, setBanners] = useState<IBanner[]>([]);
   const [isBannerLoading, setIsBannerLoading] = useState<boolean>(true);
 
-  const RandomBanner = banners.length > 0 ? banners[Math.floor(Math.random() * banners.length)] : null;
+  const RandomBanner =
+    banners.length > 0 ? banners[Math.floor(Math.random() * banners.length)] : null;
 
   const [fetchEvents, eventsError, isEventsLoading] = useFetch(async () => {
     const response = await EventService.getAll(3);
@@ -33,10 +34,10 @@ const Home = () => {
   }, []);
 
   return (
-    <div className='content'>
+    <div className="content">
       <Header />
       {isBannerLoading ? (
-        <div>Loading Banner...</div>
+        null
       ) : (
         RandomBanner && <Banner banner={RandomBanner} />
       )}

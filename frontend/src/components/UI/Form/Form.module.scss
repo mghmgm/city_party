@@ -1,0 +1,24 @@
+@import '../../../scss/variables';
+
+.form {
+  border: 1px solid $main-color;
+  border-radius: 10px;
+  padding: 50px;
+  max-width: 650px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 20px 20px rgba($main-color, 1);
+  background-color: #fff;
+
+  > * {
+    margin-top: 15px;
+    
+    &:first-child {
+      margin-top: 0px;
+    }
+  }
+}
+
+h1 {
+  color: $main-color;
+}
