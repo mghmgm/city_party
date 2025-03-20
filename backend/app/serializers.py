@@ -79,3 +79,9 @@ class PlaceSerializer(serializers.ModelSerializer):
   def get_photo_url(self, obj):
     if obj.photo:
       return settings.MEDIA_URL + obj.photo.name
+
+
+class CategorySerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Category
+    fields = ["name", "slug"]

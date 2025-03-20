@@ -9,12 +9,15 @@ import TopSection from '../components/TopSection';
 import PlacesSection from '../components/PlacesSection';
 import Footer from '../components/UI/Footer/Footer';
 import PlaceService from '../API/PlaceService';
+import Navigation from '../components/Navigation';
+import { CategoryService } from '../API/CategoryService';
 
 const Home = () => {
   const [events, setEvents] = useState([]);
   const [banners, setBanners] = useState([]);
   const [topEvents, setTopEvents] = useState();
   const [places, setPlaces] = useState([]);
+  const [categories, setCategories] = useState([])
 
   const RandomBanner =
     banners.length > 0 ? banners[Math.floor(Math.random() * banners.length)] : null;
@@ -22,6 +25,11 @@ const Home = () => {
   const [fetchEvents, eventsError, isEventsLoading] = useFetch(async () => {
     const response = await EventService.getAll(3);
     setEvents(response.data);
+  });
+
+  const [fetchCategories, categoriessError, isCategoriesLoading] = useFetch(async () => {
+    const response = await CategoryService.getAll();
+    setCategories(response.data);
   });
 
   const [fetchPlaces, placesError, isPlacesLoading] = useFetch(async () => {
@@ -40,11 +48,13 @@ const Home = () => {
     fetchEvents();
     fetchBanner();
     fetchPlaces();
+    fetchCategories();
   }, []);
 
   return (
     <div className="home__content">
       <Header />
+      <Navigation categories={categories}/>
       {RandomBanner && <Banner banner={RandomBanner} />}
       <EventsSection events={events} />
       <TopSection events={events} />

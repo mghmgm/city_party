@@ -3,7 +3,7 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from app.views import EventAPIView, BannerAPIView, PlaceAPIView
+from app.views import EventAPIView, BannerAPIView, PlaceAPIView, CategoryAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 # для тестировки юрлов со слагами
@@ -17,6 +17,9 @@ bannerRouter.register(r"api/banners", BannerAPIView, basename = "banners")
 
 placeRouter = DefaultRouter()
 placeRouter.register(r"api/places", PlaceAPIView, basename = "places")
+
+categoryRouter = DefaultRouter()
+categoryRouter.register(r"api/categories", CategoryAPIView, basename = "categories")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,3 +36,5 @@ if settings.DEBUG:
     urlpatterns += eventsRouter.urls
     urlpatterns += bannerRouter.urls
     urlpatterns += placeRouter.urls
+    urlpatterns += categoryRouter.urls
+    

@@ -19,3 +19,9 @@ export interface IPlace {
   address: string,
 }
 
+export interface ICategory {
+  name: string;
+  slug: string;
+}
+
+
