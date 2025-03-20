@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from .models import Event, Review, Category, Banner
+from .models import Event, Review, Category, Banner, Place
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -67,3 +67,15 @@ class BannerSerializer(serializers.ModelSerializer):
   def get_image_url(self, obj):
     if obj.image:
       return settings.MEDIA_URL + obj.image.name
+
+
+class PlaceSerializer(serializers.ModelSerializer):
+  photo_url = serializers.SerializerMethodField()
+  
+  class Meta:
+    model = Place
+    fields = ["photo_url", "name", "description", "address"]
+    
+  def get_photo_url(self, obj):
+    if obj.photo:
+      return settings.MEDIA_URL + obj.photo.name

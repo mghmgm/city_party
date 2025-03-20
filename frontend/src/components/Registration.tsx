@@ -4,9 +4,7 @@ import Button from './UI/Button/Button';
 import Input from './UI/Input/Input';
 import { Link } from 'react-router-dom';
 
-interface RegistrationFormProps {}
-
-const RegistrationForm: FC<RegistrationFormProps> = () => {
+const RegistrationForm: FC = () => {
   return (
     <div className="content">
       <section className="auth">

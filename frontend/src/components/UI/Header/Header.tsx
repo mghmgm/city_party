@@ -6,15 +6,16 @@ import Select from '../Select/Select';
 import Button from '../Button/Button';
 
 const Header: FC = () => {
+  const headerClass = `${classes.header} content`;
   return (
-    <div className={classes.header}>
+    <header className={headerClass}>
       <img src={logo} alt="logo" />
-      <Input type="search" placeholder="Введите название..."/>
+      <Input type="search" placeholder="Введите название..." id="search" />
       <div className={classes.buttons}>
         <Select />
         <Button href="/login">Войти</Button>
       </div>
-    </div>
+    </header>
   );
 };
 

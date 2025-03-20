@@ -10,3 +10,12 @@ export interface IBanner {
   description: string;
   image_url: string;
 }
+
+export interface IPlace {
+  id: number;
+  name: string;
+  description: string;
+  photo_url: string;
+  address: string,
+}
+

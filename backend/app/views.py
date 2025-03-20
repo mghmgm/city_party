@@ -1,8 +1,8 @@
-from .models import Event, Banner
+from .models import Event, Banner, Place
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .serializers import EventSerializer, ReviewSerializer, BannerSerializer
+from .serializers import EventSerializer, ReviewSerializer, BannerSerializer, PlaceSerializer
 from rest_framework import status
 
 
@@ -65,3 +65,7 @@ class EventAPIView(ModelViewSet):
 class BannerAPIView(ModelViewSet):
   serializer_class = BannerSerializer
   queryset = Banner.objects.filter(is_visible = True)
+
+class PlaceAPIView(ModelViewSet):
+  serializer_class = PlaceSerializer
+  queryset = Place.objects.all()

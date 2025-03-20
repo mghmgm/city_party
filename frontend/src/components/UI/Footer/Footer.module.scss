@@ -1,0 +1,20 @@
+@import '../../../scss/variables';
+
+.footer {
+  background-color: $dark-color;
+  width: 100%;
+  padding: 65px;
+  color: $light-color;
+  display: flex;
+  justify-content: center;
+
+  >div {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
+.links {
+  display: flex;
+  gap: 10px;
+}
