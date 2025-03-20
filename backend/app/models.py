@@ -142,6 +142,7 @@ class Ticket(models.Model):
     ticket_type = models.ForeignKey("TicketType", on_delete=models.CASCADE, related_name="tickets", verbose_name="Тип билета")
     owner = models.ForeignKey("UserProfile", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="Владелец")
     payment_status = models.CharField(choices=PaymentStatus, default=PaymentStatus.PENDING, verbose_name="Статус оплаты")
+    pdf_file = models.FileField(upload_to='documents/', verbose_name="Файл", null=True, blank=True)
     
     def __str__(self):
         return f"{self.owner.user.username}'s ticket for {self.ticket_type.event.title}"

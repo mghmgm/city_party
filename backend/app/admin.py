@@ -1,7 +1,10 @@
+import io
 from django.contrib import admin
+from django.http import FileResponse
 from .models import Event, Category, Place, Review, TicketType, Ticket, UserProfile, Banner, Company
 from django.forms import Textarea, TextInput
 from django.db import models
+from .utils import generate_ticket_pdf
 
 
 class ReviewInline(admin.TabularInline):
@@ -33,6 +36,13 @@ class BannerInline(admin.TabularInline):
         models.CharField: {'widget': TextInput(attrs={'size': '10'})},
         models.TextField: {'widget': Textarea(attrs={'rows': 6, 'cols': 18})},
     }
+
+
+@admin.action(description='Распечатать в pdf')
+def generate_pdf_action(modeladmin, request, queryset):
+  for ticket in queryset:
+    pdf_file = generate_ticket_pdf(ticket)
+    ticket.pdf_file.save(f"ticket_{ticket.owner.user.username}.pdf", pdf_file)
 
 
 @admin.register(Event)
@@ -128,7 +138,9 @@ class TicketAdmin(admin.ModelAdmin):
         "ticket_type", 
         "owner", 
         "payment_status", 
+        "pdf_file",
     ]
+    actions = [generate_pdf_action]
     raw_id_fields = ["ticket_type", "owner"]
     list_filter = ["owner", "ticket_type"]
 
