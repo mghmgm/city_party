@@ -1,0 +1,53 @@
+@use './variables' as *;
+
+.events {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+
+  &__wrap {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 50px;
+    gap: 15px;
+  }
+
+  &__event-card {
+    background-color: rgba($color: $main-color, $alpha: 0.1);
+    max-width: 420px;
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  &__btn {
+    margin-top: 60px;
+  }
+
+  &__titles {
+    padding: 26px;
+    
+    >p {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__cover-image {
+    width: 100%;
+    height: 220px;
+    border-radius: 10px 10px 0 0;
+  }
+}
+
+a {
+  color: $dark-color;
+}
+a:visited {
+  color: $dark-color;
+}
+a:hover {
+  color: $main-color;
+}

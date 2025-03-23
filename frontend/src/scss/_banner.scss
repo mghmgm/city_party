@@ -1,0 +1,26 @@
+@use './variables' as *;
+
+.banner {
+  position: relative;
+  margin-top: 20px;
+
+  &__img {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  &__info {
+    background-color: $main-color;
+    max-width: 400px;
+    height: 100px;
+    color: $light-color;
+    width: 100%;
+    border-radius: 10px;
+    position: absolute;
+    top: 80px;
+    left: 20px;
+    padding: 15px;
+  }
+}

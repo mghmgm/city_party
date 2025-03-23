@@ -15,4 +15,18 @@ export default class EventService {
     const response = await axios.get(hostname + `/api/events/${id}`);
     return response;
   }
+
+  static async getGallery(id: number, limit: number) {
+    const response = await axios.get(hostname + `/api/events/${id}/gallery/`, {
+      params: {
+        _limit: limit,
+      }
+    })
+    return response
+  }
+
+  static async getTicketTypes(id: number) {
+    const response = await axios.get(hostname + `/api/events/${id}/ticket-types/`)
+    return response
+  }
 }

@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
-from .models import Event, Review, Category, Banner, Place
+from .models import Event, Review, Category, Banner, Place, Gallery, Photo, TicketType
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -85,3 +85,23 @@ class CategorySerializer(serializers.ModelSerializer):
   class Meta:
     model = Category
     fields = ["name", "slug"]
+
+
+class PhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Photo
+        fields = ['image', 'title', 'caption']
+
+
+class GallerySerializer(serializers.ModelSerializer):
+    photos = PhotoSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Gallery
+        fields = ['title', 'photos']
+
+
+class TicketTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TicketType
+        fields = ['description', 'price', 'event_date']

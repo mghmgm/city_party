@@ -8,6 +8,8 @@ from .serializers import (
     BannerSerializer,
     PlaceSerializer,
     CategorySerializer,
+    GallerySerializer,
+    TicketTypeSerializer,
 )
 from rest_framework import status
 
@@ -74,6 +76,21 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_403_FORBIDDEN)
             review.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["GET"], detail=True, url_path="gallery")
+    def gallery(self, request, pk=None):
+        event = self.get_object()
+        gallery = event.gallery
+        serializer = GallerySerializer(gallery)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+      
+    @action(methods=["GET"], detail=True, url_path="ticket-types")
+    def ticket_types(self, request, pk=None):
+        event = self.get_object()
+        ticket_types = event.ticket_types.all()
+        serializer = TicketTypeSerializer(ticket_types, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class BannerAPIView(ModelViewSet):

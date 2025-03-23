@@ -2,15 +2,16 @@
 
 .button-main {
   background-color: $main-color;
-  padding-inline: 25px;
+  padding: 25px;
   border-radius: 10px;
   height: 48px;
-  color: #F2F6FF;
+  color: $light-color;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 1.2rem;
 
   &:hover {
     background-color: rgba($color: $main-color, $alpha: 0.5);

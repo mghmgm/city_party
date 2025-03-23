@@ -1,6 +1,7 @@
 export interface IEvent {
   id: number,
   title: string,
+  description: string,
   cover_image_url: string,
 }
 
@@ -24,4 +25,20 @@ export interface ICategory {
   slug: string;
 }
 
+export interface IPhoto {
+  image: string;
+  title: string;
+  caption: string;
+}
+
+export interface IGallery {
+  title: string;
+  photos: IPhoto[];
+}
+
+export interface ITicketType {
+  'description': string,
+  'price': number, 
+  'event_date': Date,
+}
 

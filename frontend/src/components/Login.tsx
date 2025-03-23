@@ -8,16 +8,19 @@ const RegistrationForm: FC = () => {
   return (
     <div className="content">
       <section className="auth">
-        <Form title="Вход">
-          <div className="auth__content">
-            <Input type="text" label="Логин" id="login" placeholder="Введите вашу почту..." />
-            <Input type="text" label="Пароль" id="password" placeholder="********" />
-          </div>
-          <Button className="auth__btn">Войти</Button>
-          <Link to="/registration" className="auth__to-login">
-            У вас еще нет аккаунта?
-          </Link>
-        </Form>
+        <div>
+          <Link to='/' className='auth__to-home'>На главную</Link>
+          <Form title="Вход">
+            <div className="auth__content">
+              <Input type="text" label="Логин" id="login" placeholder="Введите вашу почту..." />
+              <Input type="text" label="Пароль" id="password" placeholder="********" />
+            </div>
+            <Button className="auth__btn">Войти</Button>
+            <Link to="/registration" className="auth__to-login">
+              У вас еще нет аккаунта?
+            </Link>
+          </Form>
+        </div>
       </section>
     </div>
   );

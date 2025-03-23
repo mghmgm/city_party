@@ -8,16 +8,16 @@ interface TopSectionProps {
 
 const TopSection: FC<TopSectionProps> = ({ events }) => {
   return (
-    <section className="top">
-      <div className="top__wrap content">
+    <section className="tops">
+      <div className="tops__wrap content">
         <h2>Топ-10 в вашем городе</h2>
-        <div className="top__content">
+        <div className="tops__content">
           {events.map((event) => (
             <img
               src={hostname + event.cover_image_url}
               alt={event.title}
               key={event.id}
-              className="top__cover-img"
+              className="tops__cover-img"
             />
           ))}
         </div>
