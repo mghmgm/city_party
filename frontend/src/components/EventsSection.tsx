@@ -16,7 +16,7 @@ const EventsSection: FC<EventSectionProps> = ({ events }) => {
             <EventCard event={event} key={event.id} />
           ))}
         </div>
-        <Button type="sub" className="events__btn">
+        <Button styleType="sub" className="events__btn">
           Показать еще
         </Button>
       </section>

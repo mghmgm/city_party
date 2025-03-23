@@ -5,7 +5,7 @@ import Footer from '../components/UI/Footer/Footer';
 import Navigation from '../components/Navigation';
 import { CategoryService } from '../API/CategoryService';
 
-const Home = ({ children }) => {
+const Home = ({ children, navIsVisible }) => {
   const [categories, setCategories] = useState([]);
 
   const [fetchCategories] = useFetch(async () => {
@@ -20,7 +20,7 @@ const Home = ({ children }) => {
   return (
     <div className="page-content">
       <Header />
-      <Navigation categories={categories} />
+      {navIsVisible ? <Navigation categories={categories} /> : null}
       <main className="page-content">{children}</main>
       <Footer />
     </div>

@@ -1,4 +1,4 @@
-from .models import Event, Banner, Place, Category
+from .models import Event, Banner, Place, Category, UserProfile
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -10,8 +10,11 @@ from .serializers import (
     CategorySerializer,
     GallerySerializer,
     TicketTypeSerializer,
+    UserProfileSerializer,
 )
 from rest_framework import status
+from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 
 
 class EventAPIView(ModelViewSet):
@@ -83,14 +86,13 @@ class EventAPIView(ModelViewSet):
         gallery = event.gallery
         serializer = GallerySerializer(gallery)
         return Response(serializer.data, status=status.HTTP_200_OK)
-      
+
     @action(methods=["GET"], detail=True, url_path="ticket-types")
     def ticket_types(self, request, pk=None):
         event = self.get_object()
         ticket_types = event.ticket_types.all()
         serializer = TicketTypeSerializer(ticket_types, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
 
 
 class BannerAPIView(ModelViewSet):
@@ -106,3 +108,15 @@ class PlaceAPIView(ModelViewSet):
 class CategoryAPIView(ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+class UserAPIView(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated] 
+    @action(methods=["GET"], detail=False, url_path="profile")
+    def profile(self, request):
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            serializer = UserProfileSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)

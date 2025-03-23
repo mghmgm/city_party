@@ -8,6 +8,7 @@ import TopSection from '../components/TopSection';
 import PlacesSection from '../components/PlacesSection';
 import PlaceService from '../API/PlaceService';
 import Layout from './Layout';
+import Navigation from '../components/Navigation';
 
 const Home = () => {
   const [events, setEvents] = useState([]);
@@ -41,7 +42,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout navIsVisible={true}>
       {RandomBanner && <Banner banner={RandomBanner} />}
       <EventsSection events={events} />
       <TopSection events={events} />

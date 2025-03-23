@@ -8,6 +8,7 @@ from app.views import (
     BannerAPIView,
     PlaceAPIView,
     CategoryAPIView,
+    UserAPIView,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -26,6 +27,10 @@ placeRouter.register(r"api/places", PlaceAPIView, basename="places")
 categoryRouter = DefaultRouter()
 categoryRouter.register(r"api/categories", CategoryAPIView, basename="categories")
 
+
+userRouter = DefaultRouter()
+userRouter.register(r"api/user", UserAPIView, basename="user")
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -41,3 +46,4 @@ if settings.DEBUG:
     urlpatterns += bannerRouter.urls
     urlpatterns += placeRouter.urls
     urlpatterns += categoryRouter.urls
+    urlpatterns += userRouter.urls

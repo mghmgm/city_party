@@ -2,16 +2,18 @@ import { FC, useState } from 'react';
 import Form from './UI/Form/Form';
 import Button from './UI/Button/Button';
 import Input from './UI/Input/Input';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthService from '../API/AuthService';
 
 const RegistrationForm: FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await AuthService.login(username, password);
+    navigate('/profile')
   };
 
   return (

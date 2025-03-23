@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Layout from './Layout';
 import { useFetch } from '../hooks/useFetch';
 import EventService from '../API/EventService';
@@ -15,10 +15,26 @@ const EventPage: FC = () => {
   const [commentInput, setCommentInput] = useState('');
   const [selectedRating, setSelectedRating] = useState('5');
 
+  const navigate = useNavigate();
+
   const [eventFetch] = useFetch(async () => {
     if (!id) return;
-    const response = await EventService.getById(id);
-    setEvent(response.data);
+    try {
+      const response = await EventService.getById(id);
+
+      if (id==="/profile") {
+        navigate('/profile')
+      }
+
+      if (response.status === 404) {
+        navigate('/');
+      } else {
+        setEvent(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+      navigate('/');
+    }
   });
 
   const [galleryFetch] = useFetch(async () => {
@@ -57,7 +73,6 @@ const EventPage: FC = () => {
     await EventService.postComment(id, {
       description: commentInput,
       rating: selectedRating,
-
     });
 
     setCommentInput('');
@@ -68,7 +83,7 @@ const EventPage: FC = () => {
   };
 
   return (
-    <Layout>
+    <Layout navIsVisible={true}>
       {event && gallery && ticketTypes && (
         <EventInfo event={event} gallery={gallery} ticketTypes={ticketTypes} />
       )}

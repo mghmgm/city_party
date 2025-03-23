@@ -16,7 +16,7 @@ const PlacesSection: FC<PlacesSectionProps> = ({ places }) => {
           <PlaceCard place={place} />
         ))}
       </div>
-      <Button type="sub" className='places__btn'>Показать еще</Button>
+      <Button styleType="sub" className='places__btn'>Показать еще</Button>
     </section>
   );
 };
