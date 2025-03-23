@@ -29,4 +29,19 @@ export default class EventService {
     const response = await axios.get(hostname + `/api/events/${id}/ticket-types/`)
     return response
   }
+
+  static async getComments(id: number) {
+    const response = await axios.get(hostname + `/api/events/${id}/reviews/`)
+    return response
+  }
+
+  static async postComment(id: number, data: {description: string, rating: string}) {
+    const token = localStorage.getItem('auth_token')
+    const response = await axios.post(hostname + `/api/events/${id}/reviews/`, data, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    return response
+  }
 }

@@ -12,8 +12,8 @@ const Header: FC = () => {
       <img src={logo} alt="logo" />
       <Input type="search" placeholder="Введите название..." id="search" />
       <div className={classes.buttons}>
-        <Select />
-        <Button href="/login">Войти</Button>
+        <Select options={["Москва"]}/>
+        <Button href="/login" className={classes.loginBtn}>Войти</Button>
       </div>
     </header>
   );

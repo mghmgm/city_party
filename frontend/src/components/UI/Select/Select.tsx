@@ -1,12 +1,22 @@
-import { FC } from 'react'
-import classes from './Select.module.scss'
+import { FC } from 'react';
+import classes from './Select.module.scss';
 
-const Select: FC = () => {
-  return (
-    <select name="" id="" className={classes.select}>
-      <option value="">Москва</option>
-    </select>
-  )
+interface SelectProps {
+  options: string[];
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  value: string;
 }
 
-export default Select
+const Select: FC<SelectProps> = ({ options, onChange, value }) => {
+  return (
+    <select name="" id="" className={classes.select} value={value}  onChange={onChange}>
+      {options.map((optionName) => (
+        <option value={optionName}>
+          {optionName}
+        </option>
+      ))}
+    </select>
+  );
+};
+
+export default Select;

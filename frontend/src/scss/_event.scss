@@ -54,11 +54,14 @@
   }
 
   &__about {
-    margin-top: 50px;
+    margin-top: 60px;
+    > p {
+      margin-top: 20px;
+    }
   }
 
   &__schedule {
-    margin-top: 50px;
+    margin-top: 60px;
   }
 
   &__tickets{

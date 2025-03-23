@@ -3,13 +3,15 @@ import classes from './Button.module.scss';
 
 interface ButtonProps {
   href?: string,
-  type?: 'main' | 'sub', 
+  styleType?: 'main' | 'sub', 
   className?: string,
   children?: ReactNode,
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
-const Button: FC<ButtonProps> = ({ href, children, type = 'main', className=''}) => {
-  const buttonClass = type === 'main' ? 'button-main' : 'button-sub';
+const Button: FC<ButtonProps> = ({ href, children, styleType = 'main', className='', onClick, type}) => {
+  const buttonClass = styleType === 'main' ? 'button-main' : 'button-sub';
   const finalClassName = `${className} ${classes[buttonClass]}`;
 
   return href ? (
@@ -17,7 +19,7 @@ const Button: FC<ButtonProps> = ({ href, children, type = 'main', className=''})
       {children}
     </a>
   ) : (
-    <button className={finalClassName}>{children}</button>
+    <button className={finalClassName} onClick={onClick} type={type}>{children}</button>
   );
 };
 

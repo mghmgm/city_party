@@ -53,8 +53,8 @@ class ReviewSerializer(serializers.ModelSerializer):
       "status": {"read_only": True},
     }
 
-    def get_author_username(self, obj):
-        return obj.author.user.username
+  def get_author_username(self, obj):
+      return obj.author.user.username
 
 
 class BannerSerializer(serializers.ModelSerializer):

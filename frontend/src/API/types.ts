@@ -1,8 +1,8 @@
 export interface IEvent {
-  id: number,
-  title: string,
-  description: string,
-  cover_image_url: string,
+  id: number;
+  title: string;
+  description: string;
+  cover_image_url: string;
 }
 
 export interface IBanner {
@@ -17,7 +17,7 @@ export interface IPlace {
   name: string;
   description: string;
   photo_url: string;
-  address: string,
+  address: string;
 }
 
 export interface ICategory {
@@ -37,8 +37,15 @@ export interface IGallery {
 }
 
 export interface ITicketType {
-  'description': string,
-  'price': number, 
-  'event_date': Date,
+  description: string;
+  price: number;
+  event_date: Date;
 }
 
+export interface IReview {
+  id: number;
+  description: string;
+  rating: number;
+  author_username: string;
+  pub_date: Date;
+}

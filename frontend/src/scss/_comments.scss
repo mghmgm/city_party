@@ -1,0 +1,37 @@
+@use './variables' as *;
+
+.comments {
+  margin-top: 60px;
+
+  >h2 {
+    margin-bottom: 20px;
+  }
+  
+  &__containter {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 25px;
+  }
+
+  &__rating {
+    margin-bottom: 5px;
+
+    >select {
+      text-align: center;
+      margin-left: 3px;
+      font-size: 1.4rem;
+      color: $main-color;
+    }
+
+  }
+
+  &__input {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    >div {
+      width: 100%;
+    }
+  }
+}
