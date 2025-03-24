@@ -15,6 +15,7 @@ const RegistrationForm: FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await AuthService.login(username, password);
+    setIsAuth(true);
     navigate('/profile');
   };
 

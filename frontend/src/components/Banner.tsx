@@ -1,13 +1,14 @@
 import { FC } from 'react';
 import { hostname } from '../config';
 import { IBanner } from '../API/types';
+import image from '../assets/image.png'
 
 interface BannerProps {
   banner: IBanner;
 }
 
 const Banner: FC<BannerProps> = ({ banner }) => {
-  const imgUrl = hostname + banner.image_url;
+  const imgUrl = banner.image_url ? hostname + banner.image_url : image;
 
   return (
       <section className="banner content">

@@ -45,7 +45,7 @@ export default class AuthService {
     }
   }
 
-  static async getCurrentUser(): Promise<IUserProfile | null> {
+  static async getCurrentUser() {
     let token = localStorage.getItem('auth_token');
 
     if (!token || AuthService.isAccessTokenExpired()) {

@@ -9,36 +9,39 @@ import { IUserProfile } from '../../../API/types';
 import { hostname } from '../../../config';
 import AuthService from '../../../API/AuthService';
 import { AuthContext } from '../../../router/context';
-import avatar from '../../../assets/avatar.svg'
+import avatar from '../../../assets/avatar.svg';
 
 interface HeaderProps {
-  user?: IUserProfile,
-  searchValue: string,
+  user?: IUserProfile;
+  searchValue: string;
 }
 
-const Header: FC<HeaderProps> = ({user, searchValue}) => {
+const Header: FC<HeaderProps> = ({ user, searchValue }) => {
   const navigate = useNavigate();
-  
+
   const headerClass = `${classes.header} content`;
-  const {isAuth} = useContext(AuthContext)
-  const avatarUrl = user?.avatar ? hostname + user.avatar : avatar
+  const { isAuth, setIsAuth } = useContext(AuthContext);
+  const avatarUrl = user?.avatar ? hostname + user.avatar : avatar;
 
   const handleExitBtnClick = () => {
-    AuthService.logout()
-    navigate("/", { replace: true });
-  }
-  
+    AuthService.logout();
+    setIsAuth(false);
+    navigate('/', { replace: true });
+  };
+
   return (
     <header className={headerClass}>
       <Link to={'/'}>
         <img src={logo} alt="logo" />
       </Link>
-      <Input type="search" placeholder="Введите название..." id="search" value={searchValue}/>
+      <Input type="search" placeholder="Введите название..." id="search" value={searchValue} />
       <div className={classes.buttons}>
-        <Select options={['Москва']} value='Москва'/>
+        <Select options={['Москва']} value="Москва" />
         {isAuth ? (
           <div className={classes.profile}>
-            <Link to="/profile"><img src={avatarUrl}  className={classes.avatar} /></Link>
+            <Link to="/profile">
+              <img src={avatarUrl} className={classes.avatar} />
+            </Link>
             <Button onClick={handleExitBtnClick}>Выйти</Button>
           </div>
         ) : (

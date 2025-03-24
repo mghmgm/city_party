@@ -3,7 +3,7 @@ import { hostname } from '../config';
 import { IPlace } from './types';
 
 export default class PlaceService {
-  static async getAll(limit: number): Promise<IPlace[] | null> {
+  static async getAll(limit: number) {
     const response = await axios.get<IPlace[]>(hostname + '/api/places', {
       params: {
         _limit: limit,

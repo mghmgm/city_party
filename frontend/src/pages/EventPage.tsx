@@ -18,22 +18,22 @@ const EventPage: FC = () => {
   const [eventFetch] = useFetch(async () => {
     if (!id) return;
     const response = await EventService.getById(id);
-    setEvent(response.data);
+    setEvent(response);
   });
 
   const [galleryFetch] = useFetch(async () => {
     const response = await EventService.getGallery(id, 3);
-    setGallery(response.data);
+    setGallery(response);
   });
 
   const [ticketTypesFetch] = useFetch(async () => {
     const response = await EventService.getTicketTypes(id);
-    setTicketTypes(response.data);
+    setTicketTypes(response);
   });
 
   const [commentFetch] = useFetch(async () => {
     const response = await EventService.getComments(id);
-    setComments(response.data);
+    setComments(response);
   });
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const EventPage: FC = () => {
     setSelectedRating('');
 
     const response = await EventService.getComments(id);
-    setComments(response.data);
+    setComments(response);
   };
 
   return (

@@ -3,7 +3,7 @@ import { hostname } from '../config';
 import { IEvent, IGallery, IReview, ITicketType } from './types';
 
 export default class EventService {
-  static async getAll(limit: number): Promise<IEvent[] | null> {
+  static async getAll(limit: number) {
     const response = await axios.get<IEvent[]>(hostname + '/api/events', {
       params: {
         _limit: limit,
@@ -12,12 +12,12 @@ export default class EventService {
     return response.data;
   }
 
-  static async getById(id: number): Promise<IEvent | null>  {
+  static async getById(id: number) {
     const response = await axios.get<IEvent>(hostname + `/api/events/${id}`);
     return response.data;
   }
 
-  static async getGallery(id: number, limit: number): Promise<IGallery | null> {
+  static async getGallery(id: number, limit: number) {
     const response = await axios.get<IGallery>(hostname + `/api/events/${id}/gallery/`, {
       params: {
         _limit: limit,
@@ -26,12 +26,12 @@ export default class EventService {
     return response.data
   }
 
-  static async getTicketTypes(id: number): Promise<ITicketType[] | null> {
+  static async getTicketTypes(id: number) {
     const response = await axios.get<ITicketType[]>(hostname + `/api/events/${id}/ticket-types/`)
     return response.data
   }
 
-  static async getComments(id: number): Promise<IReview[] | null> {
+  static async getComments(id: number) {
     const response = await axios.get<IReview[]>(hostname + `/api/events/${id}/reviews/`)
     return response.data
   }
