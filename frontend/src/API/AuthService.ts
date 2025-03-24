@@ -1,21 +1,20 @@
 import axios from 'axios';
 import { hostname } from '../config';
+import { IUserProfile } from './types';
 
 export default class AuthService {
-  static async login(username, password) {
+  static async login(username: string, password: string) {
     const response = await axios.post(`${hostname}/api/token/`, {
       username,
       password,
     });
-
     if (response.data.access && response.data.refresh) {
       AuthService.saveTokens(response.data.access, response.data.refresh, response.data.expires_in);
     }
-
     return response.data;
   }
 
-  static saveTokens(accessToken, refreshToken, expiresIn) {
+  static saveTokens(accessToken: string, refreshToken: string, expiresIn: number) {
     const expirationTime = Date.now() + expiresIn * 1000;
     localStorage.setItem('auth_token', accessToken);
     localStorage.setItem('refresh_token', refreshToken);
@@ -41,13 +40,12 @@ export default class AuthService {
         return response.data.access;
       }
     } catch (error) {
-      console.error('Error refreshing token:', error);
       AuthService.logout();
       return null;
     }
   }
 
-  static async getCurrentUser() {
+  static async getCurrentUser(): Promise<IUserProfile | null> {
     let token = localStorage.getItem('auth_token');
 
     if (!token || AuthService.isAccessTokenExpired()) {
@@ -56,7 +54,7 @@ export default class AuthService {
     }
 
     try {
-      const response = await axios.get(`${hostname}/api/user/profile/`, {
+      const response = await axios.get<IUserProfile>(`${hostname}/api/user/profile/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;

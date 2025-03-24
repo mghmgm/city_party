@@ -49,3 +49,12 @@ export interface IReview {
   author_username: string;
   pub_date: Date;
 }
+
+export interface IUserProfile {
+  first_name: string, 
+  last_name: string,
+  username: string,
+  vk_profile: string,
+  avatar: string,
+  description: string,
+}

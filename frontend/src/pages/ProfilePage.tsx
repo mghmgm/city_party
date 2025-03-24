@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useFetch } from '../hooks/useFetch';
 import AuthService from '../API/AuthService';
-import Layout from './Layout';
+import Layout from './layout/Layout';
 import { hostname } from '../config';
+import { IUserProfile } from '../API/types';
 
 const ProfilePage = () => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<IUserProfile | null>(null);
 
   const [fetchUser] = useFetch(async () => {
     const response = await AuthService.getCurrentUser();
@@ -30,10 +31,10 @@ const ProfilePage = () => {
                 </h2>
                 <p className='profile__nickname'>{user.username}</p>
               </div>
-              <p className="profile__about">
+              <div className="profile__about">
                 <p>vk: {user.vk_profile}</p>
                 <p className='profile__info'>{user.description}</p>
-              </p>
+              </div>
             </div>
           </div>
         )}

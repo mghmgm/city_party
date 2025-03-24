@@ -1,26 +1,45 @@
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import classes from './Header.module.scss';
 import logo from '../../../assets/logo.svg';
 import Input from '../Input/Input';
 import Select from '../Select/Select';
 import Button from '../Button/Button';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { IUserProfile } from '../../../API/types';
+import { hostname } from '../../../config';
+import AuthService from '../../../API/AuthService';
+import { AuthContext } from '../../../router/context';
+import avatar from '../../../assets/avatar.svg'
 
-const Header: FC = () => {
+interface HeaderProps {
+  user?: IUserProfile,
+  searchValue: string,
+}
+
+const Header: FC<HeaderProps> = ({user, searchValue}) => {
+  const navigate = useNavigate();
+  
   const headerClass = `${classes.header} content`;
-  const isAuthenticated = !!localStorage.getItem('auth_token');
+  const {isAuth} = useContext(AuthContext)
+  const avatarUrl = user?.avatar ? hostname + user.avatar : avatar
 
+  const handleExitBtnClick = () => {
+    AuthService.logout()
+    navigate("/", { replace: true });
+  }
+  
   return (
     <header className={headerClass}>
       <Link to={'/'}>
         <img src={logo} alt="logo" />
       </Link>
-      <Input type="search" placeholder="Введите название..." id="search" />
+      <Input type="search" placeholder="Введите название..." id="search" value={searchValue}/>
       <div className={classes.buttons}>
-        <Select options={['Москва']} />
-        {isAuthenticated ? (
-          <div>
-            <Link to="/profile">профиль</Link>
+        <Select options={['Москва']} value='Москва'/>
+        {isAuth ? (
+          <div className={classes.profile}>
+            <Link to="/profile"><img src={avatarUrl}  className={classes.avatar} /></Link>
+            <Button onClick={handleExitBtnClick}>Выйти</Button>
           </div>
         ) : (
           <Button href="/login" className={classes.loginBtn}>

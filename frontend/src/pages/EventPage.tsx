@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import Layout from './Layout';
+import { useParams } from 'react-router-dom';
+import Layout from './layout/Layout';
 import { useFetch } from '../hooks/useFetch';
 import EventService from '../API/EventService';
 import EventInfo from '../components/EventInfo';
@@ -15,26 +15,10 @@ const EventPage: FC = () => {
   const [commentInput, setCommentInput] = useState('');
   const [selectedRating, setSelectedRating] = useState('5');
 
-  const navigate = useNavigate();
-
   const [eventFetch] = useFetch(async () => {
     if (!id) return;
-    try {
-      const response = await EventService.getById(id);
-
-      if (id==="/profile") {
-        navigate('/profile')
-      }
-
-      if (response.status === 404) {
-        navigate('/');
-      } else {
-        setEvent(response.data);
-      }
-    } catch (error) {
-      console.error(error);
-      navigate('/');
-    }
+    const response = await EventService.getById(id);
+    setEvent(response.data);
   });
 
   const [galleryFetch] = useFetch(async () => {

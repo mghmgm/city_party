@@ -7,8 +7,7 @@ import { BannerService } from '../API/BannerService';
 import TopSection from '../components/TopSection';
 import PlacesSection from '../components/PlacesSection';
 import PlaceService from '../API/PlaceService';
-import Layout from './Layout';
-import Navigation from '../components/Navigation';
+import Layout from './layout/Layout';
 
 const Home = () => {
   const [events, setEvents] = useState([]);
@@ -20,18 +19,18 @@ const Home = () => {
 
   const [fetchEvents] = useFetch(async () => {
     const response = await EventService.getAll(3);
-    setEvents(response.data);
+    setEvents(response);
   });
 
   const [fetchPlaces] = useFetch(async () => {
     const response = await PlaceService.getAll(3);
-    setPlaces(response.data);
+    setPlaces(response);
   });
 
   const [fetchBanner] = useFetch(async () => {
     const response = await BannerService.getAll();
     if (response) {
-      setBanners(response.data);
+      setBanners(response);
     }
   });
 
