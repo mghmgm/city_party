@@ -13,7 +13,7 @@ const EventCard: FC<EventCardProps> = ({ event }) => {
   const hrefId = `${event.id}`
 
   return (
-    <Link className="events__event-card" key={event.id} to={hrefId}>
+    <Link className="events__event-card" key={event.id} to={`events/${hrefId}`}>
       <img src={imgUrl} alt={event.title} className="events__cover-image" />
       <div className="events__titles">
         <h3>{event.title}</h3>

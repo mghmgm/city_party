@@ -35,7 +35,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
   }, []);
 
   return (
-    <div className="page-content">
+    <div className="page-content full-page">
       <Header user={user}/>
       {navIsVisible ? <Navigation categories={categories} /> : null}
       <main className="page-content">{children}</main>
