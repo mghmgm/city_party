@@ -12,7 +12,7 @@ import { AuthContext } from '../../../router/context';
 import avatar from '../../../assets/avatar.svg';
 
 interface HeaderProps {
-  user?: IUserProfile;
+  user: IUserProfile | null;
   searchValue: string;
 }
 

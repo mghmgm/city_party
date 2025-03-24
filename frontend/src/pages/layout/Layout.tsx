@@ -13,8 +13,8 @@ interface LayoutProps {
 }
 
 const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
-  const [categories, setCategories] = useState([]);
-  const [user, setUser] = useState();
+  const [categories, setCategories] = useState([{name:'', slug: ''}]);
+  const [user, setUser] = useState<IUserProfile | null>(null);
 
   const [fetchCategories] = useFetch(async () => {
     const response = await CategoryService.getAll();

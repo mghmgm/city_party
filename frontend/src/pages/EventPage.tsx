@@ -5,34 +5,43 @@ import { useFetch } from '../hooks/useFetch';
 import EventService from '../API/EventService';
 import EventInfo from '../components/EventInfo';
 import CommentSection from '../components/CommentSection';
+import { IPhoto } from '../API/types';
 
 const EventPage: FC = () => {
   const { id } = useParams<{ id: string }>();
-  const [event, setEvent] = useState(null);
-  const [gallery, setGallery] = useState(null);
-  const [ticketTypes, setTicketTypes] = useState([]);
-  const [comments, setComments] = useState([]);
+  const eventId = Number(id);
+  const [event, setEvent] = useState({ id: 1, title: '', description: '', cover_image_url: '' });
+  const [gallery, setGallery] = useState({ title: '', photos: [] as IPhoto[] });
+
+  const [ticketTypes, setTicketTypes] = useState([
+    { description: '', price: 0, event_date: new Date() },
+  ]);
+
+  const [comments, setComments] = useState([
+    { id: 1, description: '', rating: 0, author_username: '', pub_date: new Date() },
+  ]);
+
   const [commentInput, setCommentInput] = useState('');
   const [selectedRating, setSelectedRating] = useState('5');
 
   const [eventFetch] = useFetch(async () => {
     if (!id) return;
-    const response = await EventService.getById(id);
+    const response = await EventService.getById(eventId);
     setEvent(response);
   });
 
   const [galleryFetch] = useFetch(async () => {
-    const response = await EventService.getGallery(id, 3);
+    const response = await EventService.getGallery(eventId, 3);
     setGallery(response);
   });
 
   const [ticketTypesFetch] = useFetch(async () => {
-    const response = await EventService.getTicketTypes(id);
+    const response = await EventService.getTicketTypes(eventId);
     setTicketTypes(response);
   });
 
   const [commentFetch] = useFetch(async () => {
-    const response = await EventService.getComments(id);
+    const response = await EventService.getComments(eventId);
     setComments(response);
   });
 
@@ -54,7 +63,7 @@ const EventPage: FC = () => {
 
     console.log(newComment);
 
-    await EventService.postComment(id, {
+    await EventService.postComment(eventId, {
       description: commentInput,
       rating: selectedRating,
     });
@@ -62,7 +71,7 @@ const EventPage: FC = () => {
     setCommentInput('');
     setSelectedRating('');
 
-    const response = await EventService.getComments(id);
+    const response = await EventService.getComments(eventId);
     setComments(response);
   };
 

@@ -45,14 +45,16 @@ export default class AuthService {
     }
   }
 
-  static async getCurrentUser() {
+  static async getCurrentUser(): Promise<IUserProfile> {
     let token = localStorage.getItem('auth_token');
-
+  
     if (!token || AuthService.isAccessTokenExpired()) {
       token = await AuthService.refreshAccessToken();
-      if (!token) return null;
+      if (!token) {
+        throw new Error("No token available and failed to refresh token.");
+      }
     }
-
+  
     try {
       const response = await axios.get<IUserProfile>(`${hostname}/api/user/profile/`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -60,7 +62,7 @@ export default class AuthService {
       return response.data;
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      return null;
+      throw new Error('Error fetching user profile');
     }
   }
 
