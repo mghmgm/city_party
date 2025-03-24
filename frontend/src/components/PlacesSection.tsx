@@ -12,8 +12,8 @@ const PlacesSection: FC<PlacesSectionProps> = ({ places }) => {
     <section className="places content">
       <h2>Какие места посетить?</h2>
       <div className="places__container">
-        {places.map((place) => (
-          <PlaceCard place={place} />
+        {places.map((place, index) => (
+          <PlaceCard place={place} key={index}/>
         ))}
       </div>
       <Button styleType="sub" className='places__btn'>Показать еще</Button>

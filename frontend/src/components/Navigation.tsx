@@ -9,8 +9,8 @@ interface NavigationProps {
 const Navigation: FC<NavigationProps> = ({ categories }) => {
   return (
     <nav className='navigation'>
-      {categories.map((category) => (
-        <Link to={category.slug}>{category.name}</Link>
+      {categories.map((category, index) => (
+        <Link to={category.slug} key={index}>{category.name}</Link>
       ))}
     </nav>
   );

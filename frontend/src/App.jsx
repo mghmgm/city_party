@@ -11,11 +11,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           {routes.map((route) => (
-            <Route path={route.path} element={route.element} />
+            <Route path={route.path} element={route.element} key={route.path}/>
           ))}
           {isAuth
-            ? privateRoutes.map((route) => <Route path={route.path} element={route.element} />)
-            : publicRoutes.map((route) => <Route path={route.path} element={route.element} />)}
+            ? privateRoutes.map((route) => <Route path={route.path} element={route.element} key={route.path} />)
+            : publicRoutes.map((route) => <Route path={route.path} element={route.element} key={route.path} />)}
         </Routes>
       </BrowserRouter>
     </div>
