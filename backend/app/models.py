@@ -13,9 +13,9 @@ class EventPublishedManager(models.Manager):
             is_published=True,
             created_at__gte=timezone.now() - timedelta(days=2 * 365)
         )\
-        .annotate(review_count = Count('reviews'))\
-        .annotate(rating_avg = Avg('reviews__rating'))
-    
+          .annotate(rating_avg = Avg('reviews__rating'))\
+        # .annotate(review_count = Count('reviews'))
+        
     def get_total(self):
         return self.get_queryset().aggregate(Count('id'))
 

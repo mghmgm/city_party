@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hostname } from '../config';
-import { IEvent, IGallery, IReview, ITicketType } from './types';
+import { IEvent, IGallery, IReviews, ITicketType } from './types';
 
 export default class EventService {
   static async getAll(limit: number) {
@@ -37,7 +37,7 @@ export default class EventService {
   }
 
   static async getComments(id: number) {
-    const response = await axios.get<IReview[]>(hostname + `/api/events/${id}/reviews/`)
+    const response = await axios.get<IReviews>(hostname + `/api/events/${id}/reviews/`)
     return response.data
   }
 

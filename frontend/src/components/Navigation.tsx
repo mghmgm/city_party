@@ -8,7 +8,7 @@ interface NavigationProps {
 
 const Navigation: FC<NavigationProps> = ({ categories }) => {
   return (
-    <nav className='navigation'>
+    <nav className='navigation content'>
       {categories.map((category, index) => (
         <Link to={category.slug} key={index}>{category.name}</Link>
       ))}

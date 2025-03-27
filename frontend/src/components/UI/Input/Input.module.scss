@@ -1,10 +1,12 @@
-@import '../../../scss/variables';
+@use '../../../scss/variables' as *;
 
 .inputContainer {
   text-align: left;
   display: flex;
   flex-direction: column;
   gap: 5px;
+  max-width: 560px;
+  flex-grow: 1;
 }
 
 .input {
@@ -28,7 +30,6 @@
 .search {
   border-radius: 20px;
   background-color: rgba($color: $main-color, $alpha: 0.1);
-  width: 560px;
   padding: 13px;
 }
 
@@ -60,9 +61,7 @@
   display: inline-block;
   flex-shrink: 0;
   background-color: rgba($color: $main-color, $alpha: 0.1);
-  
 }
-
 
 .customCheckbox::after {
   content: "✔";

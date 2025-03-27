@@ -1,12 +1,12 @@
-import { FC, useState } from 'react';
-import { IReview } from '../API/types';
+import { FC } from 'react';
+import { IReviews } from '../API/types';
 import Comment from './UI/Comment/Comment';
 import Input from './UI/Input/Input';
 import Select from './UI/Select/Select';
 import Button from './UI/Button/Button';
 
 interface CommentSectionProps {
-  comments: IReview[];
+  comments: IReviews;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   commentInput: string;
   setCommentInput: (value: string) => void;
@@ -22,9 +22,10 @@ const CommentSection: FC<CommentSectionProps> = ({
   selectedRating,
   setSelectedRating,
 }) => {
+  console.log('comments', comments);
   return (
     <div className="comments content">
-      <h2>Отзывы</h2>
+      <h2>Отзывы ({comments.count})</h2>
 
       <form className="comments__form" onSubmit={onSubmit}>
         <div className="comments__rating">
@@ -56,7 +57,7 @@ const CommentSection: FC<CommentSectionProps> = ({
       </form>
 
       <div className="comments__containter">
-        {comments.map((comment) => (
+        {comments.reviews.map((comment) => (
           <Comment comment={comment} />
         ))}
       </div>

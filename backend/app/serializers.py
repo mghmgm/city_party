@@ -11,7 +11,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-  review_count = serializers.IntegerField(read_only=True)
+  # review_count = serializers.IntegerField(read_only=True)
   rating_avg = serializers.FloatField(read_only=True)
   categories = CategorySerializer(many=True)
   cover_image_url = serializers.SerializerMethodField()
@@ -25,7 +25,7 @@ class EventSerializer(serializers.ModelSerializer):
       "cover_image_url",
       "categories",
       "rating_avg",
-      "review_count",
+      # "review_count",
     ]
 
   def get_cover_image_url(self, obj):

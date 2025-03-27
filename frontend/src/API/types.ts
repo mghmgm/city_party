@@ -3,6 +3,7 @@ export interface IEvent {
   title: string;
   description: string;
   cover_image_url: string;
+  reviews_count: number;
 }
 
 export interface IBanner {
@@ -50,11 +51,16 @@ export interface IReview {
   pub_date: Date;
 }
 
+export interface IReviews {
+  count: number;
+  reviews: IReview[];
+}
+
 export interface IUserProfile {
-  first_name: string, 
-  last_name: string,
-  username: string,
-  vk_profile: string,
-  avatar: string,
-  description: string,
+  first_name: string;
+  last_name: string;
+  username: string;
+  vk_profile: string;
+  avatar: string;
+  description: string;
 }

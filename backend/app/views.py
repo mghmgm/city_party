@@ -47,8 +47,9 @@ class EventAPIView(ModelViewSet):
                 .order_by("pub_date")
                 .select_related("author")
             )
+            reviews_count = reviews.count()
             serializer = ReviewSerializer(reviews, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response({"count":reviews_count,"reviews":serializer.data}, status=status.HTTP_200_OK)
 
         if request.method == "POST":
             if not request.user.is_authenticated:

@@ -54,16 +54,10 @@ export default class AuthService {
         throw new Error("No token available and failed to refresh token.");
       }
     }
-  
-    try {
-      const response = await axios.get<IUserProfile>(`${hostname}/api/user/profile/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
-      throw new Error('Error fetching user profile');
-    }
+    const response = await axios.get<IUserProfile>(`${hostname}/api/user/profile/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
   }
 
   static logout() {
