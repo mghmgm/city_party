@@ -1,3 +1,4 @@
+from .filters import EventFilter
 from .models import Event, Banner, Place, Category, UserProfile
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
@@ -20,19 +21,21 @@ from rest_framework.permissions import IsAuthenticated
 class EventAPIView(ModelViewSet):
     serializer_class = EventSerializer
     queryset = Event.published.all()
+    filterset_class = EventFilter
 
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
     )
     def by_category(self, request, category_slug):
-        try:
-            events = Event.published.filter(
-                categories__slug=category_slug
-            ).prefetch_related("categories")
-            serializer = EventSerializer(events, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+      if not Event.published.filter(categories__slug=category_slug).exists():
+        return Response(status=status.HTTP_404_NOT_FOUND)
+      
+      events = Event.published.filter(
+          categories__slug=category_slug
+      ).prefetch_related("categories")
+      serializer = EventSerializer(events, many=True)
+      return Response(serializer.data, status=status.HTTP_200_OK)
+      
 
     @action(methods=["GET", "POST"], detail=True, url_path="reviews")
     def reviews(self, request, pk=None):
@@ -70,8 +73,8 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_403_FORBIDDEN)
             serializer = ReviewSerializer(review, data=request.data, partial=True)
             if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                updated_review = serializer.update(review, serializer.validated_data)
+                return Response(ReviewSerializer(updated_review).data, status=status.HTTP_200_OK)
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == "DELETE":
@@ -95,6 +98,28 @@ class EventAPIView(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class UserAPIView(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated] 
+    
+    @action(methods=["GET"], detail=False, url_path="profile")
+    def profile(self, request):
+        try:
+            user_profile = UserProfile.objects.get(user=request.user)
+            serializer = UserProfileSerializer(user_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except UserProfile.DoesNotExist:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+    
+    @action(methods=['GET'], detail=False, url_path="avatar")
+    def avatar(self, request):
+      try: 
+        user_avatar = UserProfile.objects.filter.get(user=request.user).values_list('avatar', flat=True)
+        serializer = UserProfileSerializer(user_avatar)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+      except UserProfile.DoesNotExist:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
 class BannerAPIView(ModelViewSet):
     serializer_class = BannerSerializer
     queryset = Banner.objects.filter(is_visible=True)
@@ -108,15 +133,3 @@ class PlaceAPIView(ModelViewSet):
 class CategoryAPIView(ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
-
-
-class UserAPIView(viewsets.ViewSet):
-    permission_classes = [IsAuthenticated] 
-    @action(methods=["GET"], detail=False, url_path="profile")
-    def profile(self, request):
-        try:
-            user_profile = UserProfile.objects.get(user=request.user)
-            serializer = UserProfileSerializer(user_profile)
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except UserProfile.DoesNotExist:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)

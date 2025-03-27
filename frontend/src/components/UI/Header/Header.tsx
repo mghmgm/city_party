@@ -14,14 +14,22 @@ import avatar from '../../../assets/avatar.svg';
 interface HeaderProps {
   user: IUserProfile | null;
   searchValue: string;
+  onSearchValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchSubmit: () => void;
 }
 
-const Header: FC<HeaderProps> = ({ user, searchValue }) => {
+const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSearchSubmit }) => {
   const navigate = useNavigate();
 
   const headerClass = `${classes.header} content`;
   const { isAuth, setIsAuth } = useContext(AuthContext);
   const avatarUrl = user?.avatar ? hostname + user.avatar : avatar;
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onSearchSubmit();
+    }
+  };
 
   const handleExitBtnClick = () => {
     AuthService.logout();
@@ -34,7 +42,14 @@ const Header: FC<HeaderProps> = ({ user, searchValue }) => {
       <Link to={'/'}>
         <img src={logo} alt="logo" />
       </Link>
-      <Input type="search" placeholder="Введите название..." id="search" value={searchValue} />
+      <Input
+        type="search"
+        placeholder="Введите название..."
+        id="search"
+        value={searchValue}
+        onChange={onSearchValueChange}
+        onKeyDown={handleKeyDown}
+      />
       <div className={classes.buttons}>
         <Select options={['Москва']} value="Москва" />
         {isAuth ? (

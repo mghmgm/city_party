@@ -17,6 +17,11 @@ export default class EventService {
     return response.data;
   }
 
+  static async getBySearch(value: string) {
+    const response = await axios.get(hostname +`/api/events/?title=${value}`)
+    return response.data
+  }
+
   static async getGallery(id: number, limit: number) {
     const response = await axios.get<IGallery>(hostname + `/api/events/${id}/gallery/`, {
       params: {

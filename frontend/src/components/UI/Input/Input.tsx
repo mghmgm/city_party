@@ -8,10 +8,11 @@ interface InputProps {
   id: string;
   checked?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   value: string;
 }
 
-const Input: FC<InputProps> = ({ type, placeholder, label, id, checked, onChange, value }) => {
+const Input: FC<InputProps> = ({ type, placeholder, label, id, checked, onChange, value, onKeyDown }) => {
   const inputClass = type === 'search' ? classes.search : classes.input;
 
   if (type === 'checkbox') {
@@ -40,6 +41,7 @@ const Input: FC<InputProps> = ({ type, placeholder, label, id, checked, onChange
         id={id}
         value={value}
         onChange={onChange}
+        onKeyDown={onKeyDown}
       />
     </div>
   );
