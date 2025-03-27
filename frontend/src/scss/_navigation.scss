@@ -2,9 +2,11 @@
 
 .navigation{
   display: flex;
-  gap: 40px;
+  justify-content: space-between;
   font-weight: 500;
   font-size: 1.1rem;
+  overflow: auto;
+  align-items: center;
 
   >a {
     color: $dark-color;
@@ -18,5 +20,15 @@
     background-color: rgba($color: $main-color, $alpha: 0.1);
     border-radius: 5px;
     transition: 0.3s;
+  }
+
+  &__mob-search {
+    width: 30px;
+    height: 30px;
+    margin-inline: 10px;
+    
+    @media screen and (min-width:768px){
+      display: none;
+    }
   }
 }

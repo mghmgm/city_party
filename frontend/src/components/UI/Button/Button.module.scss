@@ -13,6 +13,11 @@
   justify-content: center;
   font-size: 1.2rem;
 
+  @media screen and (max-width: 400px){
+    font-size: 1.1rem;
+    padding: 15px;
+  }
+
   &:hover {
     background-color: rgba($color: $main-color, $alpha: 0.5);
     transition: 0.3s;

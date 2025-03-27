@@ -10,10 +10,21 @@ interface InputProps {
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   value: string;
+  className: string ;
 }
 
-const Input: FC<InputProps> = ({ type, placeholder, label, id, checked, onChange, value, onKeyDown }) => {
-  const inputClass = type === 'search' ? classes.search : classes.input;
+const Input: FC<InputProps> = ({
+  type,
+  placeholder,
+  label,
+  id,
+  checked,
+  onChange,
+  value,
+  onKeyDown,
+  className = '',
+}) => {
+  const inputClass = type === 'search' ? classes.search + ` ${className}` : classes.input;
 
   if (type === 'checkbox') {
     return (

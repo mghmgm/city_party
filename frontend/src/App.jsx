@@ -7,7 +7,7 @@ function App() {
   const { isAuth } = useContext(AuthContext);
 
   return (
-    <div className="wrapper">
+    <div>
       <BrowserRouter>
         <Routes>
           {routes.map((route) => (

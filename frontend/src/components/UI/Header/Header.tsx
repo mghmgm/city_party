@@ -10,6 +10,7 @@ import { hostname } from '../../../config';
 import AuthService from '../../../API/AuthService';
 import { AuthContext } from '../../../router/context';
 import avatar from '../../../assets/avatar.svg';
+import mlogo from '../../../assets/mobile-logo.svg';
 
 interface HeaderProps {
   user: IUserProfile | null;
@@ -40,7 +41,8 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
   return (
     <header className={headerClass}>
       <Link to={'/'}>
-        <img src={logo} alt="logo" />
+        <img src={logo} alt="logo" className={classes.logo}/>
+        <img src={mlogo} alt="logo" className={classes.mlogo}/>
       </Link>
       <Input
         type="search"
@@ -49,9 +51,10 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
         value={searchValue}
         onChange={onSearchValueChange}
         onKeyDown={handleKeyDown}
+        className={classes.search}
       />
       <div className={classes.buttons}>
-        <Select options={['Москва']} value="Москва" />
+        <Select options={['Москва']} value="Москва"  className={classes.select}/>
         {isAuth ? (
           <div className={classes.profile}>
             <Link to="/profile">

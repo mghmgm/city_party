@@ -6,6 +6,7 @@
 
   &__img {
     height: 200px;
+    max-width: 1320px;
     width: 100%;
     object-fit: cover;
     border-radius: 10px;
@@ -14,13 +15,35 @@
   &__info {
     background-color: $main-color;
     max-width: 400px;
+    width: 100%;
     height: 100px;
     color: $light-color;
-    width: 100%;
     border-radius: 10px;
     position: absolute;
-    top: 80px;
+    top: 90px;
     left: 20px;
     padding: 15px;
+
+    @media screen and (max-width:512px){
+      width: 300px;
+      height: 90px;
+    }
+
+    @media screen and (max-width:360px){
+      width: 260px;
+    }
+  }
+
+  &__title {
+    justify-self: start;
+    
+    @media screen and (max-width:512px){
+      font-size: 1.6rem;
+    }
+    @media screen and (max-width:360px){
+      font-size: 1.3rem;
+    }
   }
 }
+  
+  

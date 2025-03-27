@@ -4,6 +4,7 @@
   justify-content: space-between;
   padding-top: 26px;
   padding-bottom: 26px;
+  gap: 10px;
 }
 
 .buttons {
@@ -20,4 +21,30 @@
 .profile {
   display: flex;
   gap: 10px;
+}
+
+.search {
+  @media screen and (max-width:767px){
+    display: none;
+  }
+}
+
+.logo {
+  @media screen and (max-width:568px){
+    display: none;
+  }
+}
+
+.mlogo {
+  width: 100%;
+  height: 48px;
+  @media screen and (min-width:568px){
+    display: none;
+  }
+}
+
+.select {
+  @media screen and (max-width:360px){
+    display: none;
+  }
 }

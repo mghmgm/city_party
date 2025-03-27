@@ -7,11 +7,12 @@ interface SelectProps {
   value: string;
   name?: string,
   id?: string,
+  className?: string,
 }
 
-const Select: FC<SelectProps> = ({ options, onChange, value, name, id }) => {
+const Select: FC<SelectProps> = ({ options, onChange, value, name, id, className}) => {
   return (
-    <select name={name} id={id} className={classes.select} value={value}  onChange={onChange}>
+    <select name={name} id={id} className={classes.select+' '+className} value={value}  onChange={onChange}>
       {options.map((optionName, index) => (
         <option value={optionName} key={index}>
           {optionName}

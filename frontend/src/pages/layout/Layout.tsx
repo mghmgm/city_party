@@ -50,14 +50,14 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
 
 
   return (
-    <div className="page-content full-page">
+    <div className="wrapper">
       <Header user={user} searchValue={searchValue} onSearchValueChange={(e)=>setSearchValue(e.target.value)} onSearchSubmit={handleSearchSubmit}/>
       {navIsVisible ? <Navigation categories={categories} /> : null}
       {searchedEvents.length>0
-      ? (<main className="page-content searched-section">
+      ? (<main className="mt-60">
           {searchedEvents.map(event => <EventCard event={event}/>)}
       </main>)
-      :<main className="page-content">{children}</main>}
+      :<main>{children}</main>}
       <Footer />
     </div>
   );

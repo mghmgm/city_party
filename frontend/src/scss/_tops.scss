@@ -9,6 +9,10 @@
   display: flex;
   justify-content: center;
 
+  @media screen and (max-width:1000px){
+    padding-bottom: 100px;
+  }
+
   &__wrap {
     display: flex;
     flex-direction: column;
@@ -17,25 +21,31 @@
 
   &__content {
     display: flex;
-    gap: 70px;
+    justify-content: space-between;
+    gap: 30px;
     margin-top: 55px;
-    justify-content: center;
+    overflow: auto;
 
     > div {
       position: relative;
     }
 
-    > *:nth-child(odd) {
-      margin-top: 100px;
-    }
+    @media screen and (min-width:1000px){
+      justify-content: center;
 
-    > *:nth-child(2) {
-      box-shadow: 15px 15px 0px $main-color;
+      > *:nth-child(odd) {
+        margin-top: 100px;
+      }
+  
+      > *:nth-child(2) {
+        box-shadow: 15px 15px 0px $main-color;
+      }
     }
   }
 
   &__cover-img {
-    width: 300px;
+    max-width: 300px;
+    width: 100%;
     height: 430px;
     object-fit: cover;
     border-radius: 10px;

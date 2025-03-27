@@ -12,11 +12,13 @@
     width: 100%;
     margin-top: 50px;
     gap: 15px;
+    overflow: auto;
   }
 
   &__event-card {
     background-color: rgba($color: $main-color, $alpha: 0.1);
     max-width: 420px;
+    min-width: 300px;
     width: 100%;
     border-radius: 10px;
   }

@@ -9,6 +9,13 @@
   background-color: #fff;
   text-align: center;
 
+  @media screen and (max-width:1000px){
+    padding: 20px;
+    border: none;
+    background-color: transparent;
+    margin-top: 30px;
+  }
+
   >h2 {
     color: $main-color;
   }
@@ -17,11 +24,13 @@
     display: flex;
     justify-content: space-between;
     margin-top: 60px;
-    gap: 10px;
+    gap: 25px;
+    overflow: auto;
   }
 
   &__img {
     width: 340px;
+    min-width: 250px;
     height: 380px;
     object-fit: cover;
     border-radius: 10px;

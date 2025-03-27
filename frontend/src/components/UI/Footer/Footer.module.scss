@@ -11,11 +11,28 @@
 
   >div {
     display: flex;
+    max-width: 100%;
     justify-content: space-between;
+    gap: 15px;
+
+    @media screen and (max-width:1000px){
+      flex-direction: column;
+      align-items: center;
+    }
   }
 }
 
 .links {
+  max-width: 560px;
+  width: 100%;
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 5px;
+
+  @media screen and (max-width:1000px){
+    margin-top: 40px;
+    flex-direction: column;
+    gap: 35px;
+    align-items: center;
+  }
 }
