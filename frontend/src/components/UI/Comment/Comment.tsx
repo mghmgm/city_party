@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import classes from './Comment.module.scss';
-import { IReview } from '../../../API/types';
+import { IReview } from '../../../types/types';
 
 interface CommentProps {
   comment: IReview;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hostname } from '../config';
-import { ICategory } from './types';
+import { ICategory } from '../types/types';
 
 export class CategoryService {
   static async getAll(): Promise<ICategory[]> {

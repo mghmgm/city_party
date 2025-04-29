@@ -114,7 +114,7 @@ class UserAPIView(viewsets.ViewSet):
     @action(methods=['GET'], detail=False, url_path="avatar")
     def avatar(self, request):
       try: 
-        user_avatar = UserProfile.objects.filter.get(user=request.user).values_list('avatar', flat=True)
+        user_avatar = UserProfile.objects.get(user=request.user).values_list('avatar', flat=True)
         serializer = UserProfileSerializer(user_avatar)
         return Response(serializer.data, status=status.HTTP_200_OK)
       except UserProfile.DoesNotExist:

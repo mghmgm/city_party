@@ -3,7 +3,7 @@ import { useFetch } from '../hooks/useFetch';
 import AuthService from '../API/AuthService';
 import Layout from './layout/Layout';
 import { hostname } from '../config';
-import { IUserProfile } from '../API/types';
+import { IUserProfile } from '../types/types';
 import image from '../assets/image.png';
 
 const ProfilePage = () => {

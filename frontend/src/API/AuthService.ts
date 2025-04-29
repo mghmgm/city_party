@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hostname } from '../config';
-import { IUserProfile } from './types';
+import { IUserProfile } from '../types/types';
 
 export default class AuthService {
   static async login(username: string, password: string) {
@@ -47,11 +47,11 @@ export default class AuthService {
 
   static async getCurrentUser(): Promise<IUserProfile> {
     let token = localStorage.getItem('auth_token');
-  
+
     if (!token || AuthService.isAccessTokenExpired()) {
       token = await AuthService.refreshAccessToken();
       if (!token) {
-        throw new Error("No token available and failed to refresh token.");
+        throw new Error('No token available and failed to refresh token.');
       }
     }
     const response = await axios.get<IUserProfile>(`${hostname}/api/user/profile/`, {

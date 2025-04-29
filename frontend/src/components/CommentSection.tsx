@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IReviews } from '../API/types';
+import { IReviews } from '../types/types';
 import Comment from './UI/Comment/Comment';
 import Input from './UI/Input/Input';
 import Select from './UI/Select/Select';

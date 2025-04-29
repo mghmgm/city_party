@@ -5,7 +5,7 @@ import { useFetch } from '../hooks/useFetch';
 import EventService from '../API/EventService';
 import EventInfo from '../components/EventInfo';
 import CommentSection from '../components/CommentSection';
-import { IPhoto } from '../API/types';
+import { IPhoto } from '../types/types';
 
 const EventPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -17,9 +17,9 @@ const EventPage: FC = () => {
     { description: '', price: 0, event_date: new Date() },
   ]);
 
-  const [comments, setComments] = useState({count: 0, reviews: [
-    { id: 1, description: '', rating: 0, author_username: '', pub_date: new Date() },
-    ]
+  const [comments, setComments] = useState({
+    count: 0,
+    reviews: [{ id: 1, description: '', rating: 0, author_username: '', pub_date: new Date() }],
   });
 
   const [commentInput, setCommentInput] = useState('');

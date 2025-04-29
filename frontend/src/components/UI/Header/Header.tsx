@@ -5,7 +5,7 @@ import Input from '../Input/Input';
 import Select from '../Select/Select';
 import Button from '../Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
-import { IUserProfile } from '../../../API/types';
+import { IUserProfile } from '../../../types/types';
 import { hostname } from '../../../config';
 import AuthService from '../../../API/AuthService';
 import { AuthContext } from '../../../router/context';
@@ -41,8 +41,8 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
   return (
     <header className={headerClass}>
       <Link to={'/'}>
-        <img src={logo} alt="logo" className={classes.logo}/>
-        <img src={mlogo} alt="logo" className={classes.mlogo}/>
+        <img src={logo} alt="logo" className={classes.logo} />
+        <img src={mlogo} alt="logo" className={classes.mlogo} />
       </Link>
       <Input
         type="search"
@@ -54,7 +54,7 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
         className={classes.search}
       />
       <div className={classes.buttons}>
-        <Select options={['Москва']} value="Москва"  className={classes.select}/>
+        <Select options={['Москва']} value="Москва" className={classes.select} />
         {isAuth ? (
           <div className={classes.profile}>
             <Link to="/profile">

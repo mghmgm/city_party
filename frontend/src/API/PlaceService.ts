@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hostname } from '../config';
-import { IPlace } from './types';
+import { IPlace } from '../types/types';
 
 export default class PlaceService {
   static async getAll(limit: number) {

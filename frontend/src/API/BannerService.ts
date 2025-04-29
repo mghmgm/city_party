@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { hostname } from '../config';
-import { IBanner } from './types';
+import { IBanner } from '../types/types';
 
 export class BannerService {
   static async getAll() {
