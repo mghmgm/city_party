@@ -1,11 +1,12 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Form from '../components/UI/Form/Form';
 import Button from '../components/UI/Button/Button';
 import Input from '../components/UI/Input/Input';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAppDispatch } from '../store/store';
+import { useAppDispatch, useAppSelector } from '../store/store';
+import { getToken, getUser } from '../store/AuthSlice';
 
-const RegistrationForm: FC = () => {
+const LoginForm: FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,7 +15,12 @@ const RegistrationForm: FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate('/profile');
+    const resultAction = await dispatch(getToken({ username, password }));
+    
+    if (getToken.fulfilled.match(resultAction)) {
+      await dispatch(getUser());
+      navigate('/profile');
+    }
   };
 
   return (
@@ -54,4 +60,4 @@ const RegistrationForm: FC = () => {
   );
 };
 
-export default RegistrationForm;
+export default LoginForm;

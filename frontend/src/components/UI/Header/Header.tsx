@@ -1,29 +1,28 @@
-import { FC, useContext } from 'react';
+import { FC } from 'react';
 import classes from './Header.module.scss';
 import logo from '../../../assets/logo.svg';
 import Input from '../Input/Input';
 import Select from '../Select/Select';
 import Button from '../Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
-import { IUserProfile } from '../../../types/types';
 import { hostname } from '../../../config';
-import AuthService from '../../../API/AuthService';
-import { AuthContext } from '../../../router/context';
 import avatar from '../../../assets/avatar.svg';
 import mlogo from '../../../assets/mobile-logo.svg';
+import { useAppDispatch, useAppSelector } from '../../../store/store';
+import { logout } from '../../../store/AuthSlice';
 
 interface HeaderProps {
-  user: IUserProfile | null;
   searchValue: string;
   onSearchValueChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSearchSubmit: () => void;
 }
 
-const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSearchSubmit }) => {
+const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSubmit }) => {
   const navigate = useNavigate();
+  const user = useAppSelector(state=>state.auth.userProfile)
+  const dispatch = useAppDispatch()
 
   const headerClass = `${classes.header} content`;
-  const { isAuth, setIsAuth } = useContext(AuthContext);
   const avatarUrl = user?.avatar ? hostname + user.avatar : avatar;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -33,8 +32,7 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
   };
 
   const handleExitBtnClick = () => {
-    AuthService.logout();
-    setIsAuth(false);
+    dispatch(logout())
     navigate('/', { replace: true });
   };
 
@@ -55,7 +53,7 @@ const Header: FC<HeaderProps> = ({ user, searchValue, onSearchValueChange, onSea
       />
       <div className={classes.buttons}>
         <Select options={['Москва']} value="Москва" className={classes.select} />
-        {isAuth ? (
+        {user ? (
           <div className={classes.profile}>
             <Link to="/profile">
               <img src={avatarUrl} className={classes.avatar} />

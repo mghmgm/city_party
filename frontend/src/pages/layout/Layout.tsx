@@ -4,10 +4,11 @@ import { useFetch } from '../../hooks/useFetch';
 import Footer from '../../components/UI/Footer/Footer';
 import Navigation from '../../components/Navigation';
 import { CategoryService } from '../../API/CategoryService';
-import AuthService from '../../API/AuthService';
+// import AuthService from '../../API/AuthService';
 import { ICategory, IUserProfile } from '../../types/types';
 import EventService from '../../API/EventService';
 import EventCard from '../../components/EventCard';
+import { useAppSelector } from '../../store/store';
 
 interface LayoutProps {
   children: ReactNode;
@@ -16,11 +17,13 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
-  const [user, setUser] = useState<IUserProfile | null>(null);
+  // const [user, setUser] = useState<IUserProfile | null>(null);
   const [searchValue, setSearchValue] = useState('');
   const [searchedEvents, setSearchedEvents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [categoryEvents, setCategoryEvents] = useState([]);
+
+  const user = useAppSelector(state=>state.auth.userProfile)
 
   const [fetchCategories] = useFetch(async () => {
     const response = await CategoryService.getAll();
@@ -44,7 +47,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchUser();
+    // fetchUser();
   }, []);
 
   const handleSearchSubmit = () => {
@@ -66,7 +69,6 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
   return (
     <div className="wrapper">
       <Header
-        user={user}
         searchValue={searchValue}
         onSearchValueChange={(e) => setSearchValue(e.target.value)}
         onSearchSubmit={handleSearchSubmit}
