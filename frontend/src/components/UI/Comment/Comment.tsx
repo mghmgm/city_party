@@ -2,11 +2,11 @@ import { FC } from 'react';
 import classes from './Comment.module.scss';
 import { IReview } from '../../../types/types';
 
-interface CommentProps {
+interface ReviewProps {
   comment: IReview;
 }
 
-const Comment: FC<CommentProps> = ({ comment }) => {
+const Review: FC<ReviewProps> = ({ comment }) => {
   return (
     <div className={classes.comment}>
       <div>
@@ -37,4 +37,4 @@ const Comment: FC<CommentProps> = ({ comment }) => {
   );
 };
 
-export default Comment;
+export default Review;

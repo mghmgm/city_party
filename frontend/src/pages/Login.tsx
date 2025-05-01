@@ -1,21 +1,19 @@
-import { FC, useContext, useState } from 'react';
+import { FC, useState } from 'react';
 import Form from '../components/UI/Form/Form';
 import Button from '../components/UI/Button/Button';
 import Input from '../components/UI/Input/Input';
 import { Link, useNavigate } from 'react-router-dom';
-import AuthService from '../API/AuthService';
-import { AuthContext } from '../router/context';
+import { useAppDispatch } from '../store/store';
 
 const RegistrationForm: FC = () => {
-  const { setIsAuth } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await AuthService.login(username, password);
-    setIsAuth(true);
     navigate('/profile');
   };
 

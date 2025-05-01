@@ -5,7 +5,7 @@ export const EventAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: `${import.meta.env.VITE_API_URL}`,
   }),
-  tagTypes: ['Event'],
+  tagTypes: ['Event', 'Review'],
   endpoints: (build) => ({
 
     // подгрузить все события
@@ -33,6 +33,24 @@ export const EventAPI = createApi({
         url: `/events/${category}`
       }),
       providesTags: ['Event']
-    }) 
+    }),
+
+    // подгрузить отзывы к событию
+    fetchReviews: build.query({
+      query: (id) => ({
+        url: `/events/${id}/reviews/`
+      }),
+      providesTags: ['Event', 'Review']
+    }),
+
+    // редактирование отзыва (+для отклонения/принятия админом)
+    updateReview: build.mutation({
+      query: ({eventId, review}) => ({
+        url: `/events/${eventId}/reviews/`,
+        method: 'PUT',
+        body: review,
+      }),
+      invalidatesTags: ['Event', 'Review']
+    }),
   })
 })
