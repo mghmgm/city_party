@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IEvent, IGallery, ITicketType } from '../API/types';
+import { IEvent, IGallery, ITicketType } from '../types/types';
 import { hostname } from '../config';
 
 interface EventInfoProps {
@@ -36,7 +36,7 @@ const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes }) => {
           {ticketTypes.map((ticket) => (
             <div className="event__ticket-card">
               <p>{ticket.description}</p>
-              <p className='event__price'>{ticket.price} руб.</p>
+              <p className="event__price">{ticket.price} руб.</p>
             </div>
           ))}
         </div>

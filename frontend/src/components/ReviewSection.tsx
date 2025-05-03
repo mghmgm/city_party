@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { IReviews } from '../API/types';
+import { IReviews } from '../types/types';
 import Comment from './UI/Comment/Comment';
 import Input from './UI/Input/Input';
 import Select from './UI/Select/Select';
 import Button from './UI/Button/Button';
 
-interface CommentSectionProps {
-  comments: IReviews;
+interface ReviewSectionProps {
+  reviews: IReviews;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   commentInput: string;
   setCommentInput: (value: string) => void;
@@ -14,18 +14,17 @@ interface CommentSectionProps {
   setSelectedRating: (value: string) => void;
 }
 
-const CommentSection: FC<CommentSectionProps> = ({
-  comments,
+const ReviewSection: FC<ReviewSectionProps> = ({
+  reviews,
   onSubmit,
   commentInput,
   setCommentInput,
   selectedRating,
   setSelectedRating,
 }) => {
-  console.log('comments', comments);
   return (
     <div className="comments content">
-      <h2>Отзывы ({comments.count})</h2>
+      <h2>Отзывы ({reviews.count})</h2>
 
       <form className="comments__form" onSubmit={onSubmit}>
         <div className="comments__rating">
@@ -57,12 +56,12 @@ const CommentSection: FC<CommentSectionProps> = ({
       </form>
 
       <div className="comments__containter">
-        {comments.reviews.map((comment) => (
-          <Comment comment={comment} />
+        {reviews.reviews.map((review) => (
+          <Comment review={review} />
         ))}
       </div>
     </div>
   );
 };
 
-export default CommentSection;
+export default ReviewSection;

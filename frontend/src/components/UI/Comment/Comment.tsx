@@ -1,19 +1,19 @@
 import { FC } from 'react';
 import classes from './Comment.module.scss';
-import { IReview } from '../../../API/types';
+import { IReview } from '../../../types/types';
 
-interface CommentProps {
-  comment: IReview;
+interface ReviewProps {
+  review: IReview;
 }
 
-const Comment: FC<CommentProps> = ({ comment }) => {
+const Review: FC<ReviewProps> = ({ review }) => {
   return (
     <div className={classes.comment}>
       <div>
         <img alt="" />
       </div>
       <div>
-        <p className={classes.author}>{comment.author_username}</p>
+        <p className={classes.author}>{review.author_username}</p>
 
         <div className={classes.rating}>
           {Array.from({ length: 5 }, (_, index) => (
@@ -22,7 +22,7 @@ const Comment: FC<CommentProps> = ({ comment }) => {
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
-              fill={index < comment.rating ? '#2929C8' : 'rgba(41, 41, 200, 0.5)'}
+              fill={index < review.rating ? '#2929C8' : 'rgba(41, 41, 200, 0.5)'}
               className="bi bi-star-fill"
               viewBox="0 0 16 16"
             >
@@ -31,10 +31,10 @@ const Comment: FC<CommentProps> = ({ comment }) => {
           ))}
         </div>
 
-        <p className={classes.desc}>{comment.description}</p>
+        <p className={classes.desc}>{review.description}</p>
       </div>
     </div>
   );
 };
 
-export default Comment;
+export default Review;

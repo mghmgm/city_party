@@ -1,64 +1,45 @@
-import { useEffect, useState } from 'react';
-import { useFetch } from '../hooks/useFetch';
-import EventService from '../API/EventService';
 import EventsSection from '../components/EventsSection';
-import Banner from '../components/Banner';
-import { BannerService } from '../API/BannerService';
-import TopSection from '../components/TopSection';
-import PlacesSection from '../components/PlacesSection';
-import PlaceService from '../API/PlaceService';
 import Layout from './layout/Layout';
-import { IBanner, IEvent, IPlace } from '../API/types';
+import { EventAPI } from '../store/EventAPI';
+import { IBanner, IEvent, IPlace } from '../types/types';
+import TopSection from '../components/TopSection';
+import { BannerAPI } from '../store/BannerAPI';
+import Banner from '../components/Banner';
+import PlacesSection from '../components/PlacesSection';
+import { PlaceAPI } from '../store/PlaceAPI';
 
 const Home = () => {
-  const [events, setEvents] = useState<IEvent[]>([
-    { id: 1, title: '', description: '', cover_image_url: '' },
-    { id: 2, title: '', description: '', cover_image_url: '' },
-    { id: 3, title: '', description: '', cover_image_url: '' },
-  ]);
-
-  const [banners, setBanners] = useState<IBanner[]>([
-    { id: 1, title: '', description: '', image_url: '' },
-  ]);
-
-  const [places, setPlaces] = useState<IPlace[]>([
-    { id: 1, name: '', description: '', photo_url: '', address: '' },
-    { id: 2, name: '', description: '', photo_url: '', address: '' },
-    { id: 3, name: '', description: '', photo_url: '', address: '' },
-  ]);
-
-  const RandomBanner =
-    banners.length > 0 ? banners[Math.floor(Math.random() * banners.length)] : null;
-
-  const [fetchEvents] = useFetch(async () => {
-    const response = await EventService.getAll(3);
-    setEvents(response);
+  const { data: events, isLoading: isEventsLoading } = EventAPI.useFetchEventsQuery({limit: 3});
+  const { data: topEvents, isLoading: isTopLoading } = EventAPI.useFetchEventsQuery({
+    limit: 3,
+    ordering: 'rating',
   });
+  const {data: banner, isLoading: isBannerLoading } = BannerAPI.useFetchRandomBannerQuery()
+  const {data: places, isLoading: isPlacesLoading } = PlaceAPI.useFetchPlacesQuery(3)
 
-  const [fetchPlaces] = useFetch(async () => {
-    const response = await PlaceService.getAll(3);
-    setPlaces(response);
-  });
+  const defaultEvents: IEvent[] = [
+    { id: 1, title: '', description: '', cover_image_url: '', reviews_count: 0 },
+    { id: 2, title: '', description: '', cover_image_url: '', reviews_count: 0 },
+    { id: 3, title: '', description: '', cover_image_url: '', reviews_count: 0 },
+  ];
+  const defaultBanner: IBanner[] = [
+    { id: 1, title: "", description: "", image_url: ""},
+  ];
+  const defaultPlace: IPlace[] = [
+    { id: 1, name: "", description: "", photo_url: "", address: ""},
+  ];
 
-  const [fetchBanner] = useFetch(async () => {
-    const response = await BannerService.getAll();
-    if (response) {
-      setBanners(response);
-    }
-  });
-
-  useEffect(() => {
-    fetchEvents();
-    fetchBanner();
-    fetchPlaces();
-  }, []);
+  const shownEvents = isEventsLoading ? defaultEvents : events || [];
+  const shownTop = isTopLoading ? defaultEvents : topEvents || [];
+  const shownBanner = isBannerLoading ? defaultBanner : banner || [];
+  const shownPlaces = isPlacesLoading ? defaultPlace : places || [];
 
   return (
     <Layout navIsVisible={true}>
-      <Banner banner={RandomBanner ? RandomBanner : banners[0]} />
-      <EventsSection events={events} />
-      <TopSection events={events} />
-      {places && <PlacesSection places={places} />}
+      <Banner banner={shownBanner}/>
+      <EventsSection events={shownEvents} />
+      <TopSection events={shownTop} />
+      <PlacesSection places={shownPlaces}/>
     </Layout>
   );
 };

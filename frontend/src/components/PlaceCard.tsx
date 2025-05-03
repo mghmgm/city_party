@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IPlace } from '../API/types';
+import { IPlace } from '../types/types';
 import { hostname } from '../config';
 import image from '../assets/image.png';
 

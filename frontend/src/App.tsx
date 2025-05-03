@@ -1,10 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { routes, privateRoutes, publicRoutes } from './router/routes';
-import { useContext } from 'react';
-import { AuthContext } from './router/context';
+import { useAppDispatch, useAppSelector } from './store/store';
+import { useEffect } from 'react';
+import { getUser } from './store/AuthSlice';
 
 function App() {
-  const { isAuth } = useContext(AuthContext);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.userProfile);
+
+  useEffect(() => {
+    dispatch(getUser());
+  }, []);
 
   return (
     <div>
@@ -13,7 +19,7 @@ function App() {
           {routes.map((route) => (
             <Route path={route.path} element={route.element} key={route.path} />
           ))}
-          {isAuth
+          {user
             ? privateRoutes.map((route) => (
                 <Route path={route.path} element={route.element} key={route.path} />
               ))

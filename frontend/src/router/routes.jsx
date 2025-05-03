@@ -4,10 +4,12 @@ import Registration from '../pages/Registration';
 import Login from '../pages/Login';
 import ProfilePage from '../pages/ProfilePage';
 import NotFound from '../pages/NotFound';
+import Layout from '../pages/layout/Layout';
 
 export const routes = [
   { path: '/', element: <Home /> },
-  { path: 'events/:id', element: <EventPage /> },
+  { path: '/events/:id', element: <EventPage /> },
+  { path: '/events/category/:slug', element: <Layout navIsVisible={true} /> },
   { path: '*', element: <NotFound /> },
 ];
 

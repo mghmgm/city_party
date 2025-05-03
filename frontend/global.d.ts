@@ -7,3 +7,11 @@ declare module '*.png';
 declare module '*.svg';
 declare module '*.jpeg';
 declare module '*.jpg';
+
+interface ImportMetaEnv {
+  VITE_API_URL: string;
+}
+
+interface ImportMeta {
+  env: ImportMetaEnv;
+}

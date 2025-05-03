@@ -1,16 +1,16 @@
 import { FC } from 'react';
-import { IEvent } from '../API/types';
+import { IEvent } from '../types/types';
 import { hostname } from '../config';
 import { Link } from 'react-router-dom';
-import image from '../assets/image.png'
+import image from '../assets/image.png';
 
 interface EventCardProps {
   event: IEvent;
 }
 
 const EventCard: FC<EventCardProps> = ({ event }) => {
-  const imgUrl = event.cover_image_url? hostname + event.cover_image_url: image;
-  const hrefId = `${event.id}`
+  const imgUrl = event.cover_image_url ? hostname + event.cover_image_url : image;
+  const hrefId = `${event.id}`;
 
   return (
     <Link className="events__event-card" key={event.id} to={`events/${hrefId}`}>

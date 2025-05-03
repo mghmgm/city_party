@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { IEvent } from '../API/types';
+import { IEvent } from '../types/types';
 import { hostname } from '../config';
 
 interface TopSectionProps {

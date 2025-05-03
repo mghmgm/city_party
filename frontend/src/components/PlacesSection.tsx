@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import Button from './UI/Button/Button';
-import { IPlace } from '../API/types';
+import { IPlace } from '../types/types';
 import PlaceCard from './PlaceCard';
 
 interface PlacesSectionProps {
@@ -13,10 +13,12 @@ const PlacesSection: FC<PlacesSectionProps> = ({ places }) => {
       <h2>Какие места посетить?</h2>
       <div className="places__container">
         {places.map((place, index) => (
-          <PlaceCard place={place} key={index}/>
+          <PlaceCard place={place} key={index} />
         ))}
       </div>
-      <Button styleType="sub" className='places__btn'>Показать еще</Button>
+      <Button styleType="sub" className="places__btn">
+        Показать еще
+      </Button>
     </section>
   );
 };
