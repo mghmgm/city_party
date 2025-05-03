@@ -8,9 +8,10 @@ interface ButtonProps {
   children?: ReactNode,
   onClick?: () => void;
   type?: "button" | "submit" | "reset";
+  isDisabled?: boolean;
 }
 
-const Button: FC<ButtonProps> = ({ href, children, styleType = 'main', className='', onClick, type}) => {
+const Button: FC<ButtonProps> = ({ href, children, styleType = 'main', className='', onClick, type, isDisabled}) => {
   const buttonClass = styleType === 'main' ? 'button-main' : 'button-sub';
   const finalClassName = `${className} ${classes[buttonClass]}`;
 
@@ -19,7 +20,7 @@ const Button: FC<ButtonProps> = ({ href, children, styleType = 'main', className
       {children}
     </a>
   ) : (
-    <button className={finalClassName} onClick={onClick} type={type}>{children}</button>
+    <button className={finalClassName} onClick={onClick} type={type} disabled={isDisabled}>{children}</button>
   );
 };
 

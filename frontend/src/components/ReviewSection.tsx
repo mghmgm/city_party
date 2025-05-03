@@ -22,7 +22,6 @@ const ReviewSection: FC<ReviewSectionProps> = ({
   selectedRating,
   setSelectedRating,
 }) => {
-  console.log('comments', reviews);
   return (
     <div className="comments content">
       <h2>Отзывы ({reviews.count})</h2>
@@ -65,4 +64,4 @@ const ReviewSection: FC<ReviewSectionProps> = ({
   );
 };
 
-export default ReviewSectionProps;
+export default ReviewSection;

@@ -3,17 +3,17 @@ import classes from './Comment.module.scss';
 import { IReview } from '../../../types/types';
 
 interface ReviewProps {
-  comment: IReview;
+  review: IReview;
 }
 
-const Review: FC<ReviewProps> = ({ comment }) => {
+const Review: FC<ReviewProps> = ({ review }) => {
   return (
     <div className={classes.comment}>
       <div>
         <img alt="" />
       </div>
       <div>
-        <p className={classes.author}>{comment.author_username}</p>
+        <p className={classes.author}>{review.author_username}</p>
 
         <div className={classes.rating}>
           {Array.from({ length: 5 }, (_, index) => (
@@ -22,7 +22,7 @@ const Review: FC<ReviewProps> = ({ comment }) => {
               xmlns="http://www.w3.org/2000/svg"
               width="16"
               height="16"
-              fill={index < comment.rating ? '#2929C8' : 'rgba(41, 41, 200, 0.5)'}
+              fill={index < review.rating ? '#2929C8' : 'rgba(41, 41, 200, 0.5)'}
               className="bi bi-star-fill"
               viewBox="0 0 16 16"
             >
@@ -31,7 +31,7 @@ const Review: FC<ReviewProps> = ({ comment }) => {
           ))}
         </div>
 
-        <p className={classes.desc}>{comment.description}</p>
+        <p className={classes.desc}>{review.description}</p>
       </div>
     </div>
   );
