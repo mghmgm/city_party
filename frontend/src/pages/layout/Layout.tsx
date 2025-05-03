@@ -35,6 +35,9 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
 
   useEffect(() => {
     fetchCategories();
+    if (slug) {
+      setSelectedCategory(slug);
+    }
   }, []);
 
   useEffect(() => {
@@ -73,7 +76,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
         </div>
       );
     }
-    if (selectedCategory && categoryEvents!.length>0) {
+    if (selectedCategory && categoryEvents && categoryEvents!.length>0) {
       return (
         <div className="catalog">
           {categoryEvents!.map((event, idx) => (
