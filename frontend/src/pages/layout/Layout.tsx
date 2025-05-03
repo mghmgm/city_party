@@ -3,12 +3,11 @@ import Header from '../../components/UI/Header/Header';
 import { useFetch } from '../../hooks/useFetch';
 import Footer from '../../components/UI/Footer/Footer';
 import Navigation from '../../components/Navigation';
-import { CategoryService } from '../../API/CategoryService';
-// import AuthService from '../../API/AuthService';
-import { ICategory, IUserProfile } from '../../types/types';
-import EventService from '../../API/EventService';
+import { CategoryService } from '../../store/CategoryService';
+import { ICategory } from '../../types/types';
 import EventCard from '../../components/EventCard';
-import { useAppSelector } from '../../store/store';
+import { EventAPI } from '../../store/EventAPI';
+import { useParams } from 'react-router-dom';
 
 interface LayoutProps {
   children: ReactNode;
@@ -17,54 +16,82 @@ interface LayoutProps {
 
 const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
   const [categories, setCategories] = useState<ICategory[]>([]);
-  // const [user, setUser] = useState<IUserProfile | null>(null);
   const [searchValue, setSearchValue] = useState('');
-  const [searchedEvents, setSearchedEvents] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [categoryEvents, setCategoryEvents] = useState([]);
+  const { slug } = useParams<{ slug: string }>();
 
-  const user = useAppSelector(state=>state.auth.userProfile)
+  const { data: categoryEvents, refetch: refetchCategoryEvents } =
+    EventAPI.useFetchEventsByCategoryQuery(selectedCategory);
+
+  const { data: searchedEvents, refetch: refetchSearchEvents } = EventAPI.useSearchEventsQuery(
+    searchValue,
+    { skip: searchValue.trim() === '' }
+  );
 
   const [fetchCategories] = useFetch(async () => {
     const response = await CategoryService.getAll();
     setCategories(response);
   });
 
-  const [fetchUser] = useFetch(async () => {
-    const response = await AuthService.getCurrentUser();
-    setUser(response);
-  });
-
-  const [fetchSearchEvents] = useFetch(async () => {
-    const response = await EventService.getBySearch(searchValue);
-    setSearchedEvents(response);
-  });
-
-  const [fetchCategoryEvents] = useFetch(async () => {
-    const response = await EventService.getByCategory(selectedCategory);
-    setCategoryEvents(response);
-  });
-
   useEffect(() => {
     fetchCategories();
-    // fetchUser();
   }, []);
 
-  const handleSearchSubmit = () => {
-    if (searchValue.trim() === '') {
-      setSearchedEvents([]);
-      return;
+  useEffect(() => {
+    if (slug) {
+      setSelectedCategory(slug);
+    } else {
+      setSelectedCategory('');
     }
-    fetchSearchEvents();
+  }, [slug]);
+
+  const handleSearchSubmit = () => {
     setSelectedCategory('');
+    if (searchValue.trim() === '') {
+      refetchSearchEvents();
+    } else {
+      refetchSearchEvents();
+    }
   };
 
   const handleCategoryClick = (slug: string) => {
     setSelectedCategory(slug);
     setSearchValue('');
-    setSearchedEvents([]);
-    fetchCategoryEvents(slug);
+    refetchCategoryEvents();
   };
+
+  const getEventsToDisplay = () => {
+    if (searchValue.trim() === '' && selectedCategory === '') {
+      return children;
+    }
+    if (searchValue.trim() !== '' && searchedEvents) {
+      return (
+        <div className="catalog">
+          {searchedEvents.map((event, idx) => (
+            <EventCard event={event} key={idx} />
+          ))}
+        </div>
+      );
+    }
+    if (selectedCategory && categoryEvents!.length>0) {
+      return (
+        <div className="catalog">
+          {categoryEvents!.map((event, idx) => (
+            <EventCard event={event} key={idx} />
+          ))}
+        </div>
+      );
+    }
+    return <h1>Нет подходящих мероприятий.</h1>;
+  };
+
+  useEffect(() => {
+    if (selectedCategory) {
+      refetchCategoryEvents();
+    } else {
+      refetchCategoryEvents();
+    }
+  }, [selectedCategory, refetchCategoryEvents]);
 
   return (
     <div className="wrapper">
@@ -80,21 +107,11 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
           onLinkClick={handleCategoryClick}
         />
       )}
-      {searchedEvents.length > 0 ? (
-        <main className="mt-60">
-          {searchedEvents.map((event, idx) => (
-            <EventCard event={event} key={idx} />
-          ))}
-        </main>
-      ) : selectedCategory !== '' ? (
-        <main className="mt-60">
-          {categoryEvents.map((event, idx) => (
-            <EventCard event={event} key={idx} />
-          ))}
-        </main>
-      ) : (
-        <main>{children}</main>
-      )}
+
+      <main className="mt-60">
+        {getEventsToDisplay()}
+      </main>
+
       <Footer />
     </div>
   );

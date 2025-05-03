@@ -15,10 +15,10 @@ const Navigation: FC<NavigationProps> = ({ categories, selectedCategory, onLinkC
       <img src={search} alt="search" className="navigation__mob-search" />
       {categories.map((category, index) => (
         <Link
-          to={category.slug}
+          to={`/events/category/${category.slug}`}
           key={index}
           onClick={(e) => {
-            e.preventDefault();
+            
             onLinkClick(category.slug);
           }}
           className={category.slug == selectedCategory ? 'link-active' : ''}

@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { IEvent, IReview } from '../types/types';
 
 export const EventAPI = createApi({
   reducerPath: 'eventAPI',
@@ -7,51 +8,61 @@ export const EventAPI = createApi({
   }),
   tagTypes: ['Event', 'Review'],
   endpoints: (build) => ({
-
     // подгрузить все события
-    fetchEvents: build.query({
-      query: ({limit, ordering = ''}) => ({
+    fetchEvents: build.query<IEvent[], { limit: number; ordering?: string }>({
+      query: ({ limit, ordering = '' }) => ({
         url: `/events`,
         params: {
-          _limit: limit,
-          ordering: ordering || ''
-        }
+          limit: limit.toString(),
+          ordering: ordering || '',
+        },
       }),
       providesTags: ['Event'],
     }),
 
     // подгрузить событие по айди
-    fetchEventById: build.query({
+    fetchEventById: build.query<IEvent, number>({
       query: (id) => ({
-        url: `/events/${id}`
+        url: `/events/${id}`,
       }),
       providesTags: ['Event'],
     }),
 
     // подгрузить события по категории
-    fetchEventsByCategory: build.query({
+    fetchEventsByCategory: build.query<IEvent[], string>({
       query: (category) => ({
-        url: `/events/${category}`
+        url: `/events/category/${category}`,
       }),
-      providesTags: ['Event']
+      providesTags: ['Event'],
+    }),
+
+    // подгрузить события по поиску
+    searchEvents: build.query<IEvent[], string>({
+      query: (searchValue) => ({
+        url: `/events`,
+        params: {
+          search: searchValue,
+        },
+      }),
+      providesTags: ['Event'],
     }),
 
     // подгрузить отзывы к событию
-    fetchReviews: build.query({
+    fetchReviews: build.query<IReview[], number>({
       query: (id) => ({
-        url: `/events/${id}/reviews/`
+        url: `/events/${id}/reviews/`,
       }),
-      providesTags: ['Event', 'Review']
+      providesTags: ['Event', 'Review'],
     }),
 
     // редактирование отзыва (+для отклонения/принятия админом)
-    updateReview: build.mutation({
-      query: ({eventId, review}) => ({
-        url: `/events/${eventId}/reviews/`,
+    updateReview: build.mutation<IReview, { eventId: number; reviewId: number; data: Partial<IReview> }>({
+      query: ({ eventId, reviewId, data }) => ({
+        url: `/events/${eventId}/reviews/${reviewId}`,
         method: 'PUT',
-        body: review,
+        body: data,
       }),
-      invalidatesTags: ['Event', 'Review']
+      invalidatesTags: ['Event', 'Review'],
     }),
-  })
-})
+  }),
+});

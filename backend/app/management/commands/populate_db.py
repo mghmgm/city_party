@@ -69,10 +69,10 @@ class Command(BaseCommand):
     help = "Populates the database with fake data"
 
     def handle(self, *args, **kwargs):
-        self.create_users(1)
+        # self.create_users(1)
         # self.create_categories()
         # self.create_events(1)
-        # self.create_reviews(1)
+        self.create_reviews(3)
         # self.create_places(1)
         # self.create_banners(1)
         # self.create_companies(1)
@@ -200,20 +200,14 @@ class Command(BaseCommand):
                 event=event,
                 is_visible=fake.boolean(),
             )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f'Banner "{banner.title}" created for company {company.name}.'
-                )
-            )
 
     def create_companies(self, number):
         for _ in range(number):
-            company = Company.objects.create(
+            Company.objects.create(
                 name=fake.company(),
                 email=fake.email(),
                 tin=fake.random_int(min=1000000000, max=9999999999),
             )
-            self.stdout.write(self.style.SUCCESS(f"Company {company.name} created."))
 
     def create_tickets_types(self, number):
         events = Event.objects.all()
@@ -223,7 +217,7 @@ class Command(BaseCommand):
             future_date = datetime.now() + timedelta(days=random.randint(1, 90))
             available_quantity = fake.random_int(1, 400)
 
-            ticket_type = TicketType.objects.create(
+            TicketType.objects.create(
                 event=event,
                 description=random.choice(ticket_types_desc),
                 price=fake.random_int(100, 5000, 100),
@@ -231,26 +225,14 @@ class Command(BaseCommand):
                 total_quantity=fake.random_int(available_quantity, 400),
             )
 
-        self.stdout.write(
-            self.style.SUCCESS(
-                f'Ticket Type "{ticket_type}" created for event "{event.title}".'
-            )
-        )
-
     def create_tickets(self, number):
         ticket_types = list(TicketType.objects.all())
         users = list(UserProfile.objects.all())
         statuses = [status[0] for status in Ticket.PaymentStatus.choices]
 
         for _ in range(number):
-            ticket = Ticket.objects.create(
+            Ticket.objects.create(
                 ticket_type=random.choice(ticket_types),
                 owner=random.choice(users),
                 payment_status=random.choice(statuses),
-            )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f'Создан билет на событие "{ticket.ticket_type.event.title}", '
-                    f'владелец: {ticket.owner or "—"}, статус: {ticket.payment_status}'
-                )
             )
