@@ -10,10 +10,11 @@ export const EventAPI = createApi({
 
     // подгрузить все события
     fetchEvents: build.query({
-      query: (limit) => ({
+      query: ({limit, ordering = ''}) => ({
         url: `/events`,
         params: {
           _limit: limit,
+          ordering: ordering || ''
         }
       }),
       providesTags: ['Event'],
