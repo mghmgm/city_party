@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.utils import timezone
 from django.core.management.base import BaseCommand
 from faker import Faker
 from django.contrib.auth.models import User
@@ -71,13 +72,15 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # self.create_users(1)
         # self.create_categories()
-        # self.create_events(1)
-        self.create_reviews(3)
-        # self.create_places(1)
+        # self.create_events(5)
+        # self.create_reviews(5)
+        # self.create_places(5)
         # self.create_banners(1)
-        # self.create_companies(1)
-        # self.create_tickets_types(1)
-        # self.create_tickets(1)
+        # self.create_companies(6)
+        self.create_tickets_types(10)
+        # self.create_tickets(10)
+        # self.create_fake_photo(1)
+        # self.create_fake_gallery(6)
 
     def create_users(self, number):
         for _ in range(number):
@@ -112,24 +115,32 @@ class Command(BaseCommand):
                 slug=slugify(slug),
             )
 
-    def create_fake_photo(self):
-        return Photo.objects.create(
-            title=fake.sentence(nb_words=3),
-            slug=fake.slug(),
-            caption=fake.text(max_nb_chars=100),
-            is_public=True,
-        )
+    def create_fake_photo(self, number):
+      for _ in range(number):
+          photo = Photo.objects.create(
+              title=fake.sentence(nb_words=3),
+              slug=fake.slug(),
+              caption=fake.text(max_nb_chars=100),
+              is_public=True,
+              image=create_fake_image(),
+          )
+      return photo
 
-    def create_fake_gallery(self):
-        gallery = Gallery.objects.create(
-            title=fake.sentence(nb_words=3),
-            slug=fake.slug(),
-            description=fake.text(max_nb_chars=200),
-            is_public=True,
-        )
-        photos = [self.create_fake_photo() for _ in range(random.randint(1, 5))]
-        gallery.photos.set(photos)
-        return gallery
+    def create_fake_gallery(self, number):
+      for _ in range(number):
+          gallery = Gallery.objects.create(
+              title=fake.sentence(nb_words=3),
+              slug=fake.slug(),
+              description=fake.text(max_nb_chars=200),
+              is_public=True,
+          )
+          photos = []
+          for _ in range(3):
+              photo = self.create_fake_photo(1)
+              if photo:
+                  photos.append(photo)
+          gallery.photos.set(photos)
+          return gallery
 
     def create_events(self, number):
         all_categories = list(Category.objects.all())
@@ -145,6 +156,7 @@ class Command(BaseCommand):
                 gallery=gallery,
                 description=fake.text(max_nb_chars=1000),
                 address=fake.address(),
+                is_published = True,
             )
             event.categories.set(selected_categories)
 
@@ -187,13 +199,13 @@ class Command(BaseCommand):
             event = (
                 events[fake.random_int(0, len(events) - 1)] if events.exists() else None
             )
-            pub_date = fake.date_this_year()
+            pub_date = timezone.make_aware(fake.date_time_this_year())
             end_date = pub_date + timedelta(days=fake.random_int(1, 30))
 
-            banner = Banner.objects.create(
-                title=event.title if event else fake.sentence(max_nb_chars=20),
-                description=fake.text(max_nb_chars=50),
-                image=fake.image_url(),
+            Banner.objects.create(
+                title=event.title if event else fake.sentence(max_nb_chars=10),
+                description=fake.text(max_nb_chars=20),
+                image=create_fake_image(),
                 pub_date=pub_date,
                 end_date=end_date,
                 company=company,

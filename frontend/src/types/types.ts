@@ -11,6 +11,7 @@ export interface IBanner {
   title: string;
   description: string;
   image_url: string;
+  event_id: number;
 }
 
 export interface IPlace {
