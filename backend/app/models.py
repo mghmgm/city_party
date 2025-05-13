@@ -75,6 +75,7 @@ class Review(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="reviews", verbose_name="Событие")
     status = models.CharField(default=Status.ON_MODERATION, choices=Status, verbose_name="Статус")
+
     
     def __str__(self):
         return f"review by {self.author.user.username} for {self.event.title}"

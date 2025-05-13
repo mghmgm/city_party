@@ -41,6 +41,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     model = Review
     fields = [
       "id",
+      "event_id",
       "description",
       "rating",
       "author_username",

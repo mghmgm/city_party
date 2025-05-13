@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { IReviews } from '../types/types';
+import React, { FC } from 'react';
+import { IReview, IReviews } from '../types/types';
 import Comment from './UI/Comment/Comment';
 import Input from './UI/Input/Input';
 import Select from './UI/Select/Select';
@@ -12,6 +12,7 @@ interface ReviewSectionProps {
   setCommentInput: (value: string) => void;
   selectedRating: string;
   setSelectedRating: (value: string) => void;
+  onDelete: (e: React.MouseEvent, review: IReview) => void;
 }
 
 const ReviewSection: FC<ReviewSectionProps> = ({
@@ -21,6 +22,7 @@ const ReviewSection: FC<ReviewSectionProps> = ({
   setCommentInput,
   selectedRating,
   setSelectedRating,
+  onDelete
 }) => {
   return (
     <div className="comments content">
@@ -57,7 +59,7 @@ const ReviewSection: FC<ReviewSectionProps> = ({
 
       <div className="comments__containter">
         {reviews.reviews.map((review) => (
-          <Comment review={review} />
+          <Comment review={review} onDelete={onDelete}/>
         ))}
       </div>
     </div>

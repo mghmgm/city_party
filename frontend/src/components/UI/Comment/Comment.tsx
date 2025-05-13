@@ -1,12 +1,18 @@
 import { FC } from 'react';
 import classes from './Comment.module.scss';
 import { IReview } from '../../../types/types';
+import Button from '../Button/Button';
+import { useAppSelector } from '../../../store/store';
+import { EventAPI } from '../../../store/EventAPI';
 
 interface ReviewProps {
   review: IReview;
+  onDelete: (e: React.MouseEvent) => void;
 }
 
-const Review: FC<ReviewProps> = ({ review }) => {
+const Review: FC<ReviewProps> = ({ review, onDelete }) => {
+  const user = useAppSelector(state=>state.auth.userProfile)
+  
   return (
     <div className={classes.comment}>
       <div>
@@ -31,7 +37,14 @@ const Review: FC<ReviewProps> = ({ review }) => {
           ))}
         </div>
 
+        {user && review.author_username === user.username
+        ?
+          <Button className={classes.deleteBtn} onClick={(e)=>onDelete(e, review)}>Удалить</Button>
+        : null
+        }
+        
         <p className={classes.desc}>{review.description}</p>
+        
       </div>
     </div>
   );

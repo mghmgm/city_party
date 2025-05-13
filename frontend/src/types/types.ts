@@ -47,6 +47,7 @@ export interface ITicketType {
 
 export interface IReview {
   id: number;
+  event_id: number;
   description: string;
   rating: number;
   author_username: string;

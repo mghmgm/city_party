@@ -76,8 +76,15 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             serializer = ReviewSerializer(data=request.data)
             if serializer.is_valid():
+              
+                #  пока не реализую кнопку у админа и предупреждение автору отзыва
+                
+                # serializer.save(
+                #     author=request.user.userprofile, event=event, status="on_moderation"
+                # )
+                
                 serializer.save(
-                    author=request.user.userprofile, event=event, status="on_moderation"
+                    author=request.user.userprofile, event=event, status="accepted"
                 )
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)

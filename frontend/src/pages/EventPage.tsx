@@ -12,16 +12,27 @@ const EventPage: FC = () => {
   const [commentInput, setCommentInput] = useState('');
   const [selectedRating, setSelectedRating] = useState('5');
 
-  const defaultReview: IReview = {id:1, description:'', rating: 5, author_username: 'user', pub_date: new Date('01-01-2025')}
+  const defaultReview: IReview = {
+    id: 1,
+    description: '',
+    rating: 5,
+    author_username: 'user',
+    pub_date: new Date('01-01-2025'),
+  };
 
-  const {data: event } = EventAPI.useFetchEventByIdQuery(eventId)
-  const {data: gallery } = EventAPI.useFetchGalleryQuery(eventId)
-  const {data: ticketTypes } = EventAPI.useFetchTicketTypesQuery(eventId)
-  const {data: reviews, isLoading: isReviewsLoading, refetch: refetchReviews } = EventAPI.useFetchReviewsQuery(eventId)
+  const { data: event } = EventAPI.useFetchEventByIdQuery(eventId);
+  const { data: gallery } = EventAPI.useFetchGalleryQuery(eventId);
+  const { data: ticketTypes } = EventAPI.useFetchTicketTypesQuery(eventId);
+  const {
+    data: reviews,
+    isLoading: isReviewsLoading,
+    refetch: refetchReviews,
+  } = EventAPI.useFetchReviewsQuery(eventId);
 
   const [createReview] = EventAPI.useCreateReviewMutation();
+  const [deleteReview] = EventAPI.useDeleteReviewMutation();
 
-  const shownReviews = isReviewsLoading ? defaultReview : reviews
+  const shownReviews = isReviewsLoading ? defaultReview : reviews;
 
   const saveComment = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,40 +43,49 @@ const EventPage: FC = () => {
       rating: Number(selectedRating),
     };
 
-
     try {
       await createReview({
         eventId: eventId,
         data: newReview,
       }).unwrap();
-  
+
       setCommentInput('');
       setSelectedRating('5');
-  
-      refetchReviews()
+
+      refetchReviews();
     } catch (err: any) {
       if (err.status === 401) {
-        alert('Отзывы могут оставлять только авторизированные пользователи.')
+        alert('Отзывы могут оставлять только авторизированные пользователи.');
       }
-    };
-  }
+    }
+  };
+
+  const deleteComment = async (e: React.MouseEvent, review: IReview) => {
+    e.preventDefault();
+    try {
+      await deleteReview({ eventId: review.event_id, reviewId: review.id }).unwrap();
+      refetchReviews();
+    } catch (error) {
+      console.error('Ошибка при удалении отзыва', error);
+    }
+  };
 
   return (
     <Layout navIsVisible={true}>
-        {event && gallery && ticketTypes && (
-          <EventInfo event={event} gallery={gallery} ticketTypes={ticketTypes} />
-        )}
-        {reviews && (
-          <ReviewSection
+      {event && gallery && ticketTypes && (
+        <EventInfo event={event} gallery={gallery} ticketTypes={ticketTypes} />
+      )}
+      {reviews && (
+        <ReviewSection
           reviews={shownReviews}
           onSubmit={saveComment}
           commentInput={commentInput}
           setCommentInput={setCommentInput}
           selectedRating={selectedRating}
           setSelectedRating={setSelectedRating}
+          onDelete={deleteComment}
         />
-        )}
-        
+      )}
     </Layout>
   );
 };
