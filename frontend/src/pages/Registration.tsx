@@ -16,30 +16,32 @@ const RegistrationForm: FC = () => {
   }
 
   return (
-    <div className="content">
-      <section className="auth">
-        <div>
-          <Link to="/" className='auth__to-home'>На главную</Link>
-          <Form title="Регистрация" onSubmit={handleSubmit}>
-            <div className="auth__content">
-              <Input type="text" label="Имя" id="name" placeholder="Введите ваше имя..." value={name}/>
-              <Input type="text" label="Почта" id="login" placeholder="Введите вашу почту..." value={email}/>
-              <Input type="text" label="Пароль" id="password" placeholder="********" value={password}/>
-              <Input
-                type="checkbox"
-                checked={isSubscribe}
-                label="Подписаться на рассылку об интересных мероприятиях"
-                id="subscription"
-                value={`${isSubscribe}`}
-              />
-            </div>
-            <Button className="auth__btn">Зарегистрироваться</Button>
-            <Link to="/login" className="auth__to-login">
-              У вас уже есть аккаунт?
-            </Link>
-          </Form>
-        </div>
-      </section>
+    <div className='wrapper'>
+      <div className="content">
+        <section className="auth">
+          <div>
+            <Link to="/" className='auth__to-home'>На главную</Link>
+            <Form title="Регистрация" onSubmit={handleSubmit}>
+              <div className="auth__content">
+                <Input type="text" label="Имя" id="name" placeholder="Введите ваше имя..." value={name}/>
+                <Input type="text" label="Почта" id="login" placeholder="Введите вашу почту..." value={email}/>
+                <Input type="text" label="Пароль" id="password" placeholder="********" value={password}/>
+                <Input
+                  type="checkbox"
+                  checked={isSubscribe}
+                  label="Подписаться на рассылку об интересных мероприятиях"
+                  id="subscription"
+                  value={`${isSubscribe}`}
+                />
+              </div>
+              <Button className="auth__btn">Зарегистрироваться</Button>
+              <Link to="/login" className="auth__to-login">
+                У вас уже есть аккаунт?
+              </Link>
+            </Form>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

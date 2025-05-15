@@ -13,6 +13,7 @@ interface ReviewSectionProps {
   selectedRating: string;
   setSelectedRating: (value: string) => void;
   onDelete: (e: React.MouseEvent, review: IReview) => void;
+  onEdit: (e: React.MouseEvent, review: IReview) => void;
 }
 
 const ReviewSection: FC<ReviewSectionProps> = ({
@@ -22,7 +23,8 @@ const ReviewSection: FC<ReviewSectionProps> = ({
   setCommentInput,
   selectedRating,
   setSelectedRating,
-  onDelete
+  onDelete,
+  onEdit,
 }) => {
   return (
     <div className="comments content">
@@ -59,7 +61,7 @@ const ReviewSection: FC<ReviewSectionProps> = ({
 
       <div className="comments__containter">
         {reviews.reviews.map((review) => (
-          <Comment review={review} onDelete={onDelete}/>
+          <Comment review={review} onDelete={onDelete} onEdit={onEdit}/>
         ))}
       </div>
     </div>

@@ -24,38 +24,40 @@ const LoginForm: FC = () => {
   };
 
   return (
-    <div className="content">
-      <section className="auth">
-        <div>
-          <Link to="/" className="auth__to-home">
-            На главную
-          </Link>
-          <Form title="Вход" onSubmit={handleSubmit}>
-            <div className="auth__content">
-              <Input
-                type="text"
-                label="Логин"
-                id="login"
-                placeholder="Введите вашу почту..."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <Input
-                type="password"
-                label="Пароль"
-                id="password"
-                placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-            <Button className="auth__btn">Войти</Button>
-            <Link to="/registration" className="auth__to-login">
-              У вас еще нет аккаунта?
+    <div className='wrapper'>
+      <div className="content">
+        <section className="auth">
+          <div>
+            <Link to="/" className="auth__to-home">
+              На главную
             </Link>
-          </Form>
-        </div>
-      </section>
+            <Form title="Вход" onSubmit={handleSubmit}>
+              <div className="auth__content">
+                <Input
+                  type="text"
+                  label="Логин"
+                  id="login"
+                  placeholder="Введите вашу почту..."
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <Input
+                  type="password"
+                  label="Пароль"
+                  id="password"
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+              <Button className="auth__btn">Войти</Button>
+              <Link to="/registration" className="auth__to-login">
+                У вас еще нет аккаунта?
+              </Link>
+            </Form>
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

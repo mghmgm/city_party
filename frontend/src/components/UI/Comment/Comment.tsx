@@ -3,14 +3,14 @@ import classes from './Comment.module.scss';
 import { IReview } from '../../../types/types';
 import Button from '../Button/Button';
 import { useAppSelector } from '../../../store/store';
-import { EventAPI } from '../../../store/EventAPI';
 
 interface ReviewProps {
   review: IReview;
   onDelete: (e: React.MouseEvent) => void;
+  onEdit: (e: React.MouseEvent) => void;
 }
 
-const Review: FC<ReviewProps> = ({ review, onDelete }) => {
+const Review: FC<ReviewProps> = ({ review, onDelete, onEdit }) => {
   const user = useAppSelector(state=>state.auth.userProfile)
   
   return (
@@ -37,11 +37,16 @@ const Review: FC<ReviewProps> = ({ review, onDelete }) => {
           ))}
         </div>
 
-        {user && review.author_username === user.username
-        ?
-          <Button className={classes.deleteBtn} onClick={(e)=>onDelete(e, review)}>Удалить</Button>
-        : null
-        }
+        {user && review.author_username === user.username ? (
+          <div className={classes.btnContainer}>
+            <Button className={classes.deleteBtn} onClick={(e) => onEdit(e, review)}>
+              Редактировать
+            </Button>
+            <Button className={classes.deleteBtn} onClick={(e) => onDelete(e, review)}>
+              Удалить
+            </Button>
+          </div>
+        ) : null}
         
         <p className={classes.desc}>{review.description}</p>
         

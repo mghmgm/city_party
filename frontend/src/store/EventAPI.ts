@@ -91,8 +91,8 @@ export const EventAPI = createApi({
     // редактирование отзыва
     updateReview: build.mutation<IReview, { eventId: number; reviewId: number; data: Partial<IReview> }>({
       query: ({ eventId, reviewId, data }) => ({
-        url: `/events/${eventId}/reviews/${reviewId}`,
-        method: 'PUT',
+        url: `/events/${eventId}/reviews/${reviewId}/`,
+        method: 'PATCH',
         body: data,
       }),
       invalidatesTags: ['Event', 'Review'],
