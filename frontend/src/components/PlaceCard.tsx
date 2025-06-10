@@ -13,7 +13,7 @@ const PlaceCard: FC<PlaceCardProps> = ({ place }) => {
   return (
     <div className="places__card">
       <img src={imgUrl} alt="" className="places__img" />
-      <p className="places__title">{place.name}</p>
+      <p className="places__card-title">{place.name}</p>
       <p>{place.address}</p>
     </div>
   );

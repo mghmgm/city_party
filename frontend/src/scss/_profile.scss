@@ -7,20 +7,19 @@
 
   &__card {
     border: 1px solid $main-color;
-    padding: 20px;
-    border-radius: 10px;
+    border-radius: 5px;
     position: relative;
     display: flex;
     gap: 30px;
-    max-width: 800px;
+    max-width: 700px;
     width: 100%;
   }
 
   &__avatar {
-    width: 320px;
+    width: 260px;
     height: 320px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 5px;
   }
 
   &__header {
@@ -29,9 +28,7 @@
     top: 0;
     left: 0;
     width: 100%;
-    height: 130px;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    height: 120px;
     z-index: -1;
   }
 
@@ -39,6 +36,7 @@
     color: $light-color;
     z-index: 1;
     padding: 20px;
+    padding-top: 30px;
   }
 
   &__real-name {
@@ -50,9 +48,9 @@
   }
 
   &__about {
-    margin-top: 30px;
+    margin-top: 20px;
     font-size: 1.2rem;
-    padding: 20px;
+    padding: 15px;
   }
 
   &__info {

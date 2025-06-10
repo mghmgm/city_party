@@ -52,13 +52,12 @@
   }
 
   &__to-login {
-    color: $main-color;
     font-weight: 500;
     font-size: 1.2rem;
     display: inline-block;
 
     &:hover {
-      color:  rgba($color: $main-color, $alpha: 0.7);
+      color:  $main-color;
       transition: 0.3s;
     }
 

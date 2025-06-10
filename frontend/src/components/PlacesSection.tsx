@@ -2,6 +2,7 @@ import { FC } from 'react';
 import Button from './UI/Button/Button';
 import { IPlace } from '../types/types';
 import PlaceCard from './PlaceCard';
+import { Link } from 'react-router';
 
 interface PlacesSectionProps {
   places: IPlace[];
@@ -10,15 +11,12 @@ interface PlacesSectionProps {
 const PlacesSection: FC<PlacesSectionProps> = ({ places }) => {
   return (
     <section className="places content">
-      <h2>Какие места посетить?</h2>
+      <Link to="#" className='places__title'>Какие места посетить? {'>'}</Link>
       <div className="places__container">
         {places.map((place, index) => (
           <PlaceCard place={place} key={index} />
         ))}
       </div>
-      <Button styleType="sub" className="places__btn">
-        Показать еще
-      </Button>
     </section>
   );
 };

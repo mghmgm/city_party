@@ -11,24 +11,14 @@ interface BannerProps {
 const Banner: FC<BannerProps> = ({ banner }) => {
   const imgUrl = banner.image_url ? hostname + banner.image_url : image;
 
-  const content = (
-    <>
-      <img src={imgUrl} alt="" className="banner__img" />
-      <div className="banner__info">
-        <h2 className="banner__title">{banner.title}</h2>
-        <p>{banner.description}</p>
-      </div>
-    </>
-  );
-
   return (
     <section className="banner content">
       {banner.event_id ? (
         <Link to={`/events/${banner.event_id}`} style={{ width: '100%', display: 'block' }}>
-          {content}
+          <img src={imgUrl} alt="" className="banner__img" />
         </Link>
       ) : (
-        content
+        <img src={imgUrl} alt="" className="banner__img" />
       )}
     </section>
   );

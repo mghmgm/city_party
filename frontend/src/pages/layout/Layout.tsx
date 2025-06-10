@@ -111,7 +111,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
         />
       )}
 
-      <main className="mt-60">
+      <main>
         {getEventsToDisplay()}
       </main>
 

@@ -4,10 +4,14 @@
   width: 100%;
   border: 1px solid $main-color;
   border-radius: 10px;
-  padding: 70px;
+  padding: 60px;
   margin-top: -100px;
-  background-color: #fff;
-  text-align: center;
+  background-color: $light-color;
+
+  &__title {
+    font-size: 2rem;
+    font-weight: 800;
+  }
 
   @media screen and (max-width:1000px){
     padding: 20px;
@@ -16,16 +20,13 @@
     margin-top: 30px;
   }
 
-  >h2 {
-    color: $main-color;
-  }
-
   &__container{
     display: flex;
     justify-content: space-between;
-    margin-top: 60px;
+    margin-top: 30px;
     gap: 25px;
     overflow: auto;
+    text-align: center;
   }
 
   &__img {
@@ -33,11 +34,10 @@
     min-width: 250px;
     height: 380px;
     object-fit: cover;
-    border-radius: 10px;
+    border-radius: 5px 5px 0px 0px;
   }
 
-  &__title {
-    color: $main-color;
+  &__card-title {
     font-weight: bold;
     font-size: 1.2rem;
     margin-top: 15px;

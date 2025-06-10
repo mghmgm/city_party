@@ -11,8 +11,7 @@
 @use 'scss/profile' as *;
 
 body {
-  font-family: 'Montserrat Alternates', sans-serif;
-  background-color: $light-color;
+  font-family: 'Gilroy', sans-serif;
   font-size: 16px;
   height: 100%;
 }
@@ -29,7 +28,6 @@ h1 {
 h2 {
   font-size: 2.2rem;
   font-weight: 700;
-  text-align: center;
 }
 
 h3 {
@@ -83,4 +81,5 @@ main {
   gap: 20px;
   flex-wrap: wrap;
   justify-content: center;
+  margin-top: 30px;
 }

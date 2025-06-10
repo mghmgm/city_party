@@ -26,13 +26,6 @@ const RegistrationForm: FC = () => {
                 <Input type="text" label="Имя" id="name" placeholder="Введите ваше имя..." value={name}/>
                 <Input type="text" label="Почта" id="login" placeholder="Введите вашу почту..." value={email}/>
                 <Input type="text" label="Пароль" id="password" placeholder="********" value={password}/>
-                <Input
-                  type="checkbox"
-                  checked={isSubscribe}
-                  label="Подписаться на рассылку об интересных мероприятиях"
-                  id="subscription"
-                  value={`${isSubscribe}`}
-                />
               </div>
               <Button className="auth__btn">Зарегистрироваться</Button>
               <Link to="/login" className="auth__to-login">

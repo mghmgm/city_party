@@ -6,51 +6,10 @@
   display: flex;
 
   &__img {
-    height: 200px;
+    height: 150px;
     max-width: 1320px;
     width: 100%;
     object-fit: cover;
-    border-radius: 10px;
-  }
-
-  &__info {
-    background-color: $main-color;
-    max-width: 400px;
-    width: 100%;
-    min-height: max-content;
-    color: $light-color;
-    border-radius: 10px;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    padding: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    align-items: start;
-   
-
-    @media screen and (max-width:512px){
-      width: 300px;
-      height: 90px;
-    }
-
-    @media screen and (max-width:360px){
-      width: 260px;
-    }
-  }
-
-  &__title {
-    justify-self: start;
-    text-align: left;
-    font-size: 1.6rem;
-    
-    @media screen and (max-width:512px){
-      font-size: 1.3rem;
-    }
-    @media screen and (max-width:360px){
-      font-size: 1rem;
-    }
   }
 }
   

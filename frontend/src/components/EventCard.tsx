@@ -10,10 +10,9 @@ interface EventCardProps {
 
 const EventCard: FC<EventCardProps> = ({ event }) => {
   const imgUrl = event.cover_image_url ? hostname + event.cover_image_url : image;
-  const hrefId = `${event.id}`;
 
   return (
-    <Link className="events__event-card" key={event.id} to={`events/${hrefId}`}>
+    <Link className="events__event-card" key={event.id} to={`/events/${event.id}`}>
       <img src={imgUrl} alt={event.title} className="events__cover-image" />
       <div className="events__titles">
         <h3>{event.title}</h3>

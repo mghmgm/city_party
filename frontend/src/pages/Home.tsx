@@ -18,12 +18,12 @@ const Home = () => {
   const {data: places, isLoading: isPlacesLoading } = PlaceAPI.useFetchPlacesQuery(3)
 
   const defaultEvents: IEvent[] = [
-    { id: 1, title: '', description: '', cover_image_url: '', reviews_count: 0 },
-    { id: 2, title: '', description: '', cover_image_url: '', reviews_count: 0 },
-    { id: 3, title: '', description: '', cover_image_url: '', reviews_count: 0 },
+    { id: 1, title: '', description: '', cover_image_url: '', reviews_count: 0, rating_avg: 0 },
+    { id: 2, title: '', description: '', cover_image_url: '', reviews_count: 0, rating_avg: 0 },
+    { id: 3, title: '', description: '', cover_image_url: '', reviews_count: 0, rating_avg: 0 },
   ];
   const defaultBanner: IBanner[] = [
-    { id: 1, title: "", description: "", image_url: ""},
+    { id: 1, title: "", description: "", image_url: "", event_id: 0 },
   ];
   const defaultPlace: IPlace[] = [
     { id: 1, name: "", description: "", photo_url: "", address: ""},

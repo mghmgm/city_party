@@ -4,6 +4,7 @@ export interface IEvent {
   description: string;
   cover_image_url: string;
   reviews_count: number;
+  rating_avg: number;
 }
 
 export interface IBanner {

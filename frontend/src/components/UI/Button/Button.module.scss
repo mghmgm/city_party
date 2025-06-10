@@ -1,7 +1,7 @@
 @import '../../../scss/variables';
 
 .button-main {
-  background-color: $main-color;
+  background-color: $dark-color;
   padding: 25px;
   border-radius: 10px;
   height: 48px;
@@ -19,8 +19,13 @@
   }
 
   &:hover {
-    background-color: rgba($color: $main-color, $alpha: 0.5);
+    background-color: $main-color;
     transition: 0.3s;
+    color: $light-color;
+  }
+
+  &:visited{
+    color: $light-color;
   }
 }
 
