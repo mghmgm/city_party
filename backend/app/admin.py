@@ -149,15 +149,15 @@ class ReviewAdmin(admin.ModelAdmin):
 class TicketTypeAdmin(admin.ModelAdmin):
     list_display = [
         "event",
-        "description",
+        "start_date",
+        "end_date",
         "price",
-        "event_date",
         "available_quantity",
         "total_quantity",
     ]
     inlines = [TicketInline]
     list_filter = ["event"]
-    date_hierarchy = "event_date"
+    # date_hierarchy = "event_date"
     raw_id_fields = ["event"]
 
 

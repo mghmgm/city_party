@@ -19,6 +19,7 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 import random
+from django.db.models import Q
 
 
 class EventAPIView(ModelViewSet):
@@ -130,7 +131,10 @@ class EventAPIView(ModelViewSet):
     @action(methods=["GET"], detail=True, url_path="ticket-types")
     def ticket_types(self, request, pk=None):
         event = self.get_object()
-        ticket_types = event.ticket_types.all()
+        now = timezone.now()
+        ticket_types = event.ticket_types.filter(start_date__gte=now).order_by(
+            "start_date"
+        )
         serializer = TicketTypeSerializer(ticket_types, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -142,7 +146,10 @@ class UserAPIView(viewsets.ViewSet):
     def profile(self, request):
         try:
             user_profile = UserProfile.objects.get(user=request.user)
-            serializer = UserProfileSerializer(user_profile)
+            tickets_data = self.tickets(request).data
+            serializer = UserProfileSerializer(
+                user_profile, context={"tickets_data": tickets_data}
+            )
             return Response(serializer.data, status=status.HTTP_200_OK)
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
@@ -160,9 +167,28 @@ class UserAPIView(viewsets.ViewSet):
 
     @action(methods=["GET"], detail=False, url_path="tickets")
     def tickets(self, request):
-        tickets = Ticket.objects.filter(owner=request.user)
-        serializer = TicketSerializer(tickets, many=True)
-        return Response(serializer.data)
+        all_tickets = Ticket.objects.filter(owner=request.user.userprofile)
+
+        active_tickets = (
+            all_tickets.exclude(payment_status="canceled")
+            .filter(ticket_type__start_date__gt=timezone.now())
+            .order_by("ticket_type__start_date")
+        )
+
+        used_tickets = all_tickets.exclude(
+            id__in=active_tickets.values_list("id", flat=True)
+        ).exclude(~Q(payment_status="paid"))
+
+        active_serializer = TicketSerializer(active_tickets, many=True)
+        used_serializer = TicketSerializer(used_tickets, many=True)
+
+        return Response(
+            {
+                "active_tickets": active_serializer.data,
+                "used_tickets": used_serializer.data,
+            },
+            status=status.HTTP_200_OK,
+        )
 
 
 class BannerAPIView(ModelViewSet):

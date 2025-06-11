@@ -5,6 +5,10 @@
   display: flex;
   gap: 30px;
 
+  &__left{
+    flex: 1;
+  }
+
   &__card {
     border: 1px solid $dark-color;
     // border-radius: 5px;
@@ -58,6 +62,12 @@
 
   &__tickets {
     align-self: start;
+    flex: 1;
+  }
+
+  &__tickets-title{
+    font-size: 2rem;
+    font-weight: 800;
   }
 
   &__tickets-list {
@@ -67,31 +77,12 @@
     margin-top: 10px;
   }
 
-  &__ticket {
-    display: flex;
+  &__events-list{
     flex-direction: column;
-    max-width: 250px;
-    width: 100%;
-    align-items: center;
-    gap: 10px;
-    background-color: rgba($color: $main-color, $alpha: 0.1);
-    padding: 20px;
-    border-radius: 5px;
+    margin-top: 10px;
   }
 
-  &__ticket-image{
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    // border-radius: 5px;
-  }
-
-  &__ticket-title {
-    text-align: center;
-    font-weight: 800;
-  }
-
-  &__ticket-btn{
-    width: 100%;
+  &__events {
+    margin-top: 20px;
   }
 }

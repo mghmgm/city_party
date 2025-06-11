@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { IEvent, IGallery, ITicketType } from '../types/types';
 import { hostname } from '../config';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 
 interface EventInfoProps {
   event: IEvent;
@@ -33,9 +35,15 @@ const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes }) => {
       <div className="event__schedule">
         <h2>Расписание</h2>
         <div className="event__tickets">
-          {ticketTypes.map((ticket) => (
-            <div className="event__ticket-card">
-              <p>{ticket.description}</p>
+          {ticketTypes.map((ticket, index) => (
+            <div className="event__ticket-card" key={index}>
+              <p>
+                {format(new Date(ticket.start_date), 'd MMMM', { locale: ru })}
+              </p>
+              <p>
+                {format(new Date(ticket.start_date), 'HH:mm', { locale: ru })} -{' '}
+                {format(new Date(ticket.end_date), 'HH:mm', { locale: ru })}
+              </p>
               <p className="event__price">{ticket.price} руб.</p>
             </div>
           ))}

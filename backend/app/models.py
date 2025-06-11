@@ -116,22 +116,17 @@ class Place(models.Model):
 
 class TicketType(models.Model):
     event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="ticket_types", verbose_name="Событие")
-    description = models.TextField(max_length=255, null=True, blank=True, verbose_name="Описание")
+    start_date = models.DateTimeField(verbose_name="Дата начала", null=True)
+    end_date = models.DateTimeField(verbose_name="Дата окончания", null=True)
     price = models.DecimalField(max_digits=8, decimal_places=0, verbose_name="Цена")
-    event_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата события")
     available_quantity = models.PositiveBigIntegerField(default=0, verbose_name="Доступное количество")
     total_quantity = models.PositiveBigIntegerField(default=0, verbose_name="Общее количество")
-    
-    def __str__(self):
-        return f"{self.event.title} ({self.description})"
     
     class Meta:
         db_table = "ticket_types"
         verbose_name = "Тип Билета"
         verbose_name_plural = "Типы Билетов"
-        indexes = [
-            models.Index(fields=['event_date']),
-        ]
+
 
 
 class Ticket(models.Model):

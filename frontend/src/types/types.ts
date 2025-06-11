@@ -41,9 +41,9 @@ export interface IGallery {
 }
 
 export interface ITicketType {
-  description: string;
+  start_date: Date;
+  end_date: Date;
   price: number;
-  event_date: Date;
 }
 
 export interface IReview {
@@ -67,12 +67,14 @@ export interface IUserProfile {
   vk_profile: string;
   avatar: string;
   description: string;
-  tickets: ITicket[]
+  active_tickets: ITicket[];
+  used_tickets: ITicket[];
 }
 
-interface ITicket {
+export interface ITicket {
   event_title: string;
-  description: string;
+  event_id: number;
+  ticket_type: ITicketType;
   owner: IUserProfile;
   payment_status: string;
   cover_img_url: string;

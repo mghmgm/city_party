@@ -58,7 +58,7 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
             <Link to="/profile">
               <img src={avatarUrl} className={classes.avatar} />
             </Link>
-            <Button onClick={handleExitBtnClick}>Выйти</Button>
+            <Button onClick={handleExitBtnClick} className={classes.btn}>Выйти</Button>
           </div>
         ) : (
           <Button href="/login" className={classes.loginBtn}>

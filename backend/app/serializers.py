@@ -114,30 +114,45 @@ class GallerySerializer(serializers.ModelSerializer):
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
+    start_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", allow_null=True)
+    end_date = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", allow_null=True)
+
     class Meta:
         model = TicketType
-        fields = ["description", "price", "event_date", "event"]
+        fields = ["start_date", "end_date", "price", "event"]
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    description = serializers.SerializerMethodField()
+    ticket_type = serializers.SerializerMethodField()
     event_title = serializers.SerializerMethodField()
+    event_id = serializers.SerializerMethodField()
     cover_img_url = serializers.SerializerMethodField()
     payment_status = serializers.SerializerMethodField()
 
     class Meta:
         model = Ticket
-        fields = ["description", "owner", "event_title", "cover_img_url", "payment_status"]
+        fields = [
+            "ticket_type",
+            "owner",
+            "event_title",
+            "event_id",
+            "cover_img_url",
+            "payment_status",
+        ]
 
-    def get_description(self, obj):
-        return obj.ticket_type.description
+    def get_ticket_type(self, obj):
+        serializer = TicketTypeSerializer(obj.ticket_type)
+        return serializer.data
 
     def get_event_title(self, obj):
         return obj.ticket_type.event.title
     
+    def get_event_id(self, obj):
+        return obj.ticket_type.event.id
+
     def get_cover_img_url(self, obj):
-        return settings.MEDIA_URL+obj.ticket_type.event.cover_image.image.name
-    
+        return settings.MEDIA_URL + obj.ticket_type.event.cover_image.image.name
+
     def get_payment_status(self, obj):
         return obj.get_payment_status_display()
 
@@ -146,7 +161,8 @@ class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username")
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
-    tickets = TicketSerializer(many=True, read_only=True)
+    active_tickets = serializers.SerializerMethodField()
+    used_tickets = serializers.SerializerMethodField()
 
     class Meta:
         model = UserProfile
@@ -157,5 +173,14 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "username",
             "first_name",
             "last_name",
-            "tickets",
+            "active_tickets",
+            "used_tickets",
         ]
+
+    def get_active_tickets(self, obj):
+        tickets_data = self.context.get('tickets_data', {})
+        return tickets_data.get('active_tickets', [])
+
+    def get_used_tickets(self, obj):
+        tickets_data = self.context.get('tickets_data', {})
+        return tickets_data.get('used_tickets', [])

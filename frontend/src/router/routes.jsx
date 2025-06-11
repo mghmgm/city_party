@@ -10,7 +10,7 @@ export const routes = [
   { path: '/', element: <Home /> },
   { path: '/events/:id', element: <EventPage /> },
   { path: '/events/category/:slug', element: <Layout navIsVisible={true} /> },
-  { path: '*', element: <Home /> },
+  { path: '*', element: <NotFound /> },
 ];
 
 export const publicRoutes = [
