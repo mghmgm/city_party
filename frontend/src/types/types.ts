@@ -67,4 +67,13 @@ export interface IUserProfile {
   vk_profile: string;
   avatar: string;
   description: string;
+  tickets: ITicket[]
+}
+
+interface ITicket {
+  event_title: string;
+  description: string;
+  owner: IUserProfile;
+  payment_status: string;
+  cover_img_url: string;
 }

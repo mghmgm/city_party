@@ -1,12 +1,12 @@
-import { useEffect } from 'react';
 import Layout from './layout/Layout';
 import { hostname } from '../config';
 import image from '../assets/image.png';
-import { useAppDispatch, useAppSelector } from '../store/store';
-import { getUser } from '../store/AuthSlice';
+import { useAppSelector } from '../store/store';
+import Button from '../components/UI/Button/Button';
+import { Link } from 'react-router';
 
 const ProfilePage = () => {
-  const user = useAppSelector(state=>state.auth.userProfile)
+  const user = useAppSelector((state) => state.auth.userProfile);
   const avatarUrl = user!.avatar ? hostname + user!.avatar : image;
 
   return (
@@ -29,7 +29,34 @@ const ProfilePage = () => {
           </div>
         </div>
         <div className="profile__tickets">
-          <h2>Купленные билеты</h2>
+          <h2>Билеты {'>'}</h2>
+          <div>
+            {user && user.tickets ? (
+              <div className="profile__tickets-list">
+                {user.tickets.map((ticket) => (
+                  <div className="profile__ticket">
+                    <img
+                      src={hostname + `${ticket.cover_img_url}`}
+                      alt={ticket.event_title}
+                      className="profile__ticket-image"
+                    />
+                    <Link to="" className="profile__ticket-title">
+                      {ticket.event_title}
+                    </Link>
+                    <p>{ticket.description}</p>
+                    <p>{ticket.payment_status}</p>
+                    {ticket.payment_status === 'Не оплачен' ? (
+                      <Button className="profile__ticket-btn">Оплатить</Button>
+                    ) : (
+                      <Button className="profile__ticket-btn">Вернуть</Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Билетов нет</p>
+            )}
+          </div>
         </div>
       </div>
     </Layout>

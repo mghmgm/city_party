@@ -40,7 +40,7 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
     <header className={headerClass}>
       <Link to={'/'}>
         <img src={logo} alt="logo" className={classes.logo} />
-        <img src={mlogo} alt="logo" className={classes.mlogo} />
+        {/* <img src={mlogo} alt="logo" className={classes.mlogo} /> */}
       </Link>
       <Input
         type="search"

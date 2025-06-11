@@ -1,5 +1,5 @@
 from .filters import EventFilter
-from .models import Event, Banner, Place, Category, UserProfile
+from .models import Event, Banner, Place, Category, UserProfile, Ticket
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.utils import timezone
@@ -13,6 +13,7 @@ from .serializers import (
     GallerySerializer,
     TicketTypeSerializer,
     UserProfileSerializer,
+    TicketSerializer,
 )
 from rest_framework import status
 from rest_framework import viewsets
@@ -36,7 +37,7 @@ class EventAPIView(ModelViewSet):
         if ordering == "rating":
             queryset = queryset.order_by("-rating_avg")
             queryset = queryset.exclude(rating_avg__isnull=True)
-            
+
         if limit is not None:
             limit = int(limit)
             queryset = queryset[:limit]
@@ -47,13 +48,15 @@ class EventAPIView(ModelViewSet):
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
     )
     def by_category(self, request, category_slug):
-      events = Event.published.filter(categories__slug=category_slug).prefetch_related("categories")
-      
-      if not events.exists():
-          return Response([], status=status.HTTP_200_OK)
-      
-      serializer = EventSerializer(events, many=True)
-      return Response(serializer.data, status=status.HTTP_200_OK)
+        events = Event.published.filter(
+            categories__slug=category_slug
+        ).prefetch_related("categories")
+
+        if not events.exists():
+            return Response([], status=status.HTTP_200_OK)
+
+        serializer = EventSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=["GET", "POST"], detail=True, url_path="reviews")
     def reviews(self, request, pk=None):
@@ -77,15 +80,18 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             serializer = ReviewSerializer(data=request.data)
             if serializer.is_valid():
-              
+
                 #  пока не реализую кнопку у админа и предупреждение автору отзыва
-                
+
                 # serializer.save(
                 #     author=request.user.userprofile, event=event, status="on_moderation"
                 # )
-                
+
                 serializer.save(
-                    author=request.user.userprofile, event=event, status="accepted", pub_date=timezone.now()
+                    author=request.user.userprofile,
+                    event=event,
+                    status="accepted",
+                    pub_date=timezone.now(),
                 )
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -152,6 +158,12 @@ class UserAPIView(viewsets.ViewSet):
         except UserProfile.DoesNotExist:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
+    @action(methods=["GET"], detail=False, url_path="tickets")
+    def tickets(self, request):
+        tickets = Ticket.objects.filter(owner=request.user)
+        serializer = TicketSerializer(tickets, many=True)
+        return Response(serializer.data)
+
 
 class BannerAPIView(ModelViewSet):
     serializer_class = BannerSerializer
@@ -175,7 +187,7 @@ class PlaceAPIView(ModelViewSet):
         if limit is not None:
             limit = int(limit)
             queryset = queryset[:limit]
-        
+
         return queryset
 
 
