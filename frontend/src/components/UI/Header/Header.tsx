@@ -19,8 +19,8 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSubmit }) => {
   const navigate = useNavigate();
-  const user = useAppSelector(state=>state.auth.userProfile)
-  const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.auth.userProfile);
+  const dispatch = useAppDispatch();
 
   const headerClass = `${classes.header} content`;
   const avatarUrl = user?.avatar ? hostname + user.avatar : avatar;
@@ -32,7 +32,7 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
   };
 
   const handleExitBtnClick = () => {
-    dispatch(logout())
+    dispatch(logout());
     navigate('/', { replace: true });
   };
 
@@ -58,7 +58,14 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
             <Link to="/profile">
               <img src={avatarUrl} className={classes.avatar} />
             </Link>
-            <Button onClick={handleExitBtnClick} className={classes.btn}>Выйти</Button>
+            {user?.is_superuser ? (
+              <Button href="/moderation" className={classes.moderation}>
+                Модерация
+              </Button>
+            ) : null}
+            <Button onClick={handleExitBtnClick} className={classes.btn}>
+              Выйти
+            </Button>
           </div>
         ) : (
           <Button href="/login" className={classes.loginBtn}>

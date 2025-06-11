@@ -3,16 +3,20 @@ import classes from './Comment.module.scss';
 import { IReview } from '../../../types/types';
 import Button from '../Button/Button';
 import { useAppSelector } from '../../../store/store';
+import { Link } from 'react-router';
 
 interface ReviewProps {
   review: IReview;
-  onDelete: (e: React.MouseEvent) => void;
-  onEdit: (e: React.MouseEvent) => void;
+  onDelete?: (e: React.MouseEvent) => void;
+  onEdit?: (e: React.MouseEvent) => void;
+  section: 'event' | 'moderation';
+  onAccept?: (e: React.MouseEvent) => void;
+  onReject?: (e: React.MouseEvent) => void;
 }
 
-const Review: FC<ReviewProps> = ({ review, onDelete, onEdit }) => {
-  const user = useAppSelector(state=>state.auth.userProfile)
-  
+const Review: FC<ReviewProps> = ({ review, onDelete, onEdit, section, onAccept, onReject }) => {
+  const user = useAppSelector((state) => state.auth.userProfile);
+
   return (
     <div className={classes.comment}>
       <div>
@@ -37,19 +41,47 @@ const Review: FC<ReviewProps> = ({ review, onDelete, onEdit }) => {
           ))}
         </div>
 
-        {user && review.author_username === user.username ? (
+        {user && (
           <div className={classes.btnContainer}>
-            <Button className={classes.deleteBtn} onClick={(e) => onEdit(e, review)}>
-              Редактировать
-            </Button>
-            <Button className={classes.deleteBtn} onClick={(e) => onDelete(e, review)}>
-              Удалить
-            </Button>
+            {section === 'event' && review.author_username === user.username && (
+              <>
+                <Button className={classes.deleteBtn} onClick={(e) => onEdit(e, review)}>
+                  Редактировать
+                </Button>
+                <Button className={classes.deleteBtn} onClick={(e) => onDelete(e, review)}>
+                  Удалить
+                </Button>
+              </>
+            )}
+
+
+            {section === 'moderation' && user.is_superuser && (
+              <div>
+                <Link to={`/events/${review.event_id}`} className={classes.link}>К публикации {'>'}</Link>
+                <div className={classes.btnContainer}>
+                  <Button
+                    className={classes.approveBtn}
+                    onClick={(e) => onAccept(e, review)}
+                    variant="contained"
+                    color="success"
+                  >
+                    Принять
+                  </Button>
+                  <Button
+                    className={classes.rejectBtn}
+                    onClick={(e) => onReject(e, review)}
+                    variant="contained"
+                    color="error"
+                  >
+                    Отклонить
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
-        ) : null}
-        
+        )}
+
         <p className={classes.desc}>{review.description}</p>
-        
       </div>
     </div>
   );

@@ -62,7 +62,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "author": {"read_only": True},
             "event": {"read_only": True},
-            "status": {"read_only": True},
         }
 
     def get_author_username(self, obj):
@@ -161,6 +160,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source="user.username")
     first_name = serializers.CharField(source="user.first_name")
     last_name = serializers.CharField(source="user.last_name")
+    is_superuser = serializers.CharField(source="user.is_superuser")
     active_tickets = serializers.SerializerMethodField()
     used_tickets = serializers.SerializerMethodField()
 
@@ -175,6 +175,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "last_name",
             "active_tickets",
             "used_tickets",
+            "is_superuser",
         ]
 
     def get_active_tickets(self, obj):

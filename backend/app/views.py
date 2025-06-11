@@ -1,5 +1,5 @@
 from .filters import EventFilter
-from .models import Event, Banner, Place, Category, UserProfile, Ticket
+from .models import Event, Banner, Place, Category, Review, UserProfile, Ticket
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.utils import timezone
@@ -81,17 +81,10 @@ class EventAPIView(ModelViewSet):
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
             serializer = ReviewSerializer(data=request.data)
             if serializer.is_valid():
-
-                #  пока не реализую кнопку у админа и предупреждение автору отзыва
-
-                # serializer.save(
-                #     author=request.user.userprofile, event=event, status="on_moderation"
-                # )
-
                 serializer.save(
                     author=request.user.userprofile,
                     event=event,
-                    status="accepted",
+                    status="on_moderation",
                     pub_date=timezone.now(),
                 )
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -220,3 +213,40 @@ class PlaceAPIView(ModelViewSet):
 class CategoryAPIView(ModelViewSet):
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
+
+
+class ReviewAPIView(ModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    
+    @action(methods=["GET"], detail=False, url_path="moderation") 
+    def moderation_reviews(self, request):
+        if not request.user.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        reviews = Review.objects.filter(status="on_moderation") \
+                               .order_by("-pub_date") \
+                               .select_related("author", "event")
+        
+        reviews_count = reviews.count()
+        serializer = ReviewSerializer(reviews, many=True)
+        return Response(
+            {"count": reviews_count, "reviews": serializer.data},
+            status=status.HTTP_200_OK,
+        )
+
+    @action(methods=["PATCH"], detail=True)
+    def update_review_status(self, request, pk=None):
+        if not request.user.is_superuser:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        review = self.get_object()
+        new_status = request.data.get('status')
+        if new_status not in ['accepted', 'rejected']:
+            return Response({"detail": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+
+        review.status = new_status
+        review.save()
+
+        serializer = ReviewSerializer(review)
+        return Response(serializer.data)

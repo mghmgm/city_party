@@ -8,6 +8,7 @@ from app.views import (
     BannerAPIView,
     PlaceAPIView,
     CategoryAPIView,
+    ReviewAPIView,
     UserAPIView,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
@@ -27,6 +28,8 @@ placeRouter.register(r"api/places", PlaceAPIView, basename="places")
 categoryRouter = DefaultRouter()
 categoryRouter.register(r"api/categories", CategoryAPIView, basename="categories")
 
+reviewRouter = DefaultRouter()
+reviewRouter.register(r"api/reviews", ReviewAPIView, basename="reviews")
 
 userRouter = DefaultRouter()
 userRouter.register(r"api/user", UserAPIView, basename="user")
@@ -47,3 +50,4 @@ if settings.DEBUG:
     urlpatterns += placeRouter.urls
     urlpatterns += categoryRouter.urls
     urlpatterns += userRouter.urls
+    urlpatterns += reviewRouter.urls

@@ -61,7 +61,7 @@ const ReviewSection: FC<ReviewSectionProps> = ({
 
       <div className="comments__containter">
         {reviews.reviews.map((review) => (
-          <Comment review={review} onDelete={onDelete} onEdit={onEdit}/>
+          <Comment review={review} onDelete={onDelete} onEdit={onEdit} section='event'/>
         ))}
       </div>
     </div>

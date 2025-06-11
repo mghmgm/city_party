@@ -4,16 +4,18 @@ import authReducer  from "./AuthSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { BannerAPI } from "./BannerAPI";
 import { PlaceAPI } from "./PlaceAPI";
+import { ReviewAPI } from "./ReviewAPI";
 
 export const store = configureStore({
   reducer: {
     [EventAPI.reducerPath]: EventAPI.reducer,
     [BannerAPI.reducerPath]: BannerAPI.reducer,
     [PlaceAPI.reducerPath]: PlaceAPI.reducer,
+    [ReviewAPI.reducerPath]: ReviewAPI.reducer,
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(EventAPI.middleware, BannerAPI.middleware, PlaceAPI.middleware),
+    getDefaultMiddleware().concat(EventAPI.middleware, BannerAPI.middleware, PlaceAPI.middleware, ReviewAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>

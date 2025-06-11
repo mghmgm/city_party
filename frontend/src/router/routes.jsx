@@ -4,6 +4,7 @@ import Registration from '../pages/Registration';
 import Login from '../pages/Login';
 import ProfilePage from '../pages/ProfilePage';
 import NotFound from '../pages/NotFound';
+import ModerationPanel from '../pages/ModerationPanel';
 import Layout from '../pages/layout/Layout';
 
 export const routes = [
@@ -20,4 +21,8 @@ export const publicRoutes = [
 
 export const privateRoutes = [
   { path: '/profile', element: <ProfilePage /> },
+];
+
+export const stuffRoutes = [
+  { path: '/moderation', element: <ModerationPanel /> },
 ];

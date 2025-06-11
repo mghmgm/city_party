@@ -1,3 +1,5 @@
+@use '../../../scss/variables' as *;
+
 .header {
   display: flex;
   align-items: center;
@@ -11,6 +13,11 @@
   display: flex;
   gap: 15px;
   width: max-content;
+  align-items: center;
+}
+
+.moderation {
+  border-radius: 6px;
 }
 
 .btn {

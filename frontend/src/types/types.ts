@@ -69,6 +69,7 @@ export interface IUserProfile {
   description: string;
   active_tickets: ITicket[];
   used_tickets: ITicket[];
+  is_superuser: boolean;
 }
 
 export interface ITicket {
