@@ -23,7 +23,28 @@ export const TicketAPI = createApi({
       }),
       invalidatesTags: ['Ticket'],
     }),
+
+    updatePaymentStatus: build.mutation({
+      query: ({ ticketId, payment_status }) => ({
+        url: `/tickets/${ticketId}/`,
+        method: 'PATCH',
+        body: { payment_status },
+      }),
+      invalidatesTags: ['Ticket'],
+    }),
+
+    getCanceledTickets: build.query({
+      query: () => ({
+        url: '/tickets/?status=on_canceled',
+        method: 'GET',
+      }),
+      providesTags: ['Ticket'],
+    }),
   }),
 });
 
-export const { useCreateTicketMutation } = TicketAPI;
+export const {
+  useCreateTicketMutation,
+  useUpdatePaymentStatusMutation,
+  useGetCanceledTicketsQuery,
+} = TicketAPI;

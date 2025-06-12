@@ -5,6 +5,8 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { BannerAPI } from "./BannerAPI";
 import { PlaceAPI } from "./PlaceAPI";
 import { ReviewAPI } from "./ReviewAPI";
+import { TicketAPI } from "./TicketAPI";
+import { TicketTypeAPI } from "./TicketTypeApi";
 
 export const store = configureStore({
   reducer: {
@@ -12,10 +14,12 @@ export const store = configureStore({
     [BannerAPI.reducerPath]: BannerAPI.reducer,
     [PlaceAPI.reducerPath]: PlaceAPI.reducer,
     [ReviewAPI.reducerPath]: ReviewAPI.reducer,
+    [TicketAPI.reducerPath]: TicketAPI.reducer,
+    [TicketTypeAPI.reducerPath]: TicketTypeAPI.reducer,
     auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(EventAPI.middleware, BannerAPI.middleware, PlaceAPI.middleware, ReviewAPI.middleware),
+    getDefaultMiddleware().concat(EventAPI.middleware, BannerAPI.middleware, PlaceAPI.middleware, ReviewAPI.middleware, TicketAPI.middleware, TicketTypeAPI.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>

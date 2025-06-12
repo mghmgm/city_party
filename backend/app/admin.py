@@ -177,8 +177,7 @@ class TicketAdmin(admin.ModelAdmin):
 @admin.register(Banner)
 class BannerAdmin(admin.ModelAdmin):
     list_display = [
-        "title",
-        "description",
+        "id",
         "image",
         "pub_date",
         "end_date",
@@ -186,7 +185,7 @@ class BannerAdmin(admin.ModelAdmin):
         "created_at",
         "event",
     ]
-    search_fields = ["title"]
+    search_fields = ["id"]
     raw_id_fields = ["company", "event"]
     date_hierarchy = "created_at"
 

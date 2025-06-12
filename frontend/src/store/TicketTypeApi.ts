@@ -16,14 +16,19 @@ export const TicketTypeAPI = createApi({
   endpoints: (build) => ({
     // Обновление количества доступных билетов
     updateTicketQuantity: build.mutation({
-      query: ({ ticketTypeId, amount }) => ({
+      query: ({ ticketTypeId, available_quantity }) => ({
         url: `/ticket-types/${ticketTypeId}/`,
         method: 'PATCH',
-        body: { amount },
+        body: { available_quantity },
       }),
       invalidatesTags: ['TicketType'],
+    }),
+    
+    getTicketTypeById: build.query({
+      query: (id) => `/ticket-types/${id}/`,
+      providesTags: (id) => [{ type: 'TicketType', id }],
     }),
   }),
 });
 
-export const { useUpdateTicketQuantityMutation } = TicketTypeAPI;
+export const { useUpdateTicketQuantityMutation, useGetTicketTypeByIdQuery } = TicketTypeAPI;

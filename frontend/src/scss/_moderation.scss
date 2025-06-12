@@ -1,12 +1,33 @@
 .moderation {
+  display: flex;
+  gap: 30px;
+  margin-top: 30px;
+
   &__reviews-content{
     display: flex;
     flex-direction: column;
     gap: 10px;
+    max-width: 700px;
     margin-top: 20px;
   }
 
-  &__reviews{
+  &__tickets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 520px;
     margin-top: 20px;
+  }
+
+  &__btns{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+    width: 100%;
+  }
+
+  &__ticket-owner {
+    font-weight: 800;
   }
 }

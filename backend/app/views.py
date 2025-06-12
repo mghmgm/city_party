@@ -26,7 +26,7 @@ from .serializers import (
 )
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 import random
 from django.db.models import Q
 from rest_framework.decorators import action
@@ -61,7 +61,7 @@ class EventAPIView(ModelViewSet):
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
     )
-    def by_category(self, category_slug):
+    def by_category(self, request, category_slug):
         events = Event.published.filter(
             categories__slug=category_slug
         ).prefetch_related("categories")
@@ -285,7 +285,7 @@ class TicketTypeAPIView(ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        ticket.available_quantity -= amount
+        ticket.available_quantity = amount
         ticket.save()
 
         return Response(
@@ -297,5 +297,35 @@ class TicketAPIView(ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
+    def get_permissions(self):
+        if self.request.query_params.get("status") == "on_canceled":
+            return [IsAdminUser()]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        status = self.request.query_params.get("status")
+
+        if status == "on_canceled":
+            return queryset.filter(payment_status="on_canceled")
+        return queryset
+
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        ticket_type_id = self.request.data.get("ticket_type_id")
+
+        serializer.save(
+            owner=self.request.user.userprofile,
+            payment_status="paid",
+            ticket_type_id=ticket_type_id,
+        )
+
+    @action(detail=True, methods=["patch"])
+    def update_status(self, request, pk=None):
+        ticket = self.get_object()
+        new_status = request.data.get("payment_status")
+
+        ticket.payment_status = new_status
+        ticket.save()
+
+        serializer = self.get_serializer(ticket)
+        return Response(serializer.data)

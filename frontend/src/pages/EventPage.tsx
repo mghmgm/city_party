@@ -133,37 +133,32 @@ const EventPage: FC = () => {
   const handleTicketSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTicket || !event) return;
+    const newQuantity = selectedTicket.available_quantity - ticketAmount;
 
     if (selectedTicket.available_quantity - ticketAmount < 0) {
       alert(`Недостаточно доступных билетов. Осталось: ${selectedTicket.available_quantity}`);
       return;
     }
 
-    try {
-      // Создаем билеты в цикле
-      for (let i = 0; i < ticketAmount; i++) {
-        await createTicket({
-          ticket_type: selectedTicket.id,
-          event: event.id,
-        }).unwrap();
-      }
-
-      // Обновляем количество доступных билетов
-      await updateTicketQuantity({
-        ticketTypeId: selectedTicket.id,
-        amount: ticketAmount,
+    // Создаем билеты в цикле
+    for (let i = 0; i < ticketAmount; i++) {
+      await createTicket({
+        ticket_type_id: selectedTicket.id,
       }).unwrap();
-
-      alert('Билеты успешно куплены!');
-      setIsEditModalOpen(false);
-      setSelectedTicket(null);
-      setTicketAmount(1);
-    } catch (error) {
-      console.error('Ошибка при покупке билетов:', error);
-      alert('Произошла ошибка при покупке билетов');
     }
+
+    // Обновляем количество доступных билетов
+    await updateTicketQuantity({
+      ticketTypeId: selectedTicket.id,
+      available_quantity: newQuantity,
+    }).unwrap();
+
+    alert('Билеты успешно куплены!');
+    setIsEditModalOpen(false);
+    setSelectedTicket(null);
+    setTicketAmount(1);
   };
-  
+
   return (
     <Layout navIsVisible={true}>
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>

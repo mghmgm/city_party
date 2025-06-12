@@ -22,7 +22,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    # review_count = serializers.IntegerField(read_only=True)
     rating_avg = serializers.FloatField(read_only=True)
     categories = CategorySerializer(many=True)
     cover_image_url = serializers.SerializerMethodField()
@@ -36,7 +35,6 @@ class EventSerializer(serializers.ModelSerializer):
             "cover_image_url",
             "categories",
             "rating_avg",
-            # "review_count",
         ]
 
     def get_cover_image_url(self, obj):
@@ -73,7 +71,7 @@ class BannerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Banner
-        fields = ["image_url", "title", "description", "company", "event_id"]
+        fields = ["image_url", "company", "event_id"]
 
     def get_image_url(self, obj):
         if obj.image:
@@ -118,42 +116,41 @@ class TicketTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketType
-        fields = ["id", "start_date", "end_date", "price", "event", "available_quantity"]
+        fields = [
+            "id",
+            "start_date",
+            "end_date",
+            "price",
+            "event",
+            "available_quantity",
+        ]
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    ticket_type = serializers.SerializerMethodField()
-    event_title = serializers.SerializerMethodField()
-    event_id = serializers.SerializerMethodField()
-    cover_img_url = serializers.SerializerMethodField()
-    payment_status = serializers.SerializerMethodField()
+    event = serializers.SerializerMethodField()
+    payment_status_display = serializers.SerializerMethodField()
+    owner_username = serializers.SerializerMethodField()
 
     class Meta:
         model = Ticket
         fields = [
-            "ticket_type",
-            "owner",
-            "event_title",
-            "event_id",
-            "cover_img_url",
+            "id",
+            "ticket_type_id",
+            "owner_username",
+            "event",
+            "payment_status_display",
             "payment_status",
         ]
+        extra_kwargs = {"owner": {"required": False}}
 
-    def get_ticket_type(self, obj):
-        serializer = TicketTypeSerializer(obj.ticket_type)
-        return serializer.data
+    def get_event(self, obj):
+        return EventSerializer(obj.ticket_type.event).data
 
-    def get_event_title(self, obj):
-        return obj.ticket_type.event.title
-    
-    def get_event_id(self, obj):
-        return obj.ticket_type.event.id
-
-    def get_cover_img_url(self, obj):
-        return settings.MEDIA_URL + obj.ticket_type.event.cover_image.image.name
-
-    def get_payment_status(self, obj):
+    def get_payment_status_display(self, obj):
         return obj.get_payment_status_display()
+
+    def get_owner_username(self, obj):
+        return obj.owner.user.username if obj.owner and obj.owner.user else None
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -179,9 +176,9 @@ class UserProfileSerializer(serializers.ModelSerializer):
         ]
 
     def get_active_tickets(self, obj):
-        tickets_data = self.context.get('tickets_data', {})
-        return tickets_data.get('active_tickets', [])
+        tickets_data = self.context.get("tickets_data", {})
+        return tickets_data.get("active_tickets", [])
 
     def get_used_tickets(self, obj):
-        tickets_data = self.context.get('tickets_data', {})
-        return tickets_data.get('used_tickets', [])
+        tickets_data = self.context.get("tickets_data", {})
+        return tickets_data.get("used_tickets", [])

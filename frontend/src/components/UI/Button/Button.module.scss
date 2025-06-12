@@ -26,6 +26,14 @@
   &:visited{
     color: $light-color;
   }
+
+  &:disabled {
+    background-color: rgba($color: $main-color, $alpha: 0.3);
+    font-size: 1rem;
+    cursor: not-allowed;
+    margin-top: 10px;
+    padding: 6px;
+  }
 }
 
 .button-sub {

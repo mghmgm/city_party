@@ -75,10 +75,10 @@ export interface IUserProfile {
 }
 
 export interface ITicket {
-  event_title: string;
-  event_id: number;
-  ticket_type: ITicketType;
-  owner: IUserProfile;
-  payment_status: string;
-  cover_img_url: string;
+  id: number;
+  event: IEvent;
+  ticket_type_id: number;
+  // owner: IUserProfile;
+  owner_username: string;
+  payment_status_display: string;
 }

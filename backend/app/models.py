@@ -126,6 +126,13 @@ class TicketType(models.Model):
         db_table = "ticket_types"
         verbose_name = "Тип Билета"
         verbose_name_plural = "Типы Билетов"
+        
+    def __str__(self):
+      if self.start_date:
+          date_str = self.start_date.strftime('%d.%m.%Y')
+      else:
+          date_str = 'Нет даты'
+      return f"{self.event.title} ({date_str})"
 
 
 
@@ -134,6 +141,7 @@ class Ticket(models.Model):
         PENDING = "pending", "Не оплачен"
         PAID = "paid", "Оплачен"
         CANCELED = "canceled", "Отменен"
+        ON_CANCELED = "on_canceled", "На возврате"
     
     ticket_type = models.ForeignKey("TicketType", on_delete=models.CASCADE, related_name="tickets", verbose_name="Тип билета")
     owner = models.ForeignKey("UserProfile", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="Владелец")
@@ -153,8 +161,6 @@ class Ticket(models.Model):
 
 
 class Banner(models.Model):
-    title = models.CharField(max_length=255, verbose_name="Заголовок")
-    description = models.TextField(max_length=100, verbose_name="Описание")
     image = models.ImageField(upload_to="images/", verbose_name="Изображение")
     pub_date = models.DateTimeField(verbose_name="Дата публикации")
     end_date = models.DateTimeField(verbose_name="Дата окончания")
@@ -162,9 +168,6 @@ class Banner(models.Model):
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     is_visible = models.BooleanField(default=False)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True, blank=True, related_name="banners", verbose_name="Ивент")
-
-    def __str__(self):
-        return self.title
     
     class Meta:
         db_table = "banners"
