@@ -41,9 +41,11 @@ export interface IGallery {
 }
 
 export interface ITicketType {
+  id: number,
   start_date: Date;
   end_date: Date;
   price: number;
+  available_quantity: number;
 }
 
 export interface IReview {

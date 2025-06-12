@@ -91,3 +91,9 @@
     font-weight: bold;
   }
 }
+
+.ticket__amount {
+  background-color: rgba($color: $main-color, $alpha: 0.1);
+  border-radius: 5px;
+  padding: 10px;
+}

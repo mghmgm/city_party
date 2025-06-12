@@ -1,5 +1,14 @@
 from .filters import EventFilter
-from .models import Event, Banner, Place, Category, Review, UserProfile, Ticket
+from .models import (
+    Event,
+    Banner,
+    Place,
+    Category,
+    Review,
+    TicketType,
+    UserProfile,
+    Ticket,
+)
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from django.utils import timezone
@@ -17,14 +26,18 @@ from .serializers import (
 )
 from rest_framework import status
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 import random
 from django.db.models import Q
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 
 
 class EventAPIView(ModelViewSet):
     serializer_class = EventSerializer
     filterset_class = EventFilter
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
         queryset = Event.published.all()
@@ -48,7 +61,7 @@ class EventAPIView(ModelViewSet):
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
     )
-    def by_category(self, request, category_slug):
+    def by_category(self, category_slug):
         events = Event.published.filter(
             categories__slug=category_slug
         ).prefetch_related("categories")
@@ -218,16 +231,18 @@ class CategoryAPIView(ModelViewSet):
 class ReviewAPIView(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    
-    @action(methods=["GET"], detail=False, url_path="moderation") 
+
+    @action(methods=["GET"], detail=False, url_path="moderation")
     def moderation_reviews(self, request):
         if not request.user.is_superuser:
             return Response(status=status.HTTP_403_FORBIDDEN)
 
-        reviews = Review.objects.filter(status="on_moderation") \
-                               .order_by("-pub_date") \
-                               .select_related("author", "event")
-        
+        reviews = (
+            Review.objects.filter(status="on_moderation")
+            .order_by("-pub_date")
+            .select_related("author", "event")
+        )
+
         reviews_count = reviews.count()
         serializer = ReviewSerializer(reviews, many=True)
         return Response(
@@ -241,12 +256,46 @@ class ReviewAPIView(ModelViewSet):
             return Response(status=status.HTTP_403_FORBIDDEN)
 
         review = self.get_object()
-        new_status = request.data.get('status')
-        if new_status not in ['accepted', 'rejected']:
-            return Response({"detail": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST)
+        new_status = request.data.get("status")
+        if new_status not in ["accepted", "rejected"]:
+            return Response(
+                {"detail": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         review.status = new_status
         review.save()
 
         serializer = ReviewSerializer(review)
         return Response(serializer.data)
+
+
+class TicketTypeAPIView(ModelViewSet):
+    queryset = TicketType.objects.all()
+    serializer_class = TicketTypeSerializer
+
+    @action(methods=["PATCH"], detail=True)
+    def update_quantity(self, request, pk=None):
+        ticket = self.get_object()
+        amount = request.data.get("amount", 1)
+        amount = int(amount)
+
+        if ticket.available_quantity < amount:
+            return Response(
+                {"error": "Нет такого количества доступных билетов"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        ticket.available_quantity -= amount
+        ticket.save()
+
+        return Response(
+            {"available_quantity": ticket.available_quantity}, status=status.HTTP_200_OK
+        )
+
+
+class TicketAPIView(ModelViewSet):
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)

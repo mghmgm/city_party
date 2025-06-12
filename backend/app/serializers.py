@@ -118,7 +118,7 @@ class TicketTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketType
-        fields = ["start_date", "end_date", "price", "event"]
+        fields = ["id", "start_date", "end_date", "price", "event", "available_quantity"]
 
 
 class TicketSerializer(serializers.ModelSerializer):

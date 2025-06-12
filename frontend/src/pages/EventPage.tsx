@@ -2,7 +2,7 @@ import { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Layout from './layout/Layout';
 import EventInfo from '../components/EventInfo';
-import { IReview } from '../types/types';
+import { IReview, ITicketType } from '../types/types';
 import { EventAPI } from '../store/EventAPI';
 import ReviewSection from '../components/ReviewSection';
 import Modal from '../components/UI/Modal/Modal';
@@ -10,12 +10,20 @@ import Form from '../components/UI/Form/Form';
 import Select from '../components/UI/Select/Select';
 import Input from '../components/UI/Input/Input';
 import Button from '../components/UI/Button/Button';
+import star from '../assets/star.svg';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
+import { TicketTypeAPI } from '../store/TicketTypeApi';
+import { TicketAPI } from '../store/TicketAPI';
 
 const EventPage: FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [openedModal, setOpenedModal] = useState<string | null>(null);
   const [editReview, setEditReview] = useState<IReview | null>(null);
   const [editText, setEditText] = useState('');
   const [editRating, setEditRating] = useState(5);
+  const [selectedTicket, setSelectedTicket] = useState<ITicketType | null>(null);
+  const [ticketAmount, setTicketAmount] = useState(1);
 
   const { id } = useParams();
   const eventId = Number(id);
@@ -43,6 +51,8 @@ const EventPage: FC = () => {
   const [createReview] = EventAPI.useCreateReviewMutation();
   const [deleteReview] = EventAPI.useDeleteReviewMutation();
   const [updateReview] = EventAPI.useUpdateReviewMutation();
+  const [updateTicketQuantity] = TicketTypeAPI.useUpdateTicketQuantityMutation();
+  const [createTicket] = TicketAPI.useCreateTicketMutation();
 
   const shownReviews = isReviewsLoading ? [defaultReview] : reviews;
 
@@ -87,6 +97,14 @@ const EventPage: FC = () => {
     setEditReview(review);
     setEditText(review.description);
     setEditRating(review.rating);
+    setOpenedModal('comment_edit');
+    setIsEditModalOpen(true);
+  };
+
+  const handleTicketClick = (e: React.MouseEvent, ticket: ITicketType) => {
+    e.preventDefault();
+    setSelectedTicket(ticket);
+    setOpenedModal('ticket_order');
     setIsEditModalOpen(true);
   };
 
@@ -112,38 +130,92 @@ const EventPage: FC = () => {
     }
   };
 
+  const handleTicketSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedTicket || !event) return;
+
+    if (selectedTicket.available_quantity - ticketAmount < 0) {
+      alert(`Недостаточно доступных билетов. Осталось: ${selectedTicket.available_quantity}`);
+      return;
+    }
+
+    try {
+      // Создаем билеты в цикле
+      for (let i = 0; i < ticketAmount; i++) {
+        await createTicket({
+          ticket_type: selectedTicket.id,
+          event: event.id,
+        }).unwrap();
+      }
+
+      // Обновляем количество доступных билетов
+      await updateTicketQuantity({
+        ticketTypeId: selectedTicket.id,
+        amount: ticketAmount,
+      }).unwrap();
+
+      alert('Билеты успешно куплены!');
+      setIsEditModalOpen(false);
+      setSelectedTicket(null);
+      setTicketAmount(1);
+    } catch (error) {
+      console.error('Ошибка при покупке билетов:', error);
+      alert('Произошла ошибка при покупке билетов');
+    }
+  };
+  
   return (
     <Layout navIsVisible={true}>
       <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
-        <Form onSubmit={handleUpdateSubmit}>
-          <div className="comments__rating">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            fill="#2929C8"
-            className="bi bi-star-fill"
-            viewBox="0 0 16 16"
-          >
-            <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z" />
-          </svg>
-          <Select
-            options={['1', '2', '3', '4', '5']}
-            onChange={(e) => setSelectedRating(e.target.value ?? '')}
-            value={selectedRating}
-          />
-        </div>
-          <Input
-            value={editText}
-            onChange={(e) => setEditText(e.target.value)}
-            placeholder="Отзыв"
-          />
-          <Button type="submit">Изменить</Button>
-        </Form>
+        {openedModal === 'comment_edit' ? (
+          <Form onSubmit={handleUpdateSubmit}>
+            <div className="comments__rating">
+              <img src={star} alt="" />
+              <Select
+                options={['1', '2', '3', '4', '5']}
+                onChange={(e) => setSelectedRating(e.target.value ?? '')}
+                value={selectedRating}
+              />
+            </div>
+            <Input
+              value={editText}
+              onChange={(e) => setEditText(e.target.value)}
+              placeholder="Отзыв"
+            />
+            <Button type="submit">Изменить</Button>
+          </Form>
+        ) : (
+          <Form onSubmit={handleTicketSubmit}>
+            {selectedTicket && (
+              <div>
+                <h2>{event?.title}</h2>
+                <h3>{format(new Date(selectedTicket.start_date), 'd MMMM', { locale: ru })}</h3>
+                <h3>
+                  {format(new Date(selectedTicket.start_date), 'HH:mm', { locale: ru })} -{' '}
+                  {format(new Date(selectedTicket.end_date), 'HH:mm', { locale: ru })}
+                </h3>
+                <h3>{selectedTicket.price} руб.</h3>
+              </div>
+            )}
+            <input
+              type="number"
+              value={ticketAmount}
+              onChange={(e) => setTicketAmount(parseInt(e.target.value) || 1)}
+              className="ticket__amount"
+              min="1"
+            />
+            <Button type="submit">Купить</Button>
+          </Form>
+        )}
       </Modal>
 
       {event && gallery && ticketTypes && (
-        <EventInfo event={event} gallery={gallery} ticketTypes={ticketTypes} />
+        <EventInfo
+          event={event}
+          gallery={gallery}
+          ticketTypes={ticketTypes}
+          onClick={handleTicketClick}
+        />
       )}
       {reviews && (
         <ReviewSection

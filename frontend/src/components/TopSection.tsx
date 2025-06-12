@@ -8,15 +8,13 @@ interface TopSectionProps {
 }
 
 const TopSection: FC<TopSectionProps> = ({ events }) => {
-  console.log(events);
-  
   return (
     <section className="tops">
       <div className="tops__wrap content">
         <h2>Топ-3 в вашем городе</h2>
         <div className="tops__content">
           {events.map((event, index) => (
-            <div>
+            <div key={index}>
               <div className='tops__event-info'>
                 <p className='tops__event-place'>{index+1}</p>
                 <div className='tops__event-titles'>

@@ -9,7 +9,9 @@ from app.views import (
     PlaceAPIView,
     CategoryAPIView,
     ReviewAPIView,
+    TicketAPIView,
     UserAPIView,
+    TicketTypeAPIView,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -31,6 +33,12 @@ categoryRouter.register(r"api/categories", CategoryAPIView, basename="categories
 reviewRouter = DefaultRouter()
 reviewRouter.register(r"api/reviews", ReviewAPIView, basename="reviews")
 
+ticketTypeRouter = DefaultRouter()
+ticketTypeRouter.register(r"api/ticket-types", TicketTypeAPIView, basename="ticket-types")
+
+ticketRouter = DefaultRouter()
+ticketRouter.register(r"api/tickets", TicketAPIView, basename="tickets")
+
 userRouter = DefaultRouter()
 userRouter.register(r"api/user", UserAPIView, basename="user")
 
@@ -51,3 +59,5 @@ if settings.DEBUG:
     urlpatterns += categoryRouter.urls
     urlpatterns += userRouter.urls
     urlpatterns += reviewRouter.urls
+    urlpatterns += ticketTypeRouter.urls
+    urlpatterns += ticketRouter.urls

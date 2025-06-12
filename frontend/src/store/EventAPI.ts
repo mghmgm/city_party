@@ -5,10 +5,17 @@ export const EventAPI = createApi({
   reducerPath: 'eventAPI',
   baseQuery: fetchBaseQuery({
     baseUrl: `${import.meta.env.VITE_API_URL}`,
-    prepareHeaders:(headers)=>{
-      const token = localStorage.getItem('accessToken')
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+    prepareHeaders: (headers, { endpoint }) => {
+      if (
+        endpoint === 'createReview' ||
+        endpoint === 'deleteReview' ||
+        endpoint === 'updateReview' 
+      ) {
+        const token = localStorage.getItem('accessToken');
+        if (token) {
+          headers.set('Authorization', `Bearer ${token}`);
+        }
+        return headers
       }
       return headers;
     },
@@ -89,7 +96,10 @@ export const EventAPI = createApi({
     }),
 
     // редактирование отзыва
-    updateReview: build.mutation<IReview, { eventId: number; reviewId: number; data: Partial<IReview> }>({
+    updateReview: build.mutation<
+      IReview,
+      { eventId: number; reviewId: number; data: Partial<IReview> }
+    >({
       query: ({ eventId, reviewId, data }) => ({
         url: `/events/${eventId}/reviews/${reviewId}/`,
         method: 'PATCH',

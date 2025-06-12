@@ -8,9 +8,10 @@ interface EventInfoProps {
   event: IEvent;
   gallery: IGallery;
   ticketTypes: ITicketType[];
+  onClick: (e: React.MouseEvent, ticket: ITicketType) => void; 
 }
 
-const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes }) => {
+const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes, onClick }) => {
   const getImgUrl = (href: string) => hostname + href;
   const imgUrls = gallery.photos.map((image) => getImgUrl(image.image));
 
@@ -36,7 +37,7 @@ const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes }) => {
         <h2>Расписание</h2>
         <div className="event__tickets">
           {ticketTypes.map((ticket, index) => (
-            <div className="event__ticket-card" key={index}>
+            <button className="event__ticket-card" key={index} onClick={(e) => onClick(e, ticket)}>
               <p>
                 {format(new Date(ticket.start_date), 'd MMMM', { locale: ru })}
               </p>
@@ -45,7 +46,7 @@ const EventInfo: FC<EventInfoProps> = ({ event, gallery, ticketTypes }) => {
                 {format(new Date(ticket.end_date), 'HH:mm', { locale: ru })}
               </p>
               <p className="event__price">{ticket.price} руб.</p>
-            </div>
+            </button>
           ))}
         </div>
       </div>
