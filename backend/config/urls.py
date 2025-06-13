@@ -43,11 +43,11 @@ userRouter = DefaultRouter()
 userRouter.register(r"api/user", UserAPIView, basename="user")
 
 
-def trigger_error(request):
-    division_by_zero = 1 / 0
+# def trigger_error(request):
+#     division_by_zero = 1 / 0
 
 urlpatterns = [
-    path('sentry-debug/', trigger_error),
+    # path('sentry-debug/', trigger_error),
     path('silk', include('silk.urls', namespace='silk')),
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

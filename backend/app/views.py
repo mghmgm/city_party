@@ -353,10 +353,27 @@ class TicketTypeAPIView(ModelViewSet):
     queryset = TicketType.objects.all()
     serializer_class = TicketTypeSerializer
 
+    def get_permissions(self) -> list:
+        """
+        Определение прав доступа для разных действий.
+
+        Возвращает:
+            list: Список классов прав доступа
+        """
+        if self.action in ["create", "destroy", "update"]:
+            permission_classes = [IsAdminUser]
+        elif self.action in ["update_quantity"]:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = []  # Разрешаем чтение всем
+
+        return [permission() for permission in permission_classes]
+
     @action(methods=["PATCH"], detail=True)
     def update_quantity(self, request: Request, pk: int = None) -> Response:
         """
         Обновление количества доступных билетов.
+        Доступно только авторизованным пользователям.
 
         Аргументы:
             request: Запрос
@@ -379,7 +396,29 @@ class TicketTypeAPIView(ModelViewSet):
         ticket.save()
 
         return Response(
-            {"available_quantity": ticket.available_quantity}, status=status.HTTP_200_OK
+            {"available_quantity": ticket.available_quantity}, 
+            status=status.HTTP_200_OK
+        )
+
+    def create(self, request: Request, *args, **kwargs) -> Response:
+        """
+        Создание нового типа билета.
+        Доступно только администраторам.
+
+        Аргументы:
+            request: Запрос
+
+        Возвращает:
+            Response: Созданный тип билета
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            serializer.data, 
+            status=status.HTTP_201_CREATED, 
+            headers=headers
         )
 
 
@@ -402,16 +441,20 @@ class TicketAPIView(ModelViewSet):
 
     def get_queryset(self) -> QuerySet[Ticket]:
         """
-        Получение билетов с фильтрацией по статусу.
-
-        Возвращает:
-            QuerySet[Ticket]: QuerySet билетов
+        Получение билетов с фильтрацией по статусу и текущему пользователю.
         """
         queryset = super().get_queryset()
-        status = self.request.query_params.get("status")
 
+        # Для обычных пользователей показываем только их билеты
+        if not self.request.user.is_staff:
+            queryset = queryset.filter(owner=self.request.user.userprofile)
+
+        # Дополнительная фильтрация по статусу
+        status = self.request.query_params.get("status")
         if status == "on_canceled":
+            # Для статуса on_canceled проверяем права через get_permissions()
             return queryset.filter(payment_status="on_canceled")
+
         return queryset
 
     def perform_create(self, serializer: TicketSerializer) -> None:
