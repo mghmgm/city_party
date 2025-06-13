@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { IEvent } from '../types/types';
 import { hostname } from '../config';
 import star from '../assets/star.svg'
+import { Link } from 'react-router';
 
 interface TopSectionProps {
   events: IEvent[];
@@ -14,7 +15,7 @@ const TopSection: FC<TopSectionProps> = ({ events }) => {
         <h2>Топ-3 в вашем городе</h2>
         <div className="tops__content">
           {events.map((event, index) => (
-            <div key={index}>
+            <Link key={index} to={`/events/${event.id}`}>
               <div className='tops__event-info'>
                 <p className='tops__event-place'>{index+1}</p>
                 <div className='tops__event-titles'>
@@ -31,7 +32,7 @@ const TopSection: FC<TopSectionProps> = ({ events }) => {
                 key={event.id}
                 className="tops__cover-img"
               />
-            </div>
+            </Link>
           ))}
         </div>
       </div>

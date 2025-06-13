@@ -69,7 +69,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
     }
     if (searchValue.trim() !== '' && searchedEvents) {
       return (
-        <div className="catalog">
+        <div className="catalog content">
           {searchedEvents.map((event, idx) => (
             <EventCard event={event} key={idx} />
           ))}
@@ -78,7 +78,7 @@ const Layout: FC<LayoutProps> = ({ children, navIsVisible }) => {
     }
     if (selectedCategory && categoryEvents && categoryEvents!.length>0) {
       return (
-        <div className="catalog">
+        <div className="catalog content">
           {categoryEvents!.map((event, idx) => (
             <EventCard event={event} key={idx} />
           ))}

@@ -42,7 +42,12 @@ ticketRouter.register(r"api/tickets", TicketAPIView, basename="tickets")
 userRouter = DefaultRouter()
 userRouter.register(r"api/user", UserAPIView, basename="user")
 
+
+def trigger_error(request):
+    division_by_zero = 1 / 0
+
 urlpatterns = [
+    path('sentry-debug/', trigger_error),
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),

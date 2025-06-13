@@ -38,18 +38,27 @@ const Ticket: FC<TicketProps> = ({ ticket, type, onReturn, children }) => {
   }
 
   return (
-    <div className={type === 'ticket' ? classes.ticket : classes.event}>
-      <img
-        src={hostname + `${ticket.event.cover_image_url}`}
-        alt={ticket.event.title}
-        className={type === 'ticket' ? classes.ticketImg : classes.eventImg}
-      />
+    <div
+      Link
+      to={`/events/${ticket.event.id}`}
+      className={type === 'ticket' ? classes.ticket : classes.event}
+    >
+      <Link to={`/events/${ticket.event.id}`}>
+        <img
+          src={hostname + `${ticket.event.cover_image_url}`}
+          alt={ticket.event.title}
+          className={type === 'ticket' ? classes.ticketImg : classes.eventImg}
+        />
+      </Link>
 
       <div className={type === 'ticket' ? classes.ticketInfo : classes.eventInfo}>
-        <div className={type === 'ticket' ? classes.ticketContainer : classes.eventContainer}>
-          <Link to={`/events/${ticket.event.id}`} className={classes.title}>
+        <Link
+          to={`/events/${ticket.event.id}`}
+          className={type === 'ticket' ? classes.ticketContainer : classes.eventContainer}
+        >
+          <p className={classes.title}>
             {ticket.event.title} {'>'}
-          </Link>
+          </p>
           {ticketType ? (
             <>
               <p>
@@ -62,7 +71,7 @@ const Ticket: FC<TicketProps> = ({ ticket, type, onReturn, children }) => {
             <p>Загрузка данных...</p>
           )}
           {children}
-        </div>
+        </Link>
         {ticket.payment_status_display !== 'На возврате' ? (
           <Button
             href={link}
@@ -72,7 +81,6 @@ const Ticket: FC<TicketProps> = ({ ticket, type, onReturn, children }) => {
             {btnText}
           </Button>
         ) : null}
-        
       </div>
     </div>
   );

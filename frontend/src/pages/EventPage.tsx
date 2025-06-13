@@ -133,7 +133,6 @@ const EventPage: FC = () => {
   const handleTicketSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedTicket || !event) return;
-    const newQuantity = selectedTicket.available_quantity - ticketAmount;
 
     if (selectedTicket.available_quantity - ticketAmount < 0) {
       alert(`Недостаточно доступных билетов. Осталось: ${selectedTicket.available_quantity}`);
@@ -150,7 +149,7 @@ const EventPage: FC = () => {
     // Обновляем количество доступных билетов
     await updateTicketQuantity({
       ticketTypeId: selectedTicket.id,
-      available_quantity: newQuantity,
+      available_quantity: ticketAmount,
     }).unwrap();
 
     alert('Билеты успешно куплены!');
