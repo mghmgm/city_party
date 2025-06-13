@@ -45,6 +45,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     author_username = serializers.SerializerMethodField()
+    is_owner = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
@@ -56,6 +57,7 @@ class ReviewSerializer(serializers.ModelSerializer):
             "author_username",
             "pub_date",
             "status",
+            "is_owner",
         ]
         extra_kwargs = {
             "author": {"read_only": True},
@@ -64,6 +66,12 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     def get_author_username(self, obj):
         return obj.author.user.username
+
+    def get_is_owner(self, obj):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            return obj.author.user == request.user
+        return False
 
 
 class BannerSerializer(serializers.ModelSerializer):

@@ -40,23 +40,7 @@ class EventAPIView(ModelViewSet):
     permission_classes = [AllowAny]
 
     def get_queryset(self):
-        queryset = Event.published.all()
-        limit = self.request.query_params.get("limit", None)
-        ordering = self.request.query_params.get("ordering")
-        search = self.request.query_params.get("search", None)
-
-        if search:
-            queryset = queryset.filter(title__icontains=search)
-
-        if ordering == "rating":
-            queryset = queryset.order_by("-rating_avg")
-            queryset = queryset.exclude(rating_avg__isnull=True)
-
-        if limit is not None:
-            limit = int(limit)
-            queryset = queryset[:limit]
-
-        return queryset
+        return Event.published.all()
 
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
@@ -259,7 +243,7 @@ class ReviewAPIView(ModelViewSet):
         new_status = request.data.get("status")
         if new_status not in ["accepted", "rejected"]:
             return Response(
-                {"detail": "Invalid status"}, status=status.HTTP_400_BAD_REQUEST
+                {"detail": "Неизвестный статус"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         review.status = new_status
