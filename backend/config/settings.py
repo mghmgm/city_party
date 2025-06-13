@@ -14,6 +14,17 @@ from datetime import timedelta
 import os
 from pathlib import Path
 
+# import sentry_sdk
+# from sentry_sdk.integrations.django import DjangoIntegration
+
+# sentry_sdk.init(
+#     dsn="", 
+#     integrations=[DjangoIntegration()],
+#     traces_sample_rate=1.0,
+#     environment="development",
+#     send_default_pii=True,
+# )
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -48,6 +59,7 @@ INSTALLED_APPS = [
     "sortedm2m",
     "corsheaders",
     "django_filters",
+    "silk",
 ]
 
 
@@ -76,6 +88,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "silk.middleware.SilkyMiddleware",
 ]
 
 CORS_ALLOWED_ORIGINS = [

@@ -39,7 +39,7 @@ from rest_framework.request import Request
 
 class EventAPIView(ModelViewSet):
     """API для работы с событиями."""
-    
+
     serializer_class = EventSerializer
     filterset_class = EventFilter
     permission_classes = [AllowAny]
@@ -47,11 +47,8 @@ class EventAPIView(ModelViewSet):
     def get_queryset(self) -> QuerySet[Event]:
         """
         Получение опубликованных событий.
-        
-        Возвращает:
-            QuerySet[Event]: QuerySet опубликованных событий
         """
-        return Event.published.all()
+        return Event.published.select_related("gallery").prefetch_related("categories")
 
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
@@ -59,97 +56,74 @@ class EventAPIView(ModelViewSet):
     def by_category(self, request: Request, category_slug: str) -> Response:
         """
         Получение событий по категории.
-        
-        Аргументы:
-            request: Запрос
-            category_slug: Слаг категории
-            
-        Возвращает:
-            Response: Список событий в указанной категории
         """
-        events = Event.published.filter(
-            categories__slug=category_slug
-        ).prefetch_related("categories")
+        events = self.get_queryset().filter(categories__slug=category_slug)
 
         if not events.exists():
             return Response([], status=status.HTTP_200_OK)
 
-        serializer = EventSerializer(events, many=True)
+        serializer = self.get_serializer(events, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=["GET", "POST"], detail=True, url_path="reviews")
     def reviews(self, request: Request, pk: int = None) -> Response:
         """
         Работа с отзывами на событие.
-        
-        Аргументы:
-            request: Запрос
-            pk: ID события
-            
-        Возвращает:
-            Response: При GET - список отзывов, при POST - созданный отзыв
         """
         event = self.get_object()
 
         if request.method == "GET":
             reviews = (
                 event.reviews.filter(status="accepted")
-                .order_by("-pub_date")
                 .select_related("author")
+                .order_by("-pub_date")
             )
-            reviews_count = reviews.count()
             serializer = ReviewSerializer(reviews, many=True)
             return Response(
-                {"count": reviews_count, "reviews": serializer.data},
+                {"count": reviews.count(), "reviews": serializer.data},
                 status=status.HTTP_200_OK,
             )
 
         if request.method == "POST":
             if not request.user.is_authenticated:
                 return Response(status=status.HTTP_401_UNAUTHORIZED)
+
             serializer = ReviewSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save(
-                    author=request.user.userprofile,
-                    event=event,
-                    status="on_moderation",
-                    pub_date=timezone.now(),
-                )
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            serializer.save(
+                author=request.user.userprofile,
+                event=event,
+                status="on_moderation",
+                pub_date=timezone.now(),
+            )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(
         methods=["DELETE", "PATCH"], detail=True, url_path="reviews/(?P<review_id>\\d+)"
     )
-    def review(self, request: Request, pk: int = None, review_id: int = None) -> Response:
+    def review(
+        self, request: Request, pk: int = None, review_id: int = None
+    ) -> Response:
         """
         Удаление или изменение отзыва.
-        
-        Аргументы:
-            request: Запрос
-            pk: ID события
-            review_id: ID отзыва
-            
-        Возвращает:
-            Response: Результат операции
         """
         event = self.get_object()
-        review = event.reviews.filter(id=review_id, status="accepted").first()
+        review = get_object_or_404(
+            event.reviews,
+            id=review_id,
+            status="accepted",
+            author=request.user.userprofile,
+        )
 
         if request.method == "PATCH":
-            if review.author != request.user.userprofile:
-                return Response(status=status.HTTP_403_FORBIDDEN)
             serializer = ReviewSerializer(review, data=request.data, partial=True)
-            if serializer.is_valid():
-                updated_review = serializer.update(review, serializer.validated_data)
-                return Response(
-                    ReviewSerializer(updated_review).data, status=status.HTTP_200_OK
-                )
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            serializer.is_valid(raise_exception=True)
+            updated_review = serializer.save()
+            return Response(
+                ReviewSerializer(updated_review).data, status=status.HTTP_200_OK
+            )
 
         if request.method == "DELETE":
-            if review.author != request.user.userprofile:
-                return Response(status=status.HTTP_403_FORBIDDEN)
             review.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -157,35 +131,22 @@ class EventAPIView(ModelViewSet):
     def gallery(self, request: Request, pk: int = None) -> Response:
         """
         Получение галереи события.
-        
-        Аргументы:
-            request: Запрос
-            pk: ID события
-            
-        Возвращает:
-            Response: Данные галереи
         """
         event = self.get_object()
-        gallery = event.gallery
-        serializer = GallerySerializer(gallery)
+        serializer = GallerySerializer(event.gallery)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=["GET"], detail=True, url_path="ticket-types")
     def ticket_types(self, request: Request, pk: int = None) -> Response:
         """
         Получение типов билетов для события.
-        
-        Аргументы:
-            request: Запрос
-            pk: ID события
-            
-        Возвращает:
-            Response: Список типов билетов
         """
-        event = self.get_object()
         now = timezone.now()
-        ticket_types = event.ticket_types.filter(start_date__gte=now).order_by(
-            "start_date"
+        ticket_types = (
+            self.get_object()
+            .ticket_types.filter(start_date__gte=now)
+            .select_related("event")
+            .order_by("start_date")
         )
         serializer = TicketTypeSerializer(ticket_types, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -193,17 +154,17 @@ class EventAPIView(ModelViewSet):
 
 class UserAPIView(viewsets.ViewSet):
     """API для работы с пользователями."""
-    
+
     permission_classes = [IsAuthenticated]
 
     @action(methods=["GET"], detail=False, url_path="profile")
     def profile(self, request: Request) -> Response:
         """
         Получение профиля пользователя.
-        
+
         Аргументы:
             request: Запрос
-            
+
         Возвращает:
             Response: Данные профиля пользователя
         """
@@ -221,10 +182,10 @@ class UserAPIView(viewsets.ViewSet):
     def avatar(self, request: Request) -> Response:
         """
         Получение аватара пользователя.
-        
+
         Аргументы:
             request: Запрос
-            
+
         Возвращает:
             Response: Данные аватара
         """
@@ -241,10 +202,10 @@ class UserAPIView(viewsets.ViewSet):
     def tickets(self, request: Request) -> Response:
         """
         Получение билетов пользователя.
-        
+
         Аргументы:
             request: Запрос
-            
+
         Возвращает:
             Response: Список активных и использованных билетов
         """
@@ -274,7 +235,7 @@ class UserAPIView(viewsets.ViewSet):
 
 class BannerAPIView(ModelViewSet):
     """API для работы с баннерами."""
-    
+
     serializer_class = BannerSerializer
     queryset = Banner.objects.filter(is_visible=True)
 
@@ -282,10 +243,10 @@ class BannerAPIView(ModelViewSet):
     def random_banner(self, request: Request) -> Response:
         """
         Получение случайного баннера.
-        
+
         Аргументы:
             request: Запрос
-            
+
         Возвращает:
             Response: Данные случайного баннера
         """
@@ -297,13 +258,13 @@ class BannerAPIView(ModelViewSet):
 
 class PlaceAPIView(ModelViewSet):
     """API для работы с местами проведения событий."""
-    
+
     serializer_class = PlaceSerializer
 
     def get_queryset(self) -> QuerySet[Place]:
         """
         Получение мест проведения.
-        
+
         Возвращает:
             QuerySet[Place]: QuerySet мест проведения
         """
@@ -319,14 +280,14 @@ class PlaceAPIView(ModelViewSet):
 
 class CategoryAPIView(ModelViewSet):
     """API для работы с категориями событий."""
-    
+
     serializer_class = CategorySerializer
     queryset = Category.objects.all()
 
 
 class ReviewAPIView(ModelViewSet):
     """API для работы с отзывами."""
-    
+
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
@@ -334,10 +295,10 @@ class ReviewAPIView(ModelViewSet):
     def moderation_reviews(self, request: Request) -> Response:
         """
         Получение отзывов на модерации (для администраторов).
-        
+
         Аргументы:
             request: Запрос
-            
+
         Возвращает:
             Response: Список отзывов на модерации
         """
@@ -361,11 +322,11 @@ class ReviewAPIView(ModelViewSet):
     def update_review_status(self, request: Request, pk: int = None) -> Response:
         """
         Обновление статуса отзыва (для администраторов).
-        
+
         Аргументы:
             request: Запрос
             pk: ID отзыва
-            
+
         Возвращает:
             Response: Обновленные данные отзыва
         """
@@ -388,7 +349,7 @@ class ReviewAPIView(ModelViewSet):
 
 class TicketTypeAPIView(ModelViewSet):
     """API для работы с типами билетов."""
-    
+
     queryset = TicketType.objects.all()
     serializer_class = TicketTypeSerializer
 
@@ -396,11 +357,11 @@ class TicketTypeAPIView(ModelViewSet):
     def update_quantity(self, request: Request, pk: int = None) -> Response:
         """
         Обновление количества доступных билетов.
-        
+
         Аргументы:
             request: Запрос
             pk: ID типа билета
-            
+
         Возвращает:
             Response: Обновленное количество доступных билетов
         """
@@ -424,14 +385,14 @@ class TicketTypeAPIView(ModelViewSet):
 
 class TicketAPIView(ModelViewSet):
     """API для работы с билетами."""
-    
+
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
     def get_permissions(self) -> list:
         """
         Получение прав доступа.
-        
+
         Возвращает:
             list: Список классов прав доступа
         """
@@ -442,7 +403,7 @@ class TicketAPIView(ModelViewSet):
     def get_queryset(self) -> QuerySet[Ticket]:
         """
         Получение билетов с фильтрацией по статусу.
-        
+
         Возвращает:
             QuerySet[Ticket]: QuerySet билетов
         """
@@ -456,7 +417,7 @@ class TicketAPIView(ModelViewSet):
     def perform_create(self, serializer: TicketSerializer) -> None:
         """
         Создание билета.
-        
+
         Аргументы:
             serializer: Сериализатор билета
         """
@@ -472,25 +433,27 @@ class TicketAPIView(ModelViewSet):
     def update_status(self, request: Request, pk: int = None) -> Response:
         """
         Обновление статуса билета.
-        
+
         Аргументы:
             request: Запрос
             pk: ID билета
-            
+
         Возвращает:
             Response: Обновленные данные билета
         """
         ticket = self.get_object()
         new_status = request.data.get("payment_status")
-        
-        allowed_statuses = ['paid', 'canceled', 'on_canceled', 'pending']
-        
+
+        allowed_statuses = ["paid", "canceled", "on_canceled", "pending"]
+
         if new_status not in allowed_statuses:
             return Response(
-                {"error": f"Недопустимый статус. Допустимые значения: {', '.join(allowed_statuses)}"},
-                status=status.HTTP_400_BAD_REQUEST
+                {
+                    "error": f"Недопустимый статус. Допустимые значения: {', '.join(allowed_statuses)}"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         ticket.payment_status = new_status
         ticket.save()
 
