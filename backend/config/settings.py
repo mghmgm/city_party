@@ -36,11 +36,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-z)vw+@=4qg5+4hlwq7h^zn46o6%n+7x)h&9*9djmnv!p$#0v5("
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['<INSERT_DOMAIN>', 'localhost']
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 
-SITE_ID = 1
+CSRF_TRUSTED_ORIGINS = ['https://<INSERT_DOMAIN>']
 
 # Application definition
 
