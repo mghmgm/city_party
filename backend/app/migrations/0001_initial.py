@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('photologue', '0014_alter_watermark_image'),
+        ('photologue', '0013_alter_watermark_image'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
