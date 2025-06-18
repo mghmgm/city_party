@@ -58,11 +58,11 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
         <Select options={['Москва']} value="Москва" className={classes.select} />
         {user ? (
           <div className={classes.profile}>
-            <Link to="/profile">
+            <Link to="/profile/">
               <img src={avatarUrl} className={classes.avatar} />
             </Link>
             {user?.is_superuser === true ? (
-              <Button href="/moderation" className={classes.moderation}>
+              <Button href="/moderation/" className={classes.moderation}>
                 Модерация
               </Button>
             ) : null}
@@ -71,7 +71,7 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
             </Button>
           </div>
         ) : (
-          <Button href="/login" className={classes.loginBtn}>
+          <Button href="/login/" className={classes.loginBtn}>
             Войти
           </Button>
         )}
