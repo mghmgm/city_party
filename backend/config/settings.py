@@ -43,6 +43,8 @@ CSRF_TRUSTED_ORIGINS = ['https://85.198.82.247', 'https://city-party.netlify.app
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
+SECURE_SSL_REDIRECT = False 
+
 CSRF_TRUSTED_ORIGINS = ['https://<INSERT_DOMAIN>']
 
 # Application definition
