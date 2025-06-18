@@ -16,6 +16,6 @@ services:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
     entrypoint: >
-      sh -c "certbot certonly --webroot -w /var/www/certbot --email fedorgugnin22@gmail.com -d <INSERT_DOMAIN> --agree-tos --no-eff-email --keep-until-expiring"
+      sh -c "certbot certonly --webroot -w /var/www/certbot --email irina.yaltantseva@gmail.com -d city-party.netlify.app --agree-tos --no-eff-email --keep-until-expiring"
     depends_on:
       - nginx_verify_certbot
