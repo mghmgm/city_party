@@ -73,7 +73,7 @@ class Review(models.Model):
     pub_date = models.DateTimeField(null = True, blank=True, verbose_name="Дата публикации")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Дата создания")
     event = models.ForeignKey("Event", on_delete=models.CASCADE, related_name="reviews", verbose_name="Событие")
-    status = models.CharField(default=Status.ON_MODERATION, choices=Status, verbose_name="Статус")
+    status = models.CharField(default=Status.ON_MODERATION, choices=Status, verbose_name="Статус", max_length=50)
 
     
     def __str__(self):
@@ -144,7 +144,7 @@ class Ticket(models.Model):
     
     ticket_type = models.ForeignKey("TicketType", on_delete=models.CASCADE, related_name="tickets", verbose_name="Тип билета")
     owner = models.ForeignKey("UserProfile", on_delete=models.SET_NULL, null=True, blank=True, related_name="tickets", verbose_name="Владелец")
-    payment_status = models.CharField(choices=PaymentStatus, default=PaymentStatus.PENDING, verbose_name="Статус оплаты")
+    payment_status = models.CharField(choices=PaymentStatus, default=PaymentStatus.PENDING, verbose_name="Статус оплаты", max_length=50)
     pdf_file = models.FileField(upload_to='documents/', verbose_name="Файл", null=True, blank=True)
     
     def __str__(self):
