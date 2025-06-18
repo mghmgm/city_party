@@ -38,7 +38,8 @@ SECRET_KEY = "django-insecure-z)vw+@=4qg5+4hlwq7h^zn46o6%n+7x)h&9*9djmnv!p$#0v5(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['<INSERT_DOMAIN>', 'localhost']
+ALLOWED_HOSTS = ['85.198.82.247', 'localhost', 'city-party.netlify.app']
+CSRF_TRUSTED_ORIGINS = ['https://85.198.82.247', 'https://city-party.netlify.app']
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
