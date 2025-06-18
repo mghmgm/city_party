@@ -35,7 +35,9 @@ reviewRouter = DefaultRouter()
 reviewRouter.register(r"api/reviews", ReviewAPIView, basename="reviews")
 
 ticketTypeRouter = DefaultRouter()
-ticketTypeRouter.register(r"api/ticket-types", TicketTypeAPIView, basename="ticket-types")
+ticketTypeRouter.register(
+    r"api/ticket-types", TicketTypeAPIView, basename="ticket-types"
+)
 
 ticketRouter = DefaultRouter()
 ticketRouter.register(r"api/tickets", TicketAPIView, basename="tickets")
@@ -49,8 +51,6 @@ userRouter.register(r"api/user", UserAPIView, basename="user")
 
 urlpatterns = [
     # path('sentry-debug/', trigger_error),
-    path("__debug__/", include(debug_toolbar.urls)),
-    path('silk', include('silk.urls', namespace='silk')),
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
@@ -61,11 +61,15 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += eventsRouter.urls
-    urlpatterns += bannerRouter.urls
-    urlpatterns += placeRouter.urls
-    urlpatterns += categoryRouter.urls
-    urlpatterns += userRouter.urls
-    urlpatterns += reviewRouter.urls
-    urlpatterns += ticketTypeRouter.urls
-    urlpatterns += ticketRouter.urls
+    urlpatterns += [
+        path("__debug__/", include(debug_toolbar.urls)),
+        path("silk", include("silk.urls", namespace="silk")),
+    ]
+urlpatterns += eventsRouter.urls
+urlpatterns += bannerRouter.urls
+urlpatterns += placeRouter.urls
+urlpatterns += categoryRouter.urls
+urlpatterns += userRouter.urls
+urlpatterns += reviewRouter.urls
+urlpatterns += ticketTypeRouter.urls
+urlpatterns += ticketRouter.urls
