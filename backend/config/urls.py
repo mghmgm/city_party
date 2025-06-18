@@ -1,3 +1,4 @@
+import debug_toolbar
 from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
@@ -48,6 +49,7 @@ userRouter.register(r"api/user", UserAPIView, basename="user")
 
 urlpatterns = [
     # path('sentry-debug/', trigger_error),
+    path("__debug__/", include(debug_toolbar.urls)),
     path('silk', include('silk.urls', namespace='silk')),
     path("admin/", admin.site.urls),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),

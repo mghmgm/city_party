@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from .filters import EventFilter
 from .models import (
     Event,
@@ -48,7 +49,8 @@ class EventAPIView(ModelViewSet):
         """
         Получение опубликованных событий.
         """
-        return Event.published.select_related("gallery").prefetch_related("categories")
+        # return Event.published.select_related("gallery").prefetch_related("categories")
+        return Event.published.select_related("gallery")
 
     @action(
         methods=["GET"], detail=False, url_path="category/(?P<category_slug>[\w-]+)"
@@ -108,12 +110,32 @@ class EventAPIView(ModelViewSet):
         Удаление или изменение отзыва.
         """
         event = self.get_object()
-        review = get_object_or_404(
-            event.reviews,
-            id=review_id,
-            status="accepted",
-            author=request.user.userprofile,
-        )
+        review = get_object_or_404(event.reviews, id=review_id)
+        
+        # event = self.get_object()
+        # review = get_object_or_404(
+        #     event.reviews,
+        #     id=review_id,
+        #     status="accepted",
+        #     author=request.user.userprofile,
+        # )
+
+        if review.author != request.user.userprofile:
+            return Response(
+                {"detail": "Вы не автор этого отзыва"}, status=status.HTTP_403_FORBIDDEN
+            )
+
+        if review.status == "rejected":
+            return Response(
+                {"detail": "Нельзя изменить отклоненный отзыв"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
+        if request.method == "PATCH" and "status" in request.data:
+            return Response(
+                {"detail": "Вы не можете изменять статус отзыва"},
+                status=status.HTTP_403_FORBIDDEN,
+            )
 
         if request.method == "PATCH":
             serializer = ReviewSerializer(review, data=request.data, partial=True)
@@ -291,20 +313,21 @@ class ReviewAPIView(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 
+    def get_permissions(self):
+        """
+        Инстанциирует и возвращает список разрешений, которые требуются для данного действия.
+        """
+        if self.action in ["moderation_reviews", "update_review_status"]:
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
     @action(methods=["GET"], detail=False, url_path="moderation")
     def moderation_reviews(self, request: Request) -> Response:
         """
         Получение отзывов на модерации (для администраторов).
-
-        Аргументы:
-            request: Запрос
-
-        Возвращает:
-            Response: Список отзывов на модерации
         """
-        if not request.user.is_superuser:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         reviews = (
             Review.objects.filter(status="on_moderation")
             .order_by("-pub_date")
@@ -322,17 +345,7 @@ class ReviewAPIView(ModelViewSet):
     def update_review_status(self, request: Request, pk: int = None) -> Response:
         """
         Обновление статуса отзыва (для администраторов).
-
-        Аргументы:
-            request: Запрос
-            pk: ID отзыва
-
-        Возвращает:
-            Response: Обновленные данные отзыва
         """
-        if not request.user.is_superuser:
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
         review = self.get_object()
         new_status = request.data.get("status")
         if new_status not in ["accepted", "rejected"]:
@@ -365,7 +378,7 @@ class TicketTypeAPIView(ModelViewSet):
         elif self.action in ["update_quantity"]:
             permission_classes = [IsAuthenticated]
         else:
-            permission_classes = []  # Разрешаем чтение всем
+            permission_classes = []
 
         return [permission() for permission in permission_classes]
 
@@ -396,8 +409,7 @@ class TicketTypeAPIView(ModelViewSet):
         ticket.save()
 
         return Response(
-            {"available_quantity": ticket.available_quantity}, 
-            status=status.HTTP_200_OK
+            {"available_quantity": ticket.available_quantity}, status=status.HTTP_200_OK
         )
 
     def create(self, request: Request, *args, **kwargs) -> Response:
@@ -416,9 +428,7 @@ class TicketTypeAPIView(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(
-            serializer.data, 
-            status=status.HTTP_201_CREATED, 
-            headers=headers
+            serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
 
 

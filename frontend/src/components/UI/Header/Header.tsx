@@ -36,6 +36,9 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
     navigate('/', { replace: true });
   };
 
+  console.log(user?.is_superuser);
+  
+
   return (
     <header className={headerClass}>
       <Link to={'/'}>
@@ -58,7 +61,7 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
             <Link to="/profile">
               <img src={avatarUrl} className={classes.avatar} />
             </Link>
-            {user?.is_superuser ? (
+            {user?.is_superuser === true ? (
               <Button href="/moderation" className={classes.moderation}>
                 Модерация
               </Button>

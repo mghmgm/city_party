@@ -14,16 +14,16 @@ from datetime import timedelta
 import os
 from pathlib import Path
 
-# import sentry_sdk
-# from sentry_sdk.integrations.django import DjangoIntegration
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
-# sentry_sdk.init(
-#     dsn="", 
-#     integrations=[DjangoIntegration()],
-#     traces_sample_rate=1.0,
-#     environment="development",
-#     send_default_pii=True,
-# )
+sentry_sdk.init(
+    dsn="https://2e618626ad0c7fececf3129ff1101b7d@o4509495483498496.ingest.de.sentry.io/4509495485005904", 
+    integrations=[DjangoIntegration()],
+    traces_sample_rate=1.0,
+    environment="development",
+    send_default_pii=True,
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "silk",
+    "debug_toolbar", 
 ]
 
 
@@ -89,6 +90,11 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "silk.middleware.SilkyMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+]
+
+INTERNAL_IPS = [
+    "127.0.0.1",
 ]
 
 CORS_ALLOWED_ORIGINS = [
