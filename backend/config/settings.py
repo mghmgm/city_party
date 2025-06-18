@@ -28,17 +28,9 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z)vw+@=4qg5+4hlwq7h
 DEBUG = False
 
 # Hosts/Origins
-ALLOWED_HOSTS = [
-    '85.198.82.247',
-    'localhost',
-    '127.0.0.1',
-    'city-party.netlify.app'
-]
+ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://85.198.82.247',
-    'https://city-party.netlify.app'
-]
+CSRF_TRUSTED_ORIGINS = ['*']
 
 # Security Settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -50,11 +42,7 @@ SECURE_HSTS_SECONDS = 0  # Отключаем HSTS для HTTP
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [
-    "http://85.198.82.247",
-    "http://localhost:5173",
-    "https://city-party.netlify.app"
-]
+CORS_ALLOWED_ORIGINS = ['*']
 
 # Application definition
 INSTALLED_APPS = [
@@ -147,10 +135,11 @@ USE_I18N = True
 USE_TZ = True
 
 # Static files
-STATIC_URL = '/static/'
-STATIC_ROOT = '/usr/src/app/static/'
+STATIC_ROOT = BASE_DIR / 'static/'
+STATIC_URL = 'static/'
+
 MEDIA_URL = '/media/'
-MEDIA_ROOT = '/usr/src/app/media/'
+MEDIA_ROOT =  BASE_DIR / 'media/'
 
 # Default primary key
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
