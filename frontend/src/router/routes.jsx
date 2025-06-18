@@ -15,14 +15,14 @@ export const routes = [
 ];
 
 export const publicRoutes = [
-  { path: '/login', element: <Login /> },
-  { path: '/registration', element: <Registration /> },
+  { path: '/login/', element: <Login /> },
+  { path: '/registration/', element: <Registration /> },
 ];
 
 export const privateRoutes = [
-  { path: '/profile', element: <ProfilePage /> },
+  { path: '/profile/', element: <ProfilePage /> },
 ];
 
 export const stuffRoutes = [
-  { path: '/moderation', element: <ModerationPanel /> },
+  { path: '/moderation/', element: <ModerationPanel /> },
 ];
