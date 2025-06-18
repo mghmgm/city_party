@@ -1,13 +1,7 @@
-#!/bin/bash
-set -e  # Прерывать выполнение при ошибках
+REPLACEMENT_STRING=$1
 
-REPLACEMENT_STRING="$1"
+find "." -type f -print0 | xargs -0 sed -i "s/city-party.tw1.ru//$REPLACEMENT_STRING/g"
 
-# 1. Безопасная замена только в конфигурационных файлах
-find "./nginx.conf" "./docker-compose.yml" -type f -exec sed -i "s/city-party.tw1.ru//${REPLACEMENT_STRING}/g" {} +
-
-# 2. Перезапуск сервисов (без Certbot)
-sudo docker compose down && \
-sudo docker compose up -d --build
-
-echo "Deployment complete for domain: ${REPLACEMENT_STRING}"
+sudo docker compose -f ./docker-compose.https.yml run --rm certbot && \
+sudo docker compose -f ./docker-compose.https.yml stop && \
+sudo docker compose up -d

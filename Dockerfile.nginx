@@ -1,45 +1,39 @@
-# ============ Frontend Build Stage ============
 FROM node:22-alpine3.20 AS frontend-build
-
-WORKDIR /usr/src/app/frontend_source
-
-COPY ./frontend/package.json ./frontend/package-lock.json ./
-RUN npm ci --silent
-
-COPY ./frontend .
-RUN npm run build
-
-# ============ Django Static Build Stage ============
-FROM python:3.13-alpine AS django-static-build
 
 WORKDIR /usr/src/app
 
-RUN apk update && \
-    apk add --no-cache \
-    zlib-dev \
-    jpeg-dev \
-    postgresql-dev \
-    gcc \
-    python3-dev \
-    musl-dev
+RUN mkdir ./frontend_source
 
-COPY ./backend/requirements.txt .
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+WORKDIR /usr/src/app/frontend_source
 
-COPY ./backend .
+COPY ./frontend/package.json .
+RUN npm install -g yarn --force
+RUN yarn
+
+COPY ./frontend .
+
+RUN yarn build
+
+FROM python:3.13-alpine as django-static-build
+
+WORKDIR /usr/src/app
+
+COPY ./backend/requirements.txt ./requirements.txt
+
+RUN pip install -r requirements.txt
+
+COPY --chmod=0755 ./backend .
+
 RUN python manage.py collectstatic --noinput
 
-# ============ Final Nginx Stage ============
 FROM nginx:1.27.4-alpine
 
 COPY nginx.conf /etc/nginx/nginx.conf
 
-# Копируем статику фронтенда в отдельную папку
-COPY --from=frontend-build /usr/src/app/frontend_source/dist /usr/share/nginx/html/frontend
+COPY --from=frontend-build /usr/src/app/frontend_source/static/. ./static
 
-# Копируем статику Django
-COPY --from=django-static-build /usr/src/app/static /usr/share/nginx/html/django-static
+COPY --from=django-static-build /usr/src/app/static/. ./static
 
-EXPOSE 80
+EXPOSE 80 443
+
 CMD ["nginx", "-g", "daemon off;"]

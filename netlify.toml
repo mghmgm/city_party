@@ -1,5 +1,0 @@
-[[redirects]]
-  from = "/*"
-  to = "http://85.198.82.247/:splat"
-  status = 301
-  force = true
