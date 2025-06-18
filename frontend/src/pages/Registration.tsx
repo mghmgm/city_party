@@ -28,7 +28,7 @@ const RegistrationForm: FC = () => {
                 <Input type="text" label="Пароль" id="password" placeholder="********" value={password}/>
               </div>
               <Button className="auth__btn">Зарегистрироваться</Button>
-              <Link to="/login" className="auth__to-login">
+              <Link to="/login/" className="auth__to-login">
                 У вас уже есть аккаунт?
               </Link>
             </Form>
