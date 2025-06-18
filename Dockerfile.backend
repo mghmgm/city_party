@@ -2,8 +2,25 @@ FROM python:3.13-alpine
 
 WORKDIR /usr/src/app
 
+# Устанавливаем системные зависимости
+RUN apk update && \
+    apk add --no-cache \
+    postgresql-dev \
+    gcc \
+    python3-dev \
+    musl-dev \
+    libffi-dev \
+    openssl-dev \
+    zlib-dev \
+    jpeg-dev
+
+# Копируем и устанавливаем зависимости Python
 COPY ./backend/requirements.txt ./requirements.txt
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
 
-RUN pip install -r requirements.txt
-
+# Копируем код проекта
 COPY --chmod=0755 ./backend .
+
+# Опционально: команда для запуска (может быть переопределена в docker-compose)
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "your_project.wsgi:application"]
