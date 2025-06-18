@@ -20,6 +20,8 @@ sentry_sdk.init(
     send_default_pii=True,
 )
 
+SITE_ID = 1
+
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
