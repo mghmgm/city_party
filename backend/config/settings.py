@@ -100,19 +100,19 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv('DB_NAME', 'city_party'),
-#         "USER": os.getenv('DB_USER', 'postgres'),
-#         "PASSWORD": os.getenv('DB_PASSWORD', 'root'),
-#         "HOST": os.getenv('DB_HOST', 'pgdb'),
-#         "PORT": os.getenv('DB_PORT', '5432'),
-#         "OPTIONS": {
-#             "client_encoding": "UTF8",
-#         },
-#     }
-# }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.getenv('DB_NAME', 'city_party'),
+        "USER": os.getenv('DB_USER', 'postgres'),
+        "PASSWORD": os.getenv('DB_PASSWORD', 'root'),
+        "HOST": os.getenv('DB_HOST', 'pgdb'),
+        "PORT": os.getenv('DB_PORT', '5432'),
+        "OPTIONS": {
+            "client_encoding": "UTF8",
+        },
+    }
+}
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
