@@ -30,9 +30,9 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z)vw+@=4qg5+4hlwq7h
 DEBUG = False
 
 # Hosts/Origins
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://city-party.tw1.ru']
 
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://city-party.tw1.ru']
 
 # Security Settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
@@ -44,7 +44,7 @@ SECURE_HSTS_SECONDS = 0  # Отключаем HSTS для HTTP
 # CORS Settings
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = ['*']
+CORS_ALLOWED_ORIGINS = ['https://city-party.tw1.ru']
 
 # Application definition
 INSTALLED_APPS = [
