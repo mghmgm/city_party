@@ -1,1 +1,1 @@
-python manage.py migrate && gunicorn core.wsgi:application --reload --bind 0.0.0.0:8000 --workers 4
+python manage.py migrate && gunicorn config.wsgi:application --reload --bind 0.0.0.0:8000 --workers 4
