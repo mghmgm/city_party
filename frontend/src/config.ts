@@ -1,1 +1,1 @@
-export const hostname = 'https://city-party.tw1.ru:8000';
+export const hostname = 'https://city-party.tw1.ru';
