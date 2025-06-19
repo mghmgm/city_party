@@ -30,9 +30,9 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-z)vw+@=4qg5+4hlwq7h
 DEBUG = False
 
 # Hosts/Origins
-ALLOWED_HOSTS = ['https://city-party.tw1.ru', "http://85.198.82.247:8000/"]
+ALLOWED_HOSTS = ['city-party.tw1.ru', "85.198.82.247:8000/"]
 
-CSRF_TRUSTED_ORIGINS = ['https://city-party.tw1.ru', "http://85.198.82.247:8000/"]
+CSRF_TRUSTED_ORIGINS = ['https://city-party.tw1.ru']
 
 # Security Settings
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
