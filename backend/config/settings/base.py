@@ -1,6 +1,7 @@
 from datetime import timedelta
 import os
 from pathlib import Path
+from celery.schedules import crontab
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
