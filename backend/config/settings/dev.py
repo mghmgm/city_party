@@ -39,3 +39,11 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Static files
 STATIC_ROOT = BASE_DIR / 'static/'
+
+
+# Email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025 
+EMAIL_USE_TLS = False
+
