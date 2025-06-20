@@ -52,3 +52,9 @@ CORS_ALLOW_CREDENTIALS = True
 
 # Static files
 STATIC_ROOT = '/var/www/city-party/static/'
+
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv('EMAIL_ADDRESS')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
+EMAIL_USE_TLS = True
