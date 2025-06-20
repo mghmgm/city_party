@@ -106,3 +106,21 @@ SIMPLE_JWT = {
 }
 
 SITE_ID = 1
+
+
+# Настройки Celery
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://redis:6379/1'
+CELERY_TIMEZONE = 'Europe/Moscow'
+
+# Расписание рассылки (каждый понедельник в 10:00)
+CELERY_BEAT_SCHEDULE = {
+    'weekly-mass-email': {
+        'task': 'app.tasks.send_mass_email_task',
+        'schedule': crontab(hour=10, minute=0, day_of_week=1),
+        'args': (
+            "Еженедельные новости", 
+            "Добрый день! Вот наши новости за неделю..."
+        ),
+    },
+}

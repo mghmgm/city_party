@@ -1,5 +1,3 @@
-version: "3.1"
-
 services:
   django:
     container_name: django
@@ -13,6 +11,8 @@ services:
       - "8000:8000"
     depends_on:
       - pgdb
+      - redis
+
   pgdb:
     image: postgres:17.4-alpine3.21
     environment:
@@ -23,6 +23,14 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:7.0.11-alpine
+    container_name: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
   nginx:
     container_name: nginx
     build:
