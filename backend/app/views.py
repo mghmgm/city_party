@@ -36,6 +36,8 @@ from rest_framework import status
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from rest_framework.request import Request
+from .serializers import UserRegistrationSerializer
+from rest_framework.views import APIView
 
 
 class EventAPIView(ModelViewSet):
@@ -512,3 +514,13 @@ class TicketAPIView(ModelViewSet):
 
         serializer = self.get_serializer(ticket)
         return Response(serializer.data)
+
+class UserRegistrationAPIView(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

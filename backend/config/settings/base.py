@@ -118,7 +118,8 @@ CELERY_TIMEZONE = 'Europe/Moscow'
 CELERY_BEAT_SCHEDULE = {
     'weekly-mass-email': {
         'task': 'app.tasks.send_mass_email_task',
-        'schedule': crontab(minute='*'),
+        # 'schedule': crontab(minute='*'),
+        'schedule': crontab(hour=10, minute=0, day_of_week=1),
         'args': (
             "Еженедельные новости", 
             "Добрый день! Вот наши новости за неделю..."

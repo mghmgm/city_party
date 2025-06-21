@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../store/store';
 import { Link } from 'react-router';
 import Ticket from '../components/UI/Ticket/Ticket';
 import { TicketAPI } from '../store/TicketAPI';
-import { getUser } from '../store/AuthSlice';
+import { getUserProfile } from '../store/AuthSlice';
 import { AsyncThunkAction, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 import Button from '../components/UI/Button/Button';
 
@@ -21,7 +21,7 @@ const ProfilePage = () => {
       ticketId,
       payment_status: 'on_canceled',
     }).unwrap();
-    dispatch(getUser());
+    dispatch(getUserProfile());
   };
 
   return (

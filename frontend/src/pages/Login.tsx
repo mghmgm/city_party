@@ -4,7 +4,7 @@ import Button from '../components/UI/Button/Button';
 import Input from '../components/UI/Input/Input';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { getToken, getUser } from '../store/AuthSlice';
+import { getToken, getUserProfile } from '../store/AuthSlice';
 
 const LoginForm: FC = () => {
   const [username, setUsername] = useState('');
@@ -18,8 +18,8 @@ const LoginForm: FC = () => {
     const resultAction = await dispatch(getToken({ username, password }));
     
     if (getToken.fulfilled.match(resultAction)) {
-      await dispatch(getUser());
-      navigate('/profile');
+      await dispatch(getUserProfile());
+      navigate('/profile/');
     }
   };
 
@@ -51,7 +51,7 @@ const LoginForm: FC = () => {
                 />
               </div>
               <Button className="auth__btn">Войти</Button>
-              <Link to="/registration" className="auth__to-login">
+              <Link to="/registration/" className="auth__to-login">
                 У вас еще нет аккаунта?
               </Link>
             </Form>

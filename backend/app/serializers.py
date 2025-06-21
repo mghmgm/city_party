@@ -1,5 +1,6 @@
 from django.conf import settings
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from .models import (
     Event,
     Review,
@@ -190,3 +191,27 @@ class UserProfileSerializer(serializers.ModelSerializer):
     def get_used_tickets(self, obj):
         tickets_data = self.context.get("tickets_data", {})
         return tickets_data.get("used_tickets", [])
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    is_subscribed = serializers.BooleanField(write_only=True, required=False, default=False)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password', 'is_subscribed']
+        
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
+        
+        # Создаем профиль пользователя
+        UserProfile.objects.create(
+            user=user,
+            description="",
+            avatar="default_avatar.jpg"
+        )
+        
+        return user

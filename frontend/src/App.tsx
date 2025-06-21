@@ -2,14 +2,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { routes, privateRoutes, publicRoutes, stuffRoutes } from './router/routes';
 import { useAppDispatch, useAppSelector } from './store/store';
 import { useEffect } from 'react';
-import { getUser } from './store/AuthSlice';
+import { getUserProfile } from './store/AuthSlice';
 
 function App() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.auth.userProfile);
 
   useEffect(() => {
-    dispatch(getUser());
+    dispatch(getUserProfile());
   }, []);
 
   return (

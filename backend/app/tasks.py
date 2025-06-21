@@ -10,7 +10,6 @@ User = get_user_model()
 @shared_task
 def send_mass_email_task(subject, message):
     try:
-        # Получаем все активные email пользователей
         # users = User.objects.filter(is_active=True).exclude(email='')
         # email_list = list(users.values_list('email', flat=True))
         
@@ -25,12 +24,11 @@ def send_mass_email_task(subject, message):
             (subject, message, settings.DEFAULT_FROM_EMAIL, [email])
             for email in email_list
         ]
-        
-        # Отправляем массово
+
         result = send_mass_mail(emails, fail_silently=False)
         logger.info(f"Отправлено {result} писем")
         return f"Успешно отправлено {result} писем"
     
     except Exception as e:
         logger.error(f"Ошибка массовой рассылки: {str(e)}")
-        raise  # Повторно поднимаем исключение для Celery
+        raise  
