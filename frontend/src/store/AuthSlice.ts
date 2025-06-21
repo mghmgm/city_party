@@ -9,12 +9,19 @@ interface AuthState {
   isAuthenticated: boolean;
 }
 
-const initialState: AuthState = {
-  userProfile: null,
-  loading: false,
-  error: null,
-  isAuthenticated: false,
+const loadInitialState = (): AuthState => {
+  const token = localStorage.getItem('accessToken');
+  const userProfile = localStorage.getItem('userProfile');
+  
+  return {
+    userProfile: userProfile ? JSON.parse(userProfile) : null,
+    loading: false,
+    error: null,
+    isAuthenticated: !!token, // Простая проверка наличия токена
+  };
 };
+
+const initialState: AuthState = loadInitialState();
 
 export const registerUser = createAsyncThunk(
   'auth/register',
@@ -22,19 +29,11 @@ export const registerUser = createAsyncThunk(
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/register/`,
-        userData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
+        userData
       );
       return response.data;
     } catch (error: any) {
-      if (error.response) {
-        return rejectWithValue(error.response.data);
-      }
-      return rejectWithValue({ message: 'Network error' });
+      return rejectWithValue(error.response?.data || { message: 'Network error' });
     }
   }
 );
@@ -51,7 +50,7 @@ export const getToken = createAsyncThunk(
       localStorage.setItem('refreshToken', response.data.refresh);
       return response.data.access;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || { message: 'Network error' });
     }
   }
 );
@@ -60,21 +59,25 @@ export const getUserProfile = createAsyncThunk(
   'auth/userProfile',
   async (_, { rejectWithValue }) => {
     const token = localStorage.getItem('accessToken');
-    if (!token) {
-      return rejectWithValue('No token found');
-    }
+    if (!token) return rejectWithValue('No token found');
+    
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/auth/profile/`,
+        `${import.meta.env.VITE_API_URL}/user/profile/`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` }
         }
       );
+      localStorage.setItem('userProfile', JSON.stringify(response.data));
       return response.data;
     } catch (error: any) {
-      return rejectWithValue(error.response.data);
+      // Если ошибка 401 - очищаем невалидный токен
+      if (error.response?.status === 401) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userProfile');
+      }
+      return rejectWithValue(error.response?.data || { message: 'Network error' });
     }
   }
 );
@@ -86,8 +89,7 @@ const authSlice = createSlice({
     logout: (state) => {
       state.userProfile = null;
       state.isAuthenticated = false;
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      localStorage.clear();
     },
     clearError: (state) => {
       state.error = null;
@@ -95,48 +97,33 @@ const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Регистрация
-      .addCase(registerUser.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(registerUser.fulfilled, (state, action: PayloadAction<IUserProfile>) => {
-        state.loading = false;
+      .addCase(registerUser.fulfilled, (state, action) => {
         state.userProfile = action.payload;
-      })
-      .addCase(registerUser.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Получение токена
-      .addCase(getToken.pending, (state) => {
-        state.loading = true;
-        state.error = null;
+        state.isAuthenticated = true;
+        localStorage.setItem('userProfile', JSON.stringify(action.payload));
       })
       .addCase(getToken.fulfilled, (state) => {
-        state.loading = false;
         state.isAuthenticated = true;
       })
-      .addCase(getToken.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Получение профиля
-      .addCase(getUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getUserProfile.fulfilled, (state, action: PayloadAction<IUserProfile>) => {
-        state.loading = false;
+      .addCase(getUserProfile.fulfilled, (state, action) => {
         state.userProfile = action.payload;
         state.isAuthenticated = true;
       })
-      .addCase(getUserProfile.rejected, (state, action: PayloadAction<any>) => {
-        state.loading = false;
-        state.error = action.payload;
-        state.isAuthenticated = false;
-      });
-  },
+      .addMatcher(
+        (action) => action.type.endsWith('/pending'),
+        (state) => {
+          state.loading = true;
+          state.error = null;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith('/rejected'),
+        (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        }
+      );
+  }
 });
 
 export const { logout, clearError } = authSlice.actions;

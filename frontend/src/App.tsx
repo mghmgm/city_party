@@ -1,50 +1,45 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { routes, privateRoutes, publicRoutes, stuffRoutes } from './router/routes';
-import { useAppDispatch, useAppSelector } from './store/store';
 import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from './store/store';
 import { getUserProfile } from './store/AuthSlice';
+import { routes, privateRoutes, publicRoutes, stuffRoutes } from './router/routes';
 
 function App() {
   const dispatch = useAppDispatch();
-  const user = useAppSelector((state) => state.auth.userProfile);
+  const { userProfile, isAuthenticated } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getUserProfile());
-  }, []);
+    const token = localStorage.getItem('accessToken');
+    if (token && !userProfile) {
+      dispatch(getUserProfile());
+    }
+  }, [dispatch, userProfile]);
+
+  const isSuperuser = userProfile?.is_superuser || false;
 
   return (
-    <div>
-      <BrowserRouter>
-        <Routes>
-          {routes.map((route) => (
-            <Route path={route.path} element={route.element} key={route.path} />
-          ))}
-          {user ? (
-            user.is_superuser ? (
-              // Для суперпользователя
-              <>
-                {privateRoutes.map((route) => (
-                  <Route path={route.path} element={route.element} key={route.path} />
-                ))}
-                {stuffRoutes.map((route) => (
-                  <Route path={route.path} element={route.element} key={route.path} />
-                ))}
-              </>
-            ) : (
-              // Для обычных пользователей
-              privateRoutes.map((route) => (
-                <Route path={route.path} element={route.element} key={route.path} />
-              ))
-            )
-          ) : (
-            // Для неавторизованных
-            publicRoutes.map((route) => (
-              <Route path={route.path} element={route.element} key={route.path} />
-            ))
-          )}
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {routes.map((route) => (
+          <Route key={route.path} path={route.path} element={route.element} />
+        ))}
+        
+        {isAuthenticated ? (
+          <>
+            {privateRoutes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+            {isSuperuser && stuffRoutes.map((route) => (
+              <Route key={route.path} path={route.path} element={route.element} />
+            ))}
+          </>
+        ) : (
+          publicRoutes.map((route) => (
+            <Route key={route.path} path={route.path} element={route.element} />
+          ))
+        )}
+      </Routes>
+    </BrowserRouter>
   );
 }
 

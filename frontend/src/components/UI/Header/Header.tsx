@@ -19,11 +19,12 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSubmit }) => {
   const navigate = useNavigate();
-  const user = useAppSelector((state) => state.auth.userProfile);
+  const { userProfile } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   const headerClass = `${classes.header} content`;
-  const avatarUrl = user?.avatar ? hostname + user.avatar : avatar;
+  const avatarUrl = userProfile?.avatar ? hostname + userProfile.avatar : avatar;
+  const isSuperuser = userProfile?.is_superuser || false;
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -53,16 +54,16 @@ const Header: FC<HeaderProps> = ({ searchValue, onSearchValueChange, onSearchSub
       />
       <div className={classes.buttons}>
         <Select options={['Москва']} value="Москва" className={classes.select} />
-        {user ? (
+        {userProfile ? (
           <div className={classes.profile}>
             <Link to="/profile/">
-              <img src={avatarUrl} className={classes.avatar} />
+              <img src={avatarUrl} className={classes.avatar} alt="Аватар" />
             </Link>
-            {user?.is_superuser ? (
+            {/* {isSuperuser && (
               <Button href="/moderation/" className={classes.moderation}>
                 Модерация
               </Button>
-            ) : null}
+            )} */}
             <Button onClick={handleExitBtnClick} className={classes.btn}>
               Выйти
             </Button>
