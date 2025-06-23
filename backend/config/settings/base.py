@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "django_filters",
+    "social_django",
     
     # Local
     "app",
@@ -126,3 +127,26 @@ CELERY_BEAT_SCHEDULE = {
         ),
     },
 }
+
+#Yandex ID
+SOCIAL_AUTH_YANDEX_OAUTH2_KEY = os.getenv('CLIENT_ID')
+SOCIAL_AUTH_YANDEX_OAUTH2_SECRET = os.getenv('CLIENT_SECRET')
+SOCIAL_AUTH_YANDEX_OAUTH2_REDIRECT_URI = 'http://127.0.0.1:8000/auth/complete/yandex-oauth2/'
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.yandex.YandexOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username',
+    'social_core.pipeline.user.create_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details',
+    'app.pipeline.save_user_profile',
+)

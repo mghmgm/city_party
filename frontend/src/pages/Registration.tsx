@@ -11,8 +11,7 @@ const RegistrationForm: FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [password2, setPassword2] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -33,7 +32,7 @@ const RegistrationForm: FC = () => {
           email,
           password,
           is_subscribed: isSubscribed,
-        })
+        }),
       ).unwrap();
       navigate('/login/');
     } catch (err: any) {
@@ -45,12 +44,20 @@ const RegistrationForm: FC = () => {
     }
   };
 
+  const handleYandexLogin = () => {
+    const clientId = import.meta.env.VITE_CLIENT_ID;
+    const redirectUri = encodeURIComponent(`${window.location.origin}/auth/yandex/callback`);
+    window.location.href = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}`;
+  };
+
   return (
-    <div className='wrapper'>
+    <div className="wrapper">
       <div className="content">
         <section className="auth">
           <div>
-            <Link to="/" className='auth__to-home'>На главную</Link>
+            <Link to="/" className="auth__to-home">
+              На главную
+            </Link>
             <Form title="Регистрация" onSubmit={handleSubmit}>
               <div className="auth__content">
                 <Input
@@ -90,6 +97,18 @@ const RegistrationForm: FC = () => {
                 )}
                 <Button type="submit" className="auth__btn">
                   Зарегистрироваться
+                </Button>
+                <Button
+                  className="auth__social"
+                  onClick={() => {
+                    const clientId = import.meta.env.VITE_CLIENT_ID;
+                    const hostname = import.meta.env.VITE_HOSTNAME;
+                    const redirectUri = `${hostname}/auth/yandex/callback`;
+                    const authUrl = `https://oauth.yandex.ru/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}`;
+                    window.location.href = authUrl;
+                  }}
+                >
+                  Войти с Яндекс ID
                 </Button>
                 <Link to="/login/" className="auth__to-login">
                   У вас уже есть аккаунт?

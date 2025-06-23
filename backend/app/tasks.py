@@ -19,7 +19,6 @@ def send_mass_email_task(subject, message):
             logger.warning("Нет активных пользователей с email")
             return "Нет получателей"
         
-        # Формируем письма для send_mass_mail
         emails = [
             (subject, message, settings.DEFAULT_FROM_EMAIL, [email])
             for email in email_list

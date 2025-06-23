@@ -10,6 +10,9 @@ declare module '*.jpg';
 
 interface ImportMetaEnv {
   VITE_API_URL: string;
+  VITE_HOSTNAME: string;
+  VITE_CLIENT_ID: string;
+  VITE_CLIENT_SECRET: string;
 }
 
 interface ImportMeta {

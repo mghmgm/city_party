@@ -198,6 +198,7 @@ class UserProfile(models.Model):
     description = models.CharField(max_length=500, verbose_name="Описание", null=True, blank=True)
     avatar = models.ImageField(upload_to="images/", verbose_name="Аватар")
     vk_profile = models.URLField(verbose_name="ВК профиль", null=True, blank=True)
+    # yandex_id = models.CharField(max_length=100, blank=True, null=True)
     
     def __str__(self):
         return self.user.username

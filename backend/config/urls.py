@@ -14,6 +14,8 @@ from app.views import (
     UserAPIView,
     TicketTypeAPIView,
     UserRegistrationAPIView,
+    yandex_auth_callback,
+    # yandex_auth_callback,
 )
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
@@ -53,10 +55,16 @@ userRouter.register(r"api/user", UserAPIView, basename="user")
 urlpatterns = [
     # path('sentry-debug/', trigger_error),
     path("admin/", admin.site.urls),
+    
     path("api/auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path('api/auth/register/', UserRegistrationAPIView.as_view(), name='register'),
+        
+    path('auth/', include('social_django.urls', namespace='social')),
+    path('auth/yandex/callback/', yandex_auth_callback, name='yandex_callback'),
+    
     path("photologue/", include("photologue.urls", namespace="photologue")),
+
     # для тестировки юрлов со слагами
     path("events/<slug:category_slug>", EventAdmin.get_categories, name="events"),
 ]
@@ -67,6 +75,7 @@ if settings.DEBUG:
         path("__debug__/", include(debug_toolbar.urls)),
         path("silk", include("silk.urls", namespace="silk")),
     ]
+
 urlpatterns += eventsRouter.urls
 urlpatterns += bannerRouter.urls
 urlpatterns += placeRouter.urls

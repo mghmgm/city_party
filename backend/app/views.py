@@ -1,4 +1,6 @@
-from django.shortcuts import get_object_or_404
+from urllib.parse import urlencode
+from django.conf import settings
+from django.shortcuts import get_object_or_404, redirect
 from .filters import EventFilter
 from .models import (
     Event,
@@ -38,6 +40,9 @@ from django.http import HttpRequest
 from rest_framework.request import Request
 from .serializers import UserRegistrationSerializer
 from rest_framework.views import APIView
+from django.contrib.auth import login
+from rest_framework_simplejwt.tokens import RefreshToken
+from social_django.utils import psa
 
 
 class EventAPIView(ModelViewSet):
@@ -515,6 +520,7 @@ class TicketAPIView(ModelViewSet):
         serializer = self.get_serializer(ticket)
         return Response(serializer.data)
 
+
 class UserRegistrationAPIView(APIView):
     permission_classes = [AllowAny]
     
@@ -524,3 +530,20 @@ class UserRegistrationAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+      
+
+@psa('social:complete')
+def yandex_auth_callback(request, backend):
+    """Обработка callback от Яндекса"""
+    user = request.backend.do_auth(request.GET.get('code'))
+    
+    if user:
+        login(request, user)
+        
+        refresh = RefreshToken.for_user(user)
+        access_token = str(refresh.access_token)
+        
+        redirect_url = f'/?access_token={access_token}&refresh_token={str(refresh)}'
+        return redirect(redirect_url)
+    
+    return redirect('/?error=auth_failed')
